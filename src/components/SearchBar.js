@@ -9,10 +9,9 @@ import {
     Button,
 
 } from 'reactstrap'
-
 import Select from 'react-select'
 
-export default props => {
+const SearchBar = (props) => {
 
     const customSelectStyles = {
         control: (provided, state) => ({
@@ -32,7 +31,7 @@ export default props => {
     }
 
     return (
-        <div className={`search-bar ${props.className}`}>
+        <div className="search-bar mt-5 p-3 p-lg-1 pl-lg-4">
             <Form>
                 <Row>
                     <Col
@@ -48,7 +47,7 @@ export default props => {
                     </Col>
                     <Col
                         lg="3"
-                        md={props.halfInputs ? "6" : "12"}
+                        md="12"
                         className="d-flex align-items-center form-group"
                     >
                         <div className="input-label-absolute input-label-absolute-right w-100">
@@ -69,7 +68,7 @@ export default props => {
                     </Col>
                     <Col
                         lg="3"
-                        md={props.halfInputs ? "6" : "12"}
+                        md="12"
                         className="d-flex align-items-center form-group no-divider"
                     >
                         <Select
@@ -88,7 +87,7 @@ export default props => {
                         <Button
                             type="submit"
                             color="primary"
-                            className={`btn-block h-100 ${props.btnClassName ? props.btnClassName : ""}`}
+                            className="btn-block h-100 rounded-xl btn btn-primary"
                         >
                             Search
                       </Button>
@@ -97,4 +96,5 @@ export default props => {
             </Form>
         </div>
     )
-}
+};
+export default SearchBar;

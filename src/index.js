@@ -6,6 +6,7 @@ import reduxThunk from 'redux-thunk';
 import "./scss/style.default.scss";
 
 import App from './pages/App';
+import Index from './components/Index';
 import reducers from './reducers';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -17,6 +18,7 @@ const store = createStore(
 ReactDOM.render(
   <Provider store={store}>
     <App />
+    <Index/>
   </Provider>,
   document.querySelector('#root')
 );
