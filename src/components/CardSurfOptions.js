@@ -12,8 +12,7 @@ import {
 
 
 const CardSurfOptions = (props) => {
-
-    console.log(props)
+    
     const data = props.data
 
     return (
