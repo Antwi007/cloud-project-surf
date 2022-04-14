@@ -7,8 +7,8 @@ import {
 } from 'reactstrap'
 
 import SearchBar from "./SearchBar"
-
-
+import surf_options from "../data/surf-options.json" 
+import CardSurfOptions from "./CardSurfOptions"
 const Index = () => {
 
   const data = {
@@ -51,6 +51,23 @@ const Index = () => {
           </Row>
         </Container>
       </section>
+      {surf_options && 
+      <section className="py-6 bg-gray-100">
+          <Container>
+            <div className="pb-lg-4">
+              <p className="subtitle text-primary">Explore These great resources Near you</p>
+              <h2>Quick Browse</h2>
+            </div>
+            <Row>
+              {surf_options.posts.map(block =>
+                <Col key={block.title}>
+                  <CardSurfOptions data={block}/>
+                </Col>
+              )}
+            </Row>
+          </Container>
+      </section>
+      }
     </React.Fragment>
   )
 };
