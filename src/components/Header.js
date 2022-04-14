@@ -29,7 +29,7 @@ const Header = () => {
               Results
           </NavLink>
       </Nav>
-      <Nav navbar className="ml-auto" style={{ marginRight: '7%' }}>
+      <Nav navbar style={{ marginRight: '7%' , marginLeft: '2%'}}>
         <GoogleAuth />
       </Nav>
     </Navbar>
