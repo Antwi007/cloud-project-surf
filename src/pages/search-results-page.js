@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 
 import {
     Container,
@@ -10,12 +10,18 @@ import {
 } from 'reactstrap'
 
 import Select from 'react-select'
+import UseWindowSize from '../hooks/UseWindowSize'
 
 import CardSurf from '../components/CardSurf'
 import surf_json from '../data/surf-results-page.json'
+import MapSurf from '../components/MapSurf'
 
 const SearchResultsPage = () => {
   const [searchKey, setSearchKey] = useState("");
+  const [mapLoaded, setMapLoaded] = useState(false)
+  const [dragging, setDragging] = useState(false)
+  const [tap, setTap] = useState(false)
+  const [hoverCard, setHoverCard] = useState(null)
   const data = {
     "options": [{
           "value": "small",
@@ -40,13 +46,33 @@ const SearchResultsPage = () => {
   const handleProviderChange = (e, useStateHook) => {
     setProvider(data.options.find((el) => el.value === e.value));
   };
+  const size = UseWindowSize();
+
+  
+
+  useEffect(() => {
+
+    setMapLoaded(true)
+
+    setTap(size.width > 700 ? true : false)
+    setDragging(size.width > 700 ? true : false)
+    }, [size.width])
+
+    
+    
+    const onCardEnter = (id) => {
+        setHoverCard(id)
+    }
+    const onCardLeave = () => {
+      setHoverCard(null)
+     }
 
   return (
     <React.Fragment>
       <Container fluid>
-        <Row>
+        <Row className="mt-6">
           <Col lg="6" className="py-4 p-xl-5">
-            <h2 className="mt-6 mb-4"> Results Page</h2>
+            <h2 className="mb-4"> Results Page</h2>
             <hr className="my-4" />
             <Form>
               <div className="mb-4">
@@ -88,23 +114,38 @@ const SearchResultsPage = () => {
             </Form>
             <hr className="my-4" />
             <Row>
-            {surf_json.features && surf_json.features.map(room =>
-                <Col
-                    key={room.properties.name}
-                    sm="6"
-                    className="mb-5 hover-animate"
-                >
-                    <CardSurf data={room.properties} />
-                </Col>
-            )}
+              {surf_json.features && surf_json.features.map(loc =>
+                  <Col
+                      key={loc.properties.name}
+                      sm="6"
+                      className="mb-5 hover-animate"
+                      onMouseEnter={() => onCardEnter(loc.properties.id)}
+                      onMouseLeave={() => onCardLeave()}
+                  >
+                      
+                      <CardSurf data={loc.properties} />
+                  </Col>
+              )}
             </Row>
           </Col>
+          <div id="map">
           <Col
             lg="6"
-            className="map-side-lg pr-lg-0" 
+            className="mt-1 map-side-lg pr-lg-0" 
           > 
-            <p>Ayo where you at</p>
+              {mapLoaded &&
+                  <MapSurf
+                      className="map-full shadow-left"
+                      center={[40.73723, -73.99967]}
+                      zoom={14}
+                      dragging={dragging}
+                      tap={tap}
+                      geoJSON={surf_json}
+                      hoverCard={hoverCard}
+                  />
+              }
           </Col>
+          </div>
         </Row>
       </Container>
      </React.Fragment>
