@@ -6,6 +6,7 @@ import history from '../history';
 import SearchResultsPage from '../pages/search-results-page';
 import Index from '../components/Index';
 import profile from './profile'
+import SurfPageDetail from './surf-page-detail';
 const App = () => {
 
   return (
@@ -20,6 +21,7 @@ const App = () => {
             <Route path="/" exact component={Index} />
             <Route path="/search-results-page" exact component={SearchResultsPage} />
             <Route path="/profile" exact component={profile} />
+            <Route path="/surf-page-detail" exact component={SurfPageDetail}/>
           </Switch>
       </Router>
   );

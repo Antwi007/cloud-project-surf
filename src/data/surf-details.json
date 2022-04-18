@@ -1,0 +1,38 @@
+{
+  "title": "Luigi's Beach",
+  "category": "Surf Break",
+  "location": "Brooklyn, New York",
+  "tags": [
+    {
+      "icon": "Surf-Score",
+      "value": "4"
+    }
+  ],
+  "amenities": [
+    {
+      "icon": "32 degrees, partly cloudy",
+      "value": "Weather"
+    },
+    {
+      "icon": "Light",
+      "value": "Traffic"
+    },
+    {
+      "icon": "Light",
+      "value": "Crowdedness"
+    },
+    {
+      "icon": "Fair-to-good",
+      "value": "Surf-Conditions"
+    },
+    {
+      "icon": "Sunrise-to-Sundown",
+      "value": "Hours of Operation"
+    },
+    {
+      "icon": "Bangalor-Bar",
+      "value": "Nearby Restaurants"
+    }
+  ]
+}
+
