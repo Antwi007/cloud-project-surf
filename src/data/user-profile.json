@@ -4,12 +4,5 @@
   "firstname": "Jack",
   "lastname": "London",
   "location": "Los Angeles, CA",
-  "reviewsnumber": "2877",
-  "verified": true,
-  "provided": [
-      "Government ID",
-      "Email address",
-      "Phone number"
-  ],
   "content": "<p class='text-muted'> Welcome to my page Fam! </p>"
 }
