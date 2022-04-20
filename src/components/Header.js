@@ -34,6 +34,16 @@ const Header = () => {
           Profile
         </NavLink>
       </Nav>
+      <Nav navbar className="ml-2">
+        <NavLink to="/signup">
+          SignUp
+        </NavLink>
+      </Nav>
+      <Nav navbar className="ml-2">
+        <NavLink to="/login">
+          Login
+        </NavLink>
+      </Nav>
       <Nav navbar style={{ marginRight: '7%' , marginLeft: '2%'}}>
         <GoogleAuth />
       </Nav>
