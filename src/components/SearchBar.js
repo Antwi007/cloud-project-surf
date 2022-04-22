@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { useHistory } from 'react-router-dom'
 
 import {
     Row,
@@ -30,25 +31,36 @@ const SearchBar = (props) => {
         })
     }
 
+  const [searchKey, setSearchKey] = useState("");
+  const [option, setOption] = useState(null);
+
+  const router = useHistory();
+
+  const handleSubmit = async (event) => {
+
+    event.preventDefault();
+    let query = {};
+    query["searchKey"] = searchKey;
+    query["option"] = option;
+
+    router.push({
+        pathname: '/search-results-page',
+        query,
+      });
+  };
+
+  const handleChange = selectedOption => {
+    // console.log(selectedOption);
+    // console.log(`Option selected:`, selectedOption);
+    setOption(selectedOption.label);
+  };
+
     return (
-        <div className="search-bar mt-5 p-3 p-lg-1 pl-lg-4">
-            <Form>
+        <div className="search-bar mt-5 p-3 p-lg-1 pl-lg-4" style={{ width: '78%', maxWidth: 800, margin: '0 auto' }}>
+            <Form onSubmit={handleSubmit}>
                 <Row>
                     <Col
-                        lg="4"
-                        className="d-flex align-items-center form-group"
-                    >
-                        <Input
-                            type="text"
-                            name="search"
-                            placeholder="What are you searching for?"
-                            className="border-0 shadow-0"
-                        />
-                    </Col>
-                    <Col
-                        lg="3"
-                        md="12"
-                        className="d-flex align-items-center form-group"
+                         lg="5" className="d-flex align-items-center form-group"
                     >
                         <div className="input-label-absolute input-label-absolute-right w-100">
                             <Label
@@ -58,16 +70,16 @@ const SearchBar = (props) => {
                                 <span className="sr-only">City</span>
                             </Label>
                             <Input
-                                type="text"
-                                name="location"
-                                placeholder="Location"
-                                id="location"
-                                className="border-0 shadow-0"
+                            type="text"
+                            name="search"
+                            placeholder="Where would u like to go?"
+                            className="border-0 shadow-0"
+                            onChange={(e) => setSearchKey(e.target.value)}
                             />
                         </div>
                     </Col>
                     <Col
-                        lg="3"
+                        lg="4"
                         md="12"
                         className="d-flex align-items-center form-group no-divider"
                     >
@@ -78,10 +90,11 @@ const SearchBar = (props) => {
                             className="selectpicker"
                             classNamePrefix="selectpicker"
                             styles={customSelectStyles}
+                            onChange={handleChange}
                         />
                     </Col>
                     <Col
-                        lg="2"
+                        lg="3"
                         className={props.btnMb ? `mb-${props.btnMb}` : ``}
                     >
                         <Button

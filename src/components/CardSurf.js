@@ -13,7 +13,7 @@ const CardSurf = (props) => {
     
     <Card className="h-100 border-0 shadow">
             <div className="card-img-top overflow-hidden gradient-overlay">
-                <img src={`/content/img/${data.image}`} alt={data.name} className="img-fluid" />
+                <img src={data.thumbnail} alt={data.beach_name} className="img-fluid" />
                   <Link to="/surf-page-detail">
                       <div className="tile-link" />
                   </Link>
@@ -23,13 +23,13 @@ const CardSurf = (props) => {
                     <CardTitle tag="h6">
                         <Link to="/surf-page-detail">
                             <div className="text-decoration-none text-dark">
-                                {data.name}
+                                {data.beach_name}
                             </div>
                         </Link>
                     </CardTitle>
                     <CardSubtitle className="d-flex mb-3">
                         <p className="flex-grow-1 mb-0 text-muted text-sm">
-                            SurfScore : {data.stars}
+                            SurfScore : {data.surf_score.toFixed(2)}
                         </p>
                     </CardSubtitle>
                 </div>
