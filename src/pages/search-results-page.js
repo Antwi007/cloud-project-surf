@@ -6,7 +6,8 @@ import {
     Col,
     Form,
     Label,
-    Input
+    Input,
+    Button
 } from 'reactstrap'
 
 import Select from 'react-select'
@@ -75,68 +76,67 @@ const SearchResultsPage = () => {
 
   
   useEffect(() => {
-    
+
     let routerSearchKey = null;
     let routerOption = null;
     
-    if (router.query.option) {
+    if (typeof router.query !== 'undefined' && router.query.searchKey) {
       routerSearchKey = router.query.searchKey;
       setSearchKey(routerSearchKey);
     }
 
-    if (router.query.option) {
-
+    if (typeof router.query !== 'undefined' && router.query.option) {
       routerOption= router.query.option;
       setSearchType(routerOption);
     }
 
-    if (router.query.option && router.query.option) {
+    if (typeof router.query !== 'undefined' && router.query.option && router.query.option) {
       getSurfResults(routerSearchKey, routerOption)
     }
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
     
-  const getSurfResults = async (routerSearchKey, routerOption) => {
+  async function getSurfResults(routerSearchKey, routerOption) {
     try {
-      const params = {};
+      const params = {}
 
-      if(routerSearchKey){
-        params["location"] = routerSearchKey;
-      }else if(searchKey){
-        params["location"] = searchKey;
+      if (routerSearchKey) {
+        params["location"] = routerSearchKey
+      } else if (searchKey) {
+        params["location"] = searchKey
       }
 
-      if(routerOption){
-        params["search-type"] = option_dict[routerOption];
-      }else if(searchType){
-        params["search-type"] = option_dict[searchType];
+      if (routerOption) {
+        params["search-type"] = option_dict[routerOption]
+      } else if (searchType) {
+        params["search-type"] = option_dict[searchType.label]
       }
 
-      params["is_nearby"] = isNearby;
+      params["is_nearby"] = isNearby
 
-
-      const resp = await surfingObject.getSurfData(params);
+      const resp = await surfingObject.getSurfData(params)
 
       if (!resp) {
-        setSurfData([]);
-        return;
+        setSurfData([])
+        return
       }
 
-      var obj = JSON.parse(resp.body);
+      var obj = JSON.parse(resp.body)
       var res = []
-      
-      for(var i in obj) {
-          res.push(obj[i]);
+
+      for (var i in obj) {
+        res.push(obj[i])
       }
-      setSurfData(res);
+      setSurfData(res)
 
     } catch (error) {
-      setSurfData([]);
+      setSurfData([])
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
 
-  };
+  }
 
   const onCardEnter = (id) => {
       setHoverCard(id)
@@ -173,10 +173,10 @@ const SearchResultsPage = () => {
                   </div>
                 </div>
                 <div className="mb-4">
-                <Label for="form_length" className="form-label">
-                  Search Category
-                </Label>
-                <div>
+                  <Label for="form_length" className="form-label">
+                    Search Category
+                  </Label>
+                <div className="mb-4">
                   <Select
                     name="search-type"
                     id="form_length"
@@ -188,6 +188,12 @@ const SearchResultsPage = () => {
                     onChange={(e) => handleTypeChange(e, setSearchType)}
                   />
                 </div>
+                <div className="mb-4">
+                  <Button type="submit" color="primary" onClick={handleSubmit}>
+                    <i className="fas fa-search mr-1" />
+                    Search
+                  </Button>
+              </div>
               </div>
             </Form>
             <hr className="my-4" />
@@ -200,7 +206,6 @@ const SearchResultsPage = () => {
                       onMouseEnter={() => onCardEnter(loc.beach_name)}
                       onMouseLeave={() => onCardLeave()}
                   >
-                      {console.log(loc.beach_name)}
                       <CardSurf data={loc} />
                   </Col>
               )}
