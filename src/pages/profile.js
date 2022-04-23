@@ -22,7 +22,6 @@ export async function getStaticProps() {
 }
 
 const profile = () => {
-
     return (
         <section className="py-5">
             <Container className="mt-6 ">
