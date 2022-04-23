@@ -13,7 +13,7 @@ const CardSurf = (props) => {
     
     <Card className="h-100 border-0 shadow">
             <div className="card-img-top overflow-hidden gradient-overlay">
-                <img src={data.thumbnail} alt={data.beach_name} className="img-fluid" />
+                <img src={data.thumbnail} alt={data.beach_name} className="img-fluid"/>
                   <Link to="/surf-page-detail">
                       <div className="tile-link" />
                   </Link>

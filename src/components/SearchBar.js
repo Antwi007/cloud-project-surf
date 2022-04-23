@@ -42,6 +42,7 @@ const SearchBar = (props) => {
     let query = {};
     query["searchKey"] = searchKey;
     query["option"] = option;
+    query["isNearby"] = false;
 
     router.push({
         pathname: '/search-results-page',

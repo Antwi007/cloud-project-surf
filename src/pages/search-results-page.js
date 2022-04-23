@@ -28,6 +28,7 @@ const SearchResultsPage = () => {
   const [surfData, setSurfData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isNearby, setIsNearby] = useState(false); 
+  const [center, setCenter] = useState([40.5842, -73.99967]);
   
   const data = {
     "options": [{
@@ -68,18 +69,25 @@ const SearchResultsPage = () => {
 
   useEffect(() => {
 
+    if(surfData[0]){
+      var location = surfData[0]
+      setCenter([location.beach_lat, location.beach_lon])
+    }
+    
     setMapLoaded(true)
 
     setTap(size.width > 700 ? true : false)
     setDragging(size.width > 700 ? true : false)
-    }, [size.width])
+   
+    }, [size.width, surfData])
 
   
   useEffect(() => {
 
     let routerSearchKey = null;
     let routerOption = null;
-    
+    let routerIsNearby = null;
+
     if (typeof router.query !== 'undefined' && router.query.searchKey) {
       routerSearchKey = router.query.searchKey;
       setSearchKey(routerSearchKey);
@@ -90,14 +98,18 @@ const SearchResultsPage = () => {
       setSearchType(routerOption);
     }
 
+    if (typeof router.query !== 'undefined' && router.query.isNearby){
+      routerIsNearby = router.query.isNearby;
+      setIsNearby(routerIsNearby);
+    }
     if (typeof router.query !== 'undefined' && router.query.option && router.query.option) {
       getSurfResults(routerSearchKey, routerOption)
     }
-
+   
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
     
-  async function getSurfResults(routerSearchKey, routerOption) {
+  async function getSurfResults(routerSearchKey, routerOption, routerIsNearby) {
     try {
       const params = {}
 
@@ -113,7 +125,12 @@ const SearchResultsPage = () => {
         params["search-type"] = option_dict[searchType.label]
       }
 
-      params["is_nearby"] = isNearby
+      if(routerIsNearby) {
+        params["is_nearby"] = routerIsNearby
+      } else if (isNearby) {
+        params["is_nearby"] = isNearby
+      }
+     
 
       const resp = await surfingObject.getSurfData(params)
 
@@ -200,10 +217,10 @@ const SearchResultsPage = () => {
             <Row>
               {surfData && surfData.map(loc =>
                   <Col
-                      key={loc.beach_name}
+                      key={loc.surfline_id}
                       sm="6"
                       className="mb-5 hover-animate"
-                      onMouseEnter={() => onCardEnter(loc.beach_name)}
+                      onMouseEnter={() => onCardEnter(loc.surfline_id)}
                       onMouseLeave={() => onCardLeave()}
                   >
                       <CardSurf data={loc} />
@@ -216,14 +233,14 @@ const SearchResultsPage = () => {
             lg="6"
             className="mt-1 map-side-lg pr-lg-0" 
           > 
-              {mapLoaded &&
+              {!loading && mapLoaded &&
                   <MapSurf
                       className="map-full shadow-left"
-                      center={[40.73723, -73.99967]}
+                      center={center}
                       zoom={14}
                       dragging={dragging}
                       tap={tap}
-                      geoJSON={surf_json}
+                      geoJSON={surfData ? surfData : []}
                       hoverCard={hoverCard}
                   />
               }
