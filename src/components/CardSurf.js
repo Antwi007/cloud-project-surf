@@ -29,7 +29,7 @@ const CardSurf = (props) => {
                     </CardTitle>
                     <CardSubtitle className="d-flex mb-3">
                         <p className="flex-grow-1 mb-0 text-muted text-sm">
-                            SurfScore : {data.surf_score.toFixed(2)}
+                            SurfScore : {2}
                         </p>
                     </CardSubtitle>
                 </div>
