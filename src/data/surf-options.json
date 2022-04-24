@@ -3,12 +3,14 @@
           "id": "1",
           "title": "Surf Breaks Nearby",
           "link": "/post",
+          "option": "Surf Breaks",
           "img": "img/surf_photo_1.jpeg"
       },
       {
           "id": "2",
           "title": "Surf Lessons Nearby",
           "content": "Search Local Surf Lessons",
+          "option": "Surf Lessons",
           "link": "/post",
           "img": "img/surf_lessons_1.jpeg"
       },
@@ -16,6 +18,7 @@
           "id": "3",
           "title": "Surf Rentals Nearby",
           "content": "Search for rental loations close to you",
+          "option": "Surf Rentals",
           "link": "/post",
           "img": "img/surf_rentals_locations_1.jpeg"
       }

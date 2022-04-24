@@ -38,7 +38,7 @@ const MapSurf = (props) => {
         tooltipAnchor: [0, 19]
     })
 
-    const markers = props.geoJSON && props.geoJSON.map(feature =>
+    const markers = props.geoJSON && props.geoJSON?.map(feature =>
         [
             feature.beach_lat,
             feature.beach_lon
@@ -62,7 +62,7 @@ const MapSurf = (props) => {
                 attribution={tileLayers[1].attribution}
 
             />
-            {props.geoJSON && props.geoJSON.map(feature => {
+            {props.geoJSON && props.geoJSON?.map(feature => {
                 const data = feature
                 return (
                         <Marker

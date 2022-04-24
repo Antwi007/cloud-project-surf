@@ -75,9 +75,9 @@ const logIn = () => {
                                 className="btn-social mb-3"
                             >
                                 <i className="fa-2x fa-google fab btn-social-icon" />
-                                Connect
+                               
                                 <span className="d-none d-sm-inline">
-                                    with Google
+                                 Connect with Google
                                 </span>
                             </Button>
                             <hr className="my-4" />

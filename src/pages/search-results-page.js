@@ -14,7 +14,6 @@ import Select from 'react-select'
 import UseWindowSize from '../hooks/UseWindowSize'
 import SurfingService  from '../apis/SurfingService'
 import CardSurf from '../components/CardSurf'
-import surf_json from '../data/surf-results-page.json'
 import MapSurf from '../components/MapSurf'
 
 const SearchResultsPage = () => {
@@ -87,6 +86,11 @@ const SearchResultsPage = () => {
     let routerSearchKey = null;
     let routerOption = null;
     let routerIsNearby = null;
+    let routerLat = null;
+    let routerLon = null;
+
+    console.log(router.query);
+
 
     if (typeof router.query !== 'undefined' && router.query.searchKey) {
       routerSearchKey = router.query.searchKey;
@@ -102,14 +106,20 @@ const SearchResultsPage = () => {
       routerIsNearby = router.query.isNearby;
       setIsNearby(routerIsNearby);
     }
-    if (typeof router.query !== 'undefined' && router.query.option && router.query.option) {
-      getSurfResults(routerSearchKey, routerOption)
+    if (typeof router.query !== 'undefined' && router.query.nearby_lat) {
+      routerLat = router.query.nearby_lat;
     }
-   
+    if (typeof router.query !== 'undefined' && router.query.nearby_lon) {
+      routerLon = router.query.nearby_lon;
+    }
+    if (typeof router.query !== 'undefined' && router.query.option && router.query.option) {
+      getSurfResults(routerSearchKey, routerOption, routerIsNearby, routerLat, routerLon)
+    }
+    
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
     
-  async function getSurfResults(routerSearchKey, routerOption, routerIsNearby) {
+  async function getSurfResults(routerSearchKey, routerOption, routerIsNearby, routerLat, routerLon) {
     try {
       const params = {}
 
@@ -127,13 +137,23 @@ const SearchResultsPage = () => {
 
       if(routerIsNearby) {
         params["is_nearby"] = routerIsNearby
-      } else if (isNearby) {
+      } else if (!isNearby) {
         params["is_nearby"] = isNearby
       }
      
+      if(routerLat) {
+        params["nearby_lat"] = routerLat;
+      }
+      if(routerLon) {
+        params["nearby_lon"] = routerLon;
+      }
+
+      console.log("params there I go: ", params);
 
       const resp = await surfingObject.getSurfData(params)
 
+      console.log(resp);
+      
       if (!resp) {
         setSurfData([])
         return
@@ -145,8 +165,6 @@ const SearchResultsPage = () => {
       for (var i in obj) {
         res.push(obj[i])
       }
-      setSurfData(res)
-
     } catch (error) {
       setSurfData([])
     } finally {
@@ -215,7 +233,7 @@ const SearchResultsPage = () => {
             </Form>
             <hr className="my-4" />
             <Row>
-              {surfData && surfData.map(loc =>
+              {surfData && surfData.length > 0 && surfData?.map(loc =>
                   <Col
                       key={loc.surfline_id}
                       sm="6"
@@ -240,7 +258,7 @@ const SearchResultsPage = () => {
                       zoom={14}
                       dragging={dragging}
                       tap={tap}
-                      geoJSON={surfData ? surfData : []}
+                      geoJSON={surfData}
                       hoverCard={hoverCard}
                   />
               }
