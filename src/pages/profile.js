@@ -6,6 +6,7 @@ import SurfingService from '../apis/SurfingService';
 
 import data from '../data/user-profile.json';
 import geoJSON from '../data/surf-results-page.json';
+import sadSurf from '../components/images/sad_surf3.jpeg';
 
 import { getAccountDetails, putProfilePic, putSurfAccountDetails } from '../actions';
 
@@ -39,6 +40,7 @@ class profile extends React.Component {
             profilePic: null,
             profilePicChanged: null,
             firstName: null,
+            favorites: [],
         }
         this.handleLocationChange = this.handleLocationChange.bind(this)
         this.handleFullNameChange = this.handleFullNameChange.bind(this)
@@ -101,7 +103,26 @@ class profile extends React.Component {
     }
 
     render() {
-        return (
+        const notLoggedIn = <div class="card text-center" 
+            style={{ 
+                border: 'none', 
+                flexDirection: 'row',
+                width: '80%',
+                marginTop: '8%', 
+            }}>
+            <img
+                src={sadSurf}
+                alt=""
+                style={{ border: 'none', width: '50%' }}
+            />
+            <h2 style={{ alignSelf: 'center', width: '50%' }}>
+                You are not logged into our website.
+                <br />
+                <br />
+                You can login using your Google Account from the top right!
+            </h2>
+        </div>;
+        return this.props.auth.isSignedIn ? (
             <section className="py-5">
                 <Container className="mt-6 ">
                     <Row>
@@ -113,7 +134,7 @@ class profile extends React.Component {
                                             <img
                                                 src={this.props.surfProfile.profilePic ?
                                                     URL.createObjectURL(this.props.surfProfile.profilePic)
-                                                : `/content/img/${data.avatar}`}
+                                                    : `/content/img/${data.avatar}`}
                                                 alt=""
                                                 className="d-block avatar avatar-xxl p-2 mb-2"
                                                 style={{ marginLeft: '5vh' }}
@@ -216,21 +237,36 @@ class profile extends React.Component {
                                 <h4 className="mb-5">
                                     {this.state.fullName ?? (this.props.surfProfile.fullName || this.props.auth.fullName)}'s Favorites
                                 </h4>
-                                <Row>
-                                    {geoJSON.features.map(listing =>
-                                        <Col sm="6" lg="4" className="mb-30px hover-animate" key={listing.properties.name}>
-                                            <CardSurf data={listing.properties} />
-                                        </Col>
-                                    )}
-
-                                </Row>
+                                {this.state.favorites.length > 0 ?
+                                    <Row>
+                                        {geoJSON.features.map(listing =>
+                                            <Col sm="6" lg="4" className="mb-30px hover-animate" key={listing.properties.name}>
+                                                <CardSurf data={listing.properties} />
+                                            </Col>
+                                        )}
+                                    </Row> :
+                                    <div class="card text-center" style={{ border: 'none', flexDirection: 'row' }}>
+                                        <img
+                                            src={sadSurf}
+                                            alt=""
+                                            style={{ border: 'none', width: '50%' }}
+                                        />
+                                        <h2 style={{ alignSelf: 'center', width: '50%' }}>
+                                            You don't have any
+                                            <br />
+                                            favorite spots.
+                                            <br />
+                                            <br />
+                                            Let's go find some!
+                                        </h2>
+                                    </div>
+                                }
                             </div>
                         </Col>
                     </Row>
-
                 </Container>
-            </section >
-        )
+            </section >   
+        ) : notLoggedIn
     }
 }
 

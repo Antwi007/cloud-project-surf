@@ -36,7 +36,6 @@ class GoogleAuth extends React.Component {
       
       // const surfAccount = await surfingObject.getSurfAccountDetails(userId);
       const surfAccount = await surfingObject.createSurfingAccount(userId);
-
     } else {
       this.props.signOut();
     }

@@ -21,9 +21,10 @@ const giveFirstandFullName = (fullStr) => {
 const authReducer = (state = INTIAL_STATE, action) => {
   switch (action.type) {
     case SIGN_IN:
+      console.log("signing in")
       return { ...state, isSignedIn: true, userId: action.payload };
     case SIGN_OUT:
-      return { ...state, isSignedIn: false, userId: null };
+      return {...INTIAL_STATE, isSignedIn: false};
     case GET_ACCOUNT_DETAILS:
       const firstAndFullName = giveFirstandFullName(action.payload.name)
       const firstName = firstAndFullName[0]
