@@ -35,15 +35,13 @@ class SurfingService {
 
   getSurfAccountDetails = async (userId) => {
     // var data = '{\n    "user_id":"' + userId + '"\n}';
-    var data = '{\n    "user_id":"testUser2",\n    "details": {\n        "name": "Kerem"\n    }\n}';
+    var data = '';
 
     var config = {
-      method: 'put',
-      url: 'https://usvfzvu80m.execute-api.us-east-1.amazonaws.com/development/user/accountDetails',
-      headers: {
-        'Content-Type': 'text/plain'
-      },
-      data: data
+      method: 'get',
+      url: 'https://usvfzvu80m.execute-api.us-east-1.amazonaws.com/development/user/accountDetails?user_id=' + userId,
+      headers: { },
+      data : data
     };
 
     const resp = await axios(config);

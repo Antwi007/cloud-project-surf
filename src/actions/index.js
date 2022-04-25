@@ -2,6 +2,7 @@ import {
   SIGN_IN,
   SIGN_OUT,
   GET_ACCOUNT_DETAILS,
+  GET_SURF_ACCOUNT_DETAILS,
   PUT_SURF_ACCOUNT_DETAILS,
   PUT_PROFILE_PIC
 } from "./types";
@@ -22,6 +23,13 @@ export const signOut = () => {
 export const getAccountDetails = (userDetails) => { 
   return {
     type: GET_ACCOUNT_DETAILS,
+    payload: userDetails
+  }
+}
+
+export const getSurfAccountDetails = (userDetails) => {
+  return {
+    type: GET_SURF_ACCOUNT_DETAILS,
     payload: userDetails
   }
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { signIn, signOut, getAccountDetails } from '../actions';
+import { signIn, signOut, getAccountDetails, getSurfAccountDetails } from '../actions';
 import SurfingService  from '../apis/SurfingService';
 
 const surfingObject = new SurfingService();
@@ -34,8 +34,14 @@ class GoogleAuth extends React.Component {
       }
       this.props.getAccountDetails(accountDetails);
       
-      // const surfAccount = await surfingObject.getSurfAccountDetails(userId);
-      const surfAccount = await surfingObject.createSurfingAccount(userId);
+      try {
+        const surfAccount = await surfingObject.getSurfAccountDetails(userId);
+        this.props.getSurfAccountDetails(surfAccount.data);
+      }
+      catch {
+        await surfingObject.createSurfingAccount(userId);
+      }
+
     } else {
       this.props.signOut();
     }
@@ -80,5 +86,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { signIn, signOut, getAccountDetails }
+  { signIn, signOut, getAccountDetails, getSurfAccountDetails }
 )(GoogleAuth);
