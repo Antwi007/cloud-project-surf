@@ -1,13 +1,9 @@
-import streams from "../apis/streams";
-import history from "../history";
 import {
   SIGN_IN,
   SIGN_OUT,
-  CREATE_STREAM,
-  FETCH_STREAMS,
-  FETCH_STREAM,
-  DELETE_STREAM,
-  EDIT_STREAM,
+  GET_ACCOUNT_DETAILS,
+  PUT_SURF_ACCOUNT_DETAILS,
+  PUT_PROFILE_PIC
 } from "./types";
 
 export const signIn = (userId) => {
@@ -22,3 +18,24 @@ export const signOut = () => {
     type: SIGN_OUT,
   };
 };
+
+export const getAccountDetails = (userDetails) => { 
+  return {
+    type: GET_ACCOUNT_DETAILS,
+    payload: userDetails
+  }
+}
+
+export const putSurfAccountDetails = (userDetails) => { 
+  return {
+    type: PUT_SURF_ACCOUNT_DETAILS,
+    payload: userDetails
+  }
+}
+
+export const putProfilePic = (profilePic) => {
+  return {
+    type: PUT_PROFILE_PIC,
+    payload: profilePic,
+  }
+}

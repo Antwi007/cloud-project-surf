@@ -1,6 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { signIn, signOut } from '../actions';
+import { signIn, signOut, getAccountDetails } from '../actions';
+import SurfingService  from '../apis/SurfingService';
+
+const surfingObject = new SurfingService();
 
 class GoogleAuth extends React.Component {
   componentDidMount() {
@@ -13,16 +16,27 @@ class GoogleAuth extends React.Component {
         })
         .then(() => {
           this.auth = window.gapi.auth2.getAuthInstance();
-
           this.onAuthChange(this.auth.isSignedIn.get());
           this.auth.isSignedIn.listen(this.onAuthChange);
         });
     });
   }
 
-  onAuthChange = isSignedIn => {
+  onAuthChange = async (isSignedIn) => {
     if (isSignedIn) {
-      this.props.signIn(this.auth.currentUser.get().getId());
+      const userId = this.auth.currentUser.get().getId();
+      this.props.signIn(userId);
+      const googleUserAccount = this.auth.currentUser.get().getBasicProfile()
+      const accountDetails = {
+        name: googleUserAccount.getName(),
+        profilePic: googleUserAccount.getImageUrl(),
+        email: googleUserAccount.getEmail(),
+      }
+      this.props.getAccountDetails(accountDetails);
+      
+      // const surfAccount = await surfingObject.getSurfAccountDetails(userId);
+      const surfAccount = await surfingObject.createSurfingAccount(userId);
+
     } else {
       this.props.signOut();
     }
@@ -67,5 +81,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { signIn, signOut }
+  { signIn, signOut, getAccountDetails }
 )(GoogleAuth);

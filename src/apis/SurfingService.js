@@ -22,7 +22,7 @@ class SurfingService {
       const resp = await axios.get(
         `${this.url}/development/search?${queryParams}`
       );
-      
+
       if (resp.status !== 200) {
         return false;
       }
@@ -33,6 +33,90 @@ class SurfingService {
     }
   };
 
+  getSurfAccountDetails = async (userId) => {
+    // var data = '{\n    "user_id":"' + userId + '"\n}';
+    var data = '{\n    "user_id":"testUser2",\n    "details": {\n        "name": "Kerem"\n    }\n}';
+
+    var config = {
+      method: 'put',
+      url: 'https://usvfzvu80m.execute-api.us-east-1.amazonaws.com/development/user/accountDetails',
+      headers: {
+        'Content-Type': 'text/plain'
+      },
+      data: data
+    };
+
+    const resp = await axios(config);
+    console.log("done", resp)
+  }
+
+  createSurfingAccount = async (userId) => {
+    console.log(userId)
+    var data = '{\n    "user_id":"' + userId + '",\n    "details": {}\n}'
+
+    var config = {
+      method: 'put',
+      url: 'https://usvfzvu80m.execute-api.us-east-1.amazonaws.com/development/user/accountDetails',
+      headers: {
+        'Content-Type': 'text/plain'
+      },
+      data: data
+    };
+
+    const resp = await axios(config);
+    console.log("done", resp)
+  }
+
+  putSurfingAccount = async (userId, accountDetails) => {
+    var data = '{\n    "user_id":"' + userId;
+    data += '",\n    "details": {\n        "location": "' + accountDetails.location;
+    data += '",\n        "fullName": "' + accountDetails.fullName;
+    data += '",\n        "title": "' + accountDetails.title;
+    data += '",\n        "mantra": "' + accountDetails.mantra;
+    data += '"\n    }\n}';
+
+    var config = {
+      method: 'put',
+      url: 'https://usvfzvu80m.execute-api.us-east-1.amazonaws.com/development/user/accountDetails',
+      headers: {
+        'Content-Type': 'text/plain'
+      },
+      data: data
+    };
+
+    const resp = await axios(config);
+    console.log("done", resp)
+  }
+
+  getProfilePic = async (userId) => {
+    let baseURL = "https://surfworld-user-profile-pics.s3.amazonaws.com/" + userId;
+
+    var config = {
+      method: 'get',
+      url: baseURL,
+    };
+
+    const resp = await axios(config);
+    console.log("done", resp)
+  }
+
+  putProfilePic = async (userId, image) => {
+    let baseURL = "https://usvfzvu80m.execute-api.us-east-1.amazonaws.com/development/profilepic/" + userId;
+
+    console.log(image)
+
+    var config = {
+      method: 'put',
+      url: baseURL,
+      headers: {
+        'Content-Type': image.type,
+      },
+      data: image
+    };
+
+    const resp = await axios(config);
+    console.log("done", resp)
+  }
 }
 
 export default SurfingService;
