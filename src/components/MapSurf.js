@@ -55,6 +55,12 @@ const MapSurf = (props) => {
         "lessons" : "shop_name",
         "surfshops" : "shop_name"
     }
+
+    var id_dict = {
+        "beaches" : "surfline_id",
+        "lessons" : "shop_id",
+        "surfshops" : "shop_id"
+      }
     const type = props.type
 
     const markers = props.geoJSON && props.geoJSON.map(feature =>
@@ -87,13 +93,13 @@ const MapSurf = (props) => {
                 const data = feature
                 return (
                         <Marker
-                            key={data.surfline_id}
-                            icon={hover === data.surfline_id || props.hoverCard === data.surfline_id ? highlightIcon : icon}
+                            key={data[id_dict[type]]}
+                            icon={hover === data[id_dict[type]] || props.hoverCard ===data[id_dict[type]] ? highlightIcon : icon}
                             opacity={0}
                             position={[
                                 data[lat_dict[type]], data[lon_dict[type]]]}
                             onMouseEnter={() => {
-                                setHover(data.surfline_id)
+                                setHover(data[id_dict[type]])
                             }}
                             onMouseLeave={() => {
                                 setHover(false)
@@ -103,7 +109,7 @@ const MapSurf = (props) => {
                                 permanent={true}
                                 interactive={true}
                                 direction="top"
-                                className={`map-custom-tooltip ${ hover === data.surfline_id || props.hoverCard === data.surfline_id ? 'active' : ''}`}
+                                className={`map-custom-tooltip ${ hover === data[id_dict[type]] || props.hoverCard === data[id_dict[type]] ? 'active' : ''}`}
 
                             >
                                 {data[name_dict[type]]}

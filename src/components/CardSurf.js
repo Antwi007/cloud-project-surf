@@ -17,19 +17,20 @@ var name_dict = {
     "surfshops" : "shop_name"
 }
 
+
   return (
     
     <Card className="h-100 border-0 shadow">
             <div className="card-img-top overflow-hidden gradient-overlay">
                 <img src={data.thumbnail} alt={data[name_dict[type]]} className="img-fluid"/>
-                  <Link to="/surf-page-detail">
+                  <Link to={{ pathname: '/surf-page-detail', state: { query: data, search_type: type}}}>
                       <div className="tile-link" />
                   </Link>
             </div>
             <CardBody className="d-flex align-items-center">
                 <div className="w-100">
                     <CardTitle tag="h6">
-                        <Link to="/surf-page-detail">
+                        <Link to={{ pathname: '/surf-page-detail', state: { query: true}}}>
                             <div className="text-decoration-none text-dark">
                                 {data[name_dict[type]]}
                             </div>

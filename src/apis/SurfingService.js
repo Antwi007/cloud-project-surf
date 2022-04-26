@@ -33,6 +33,26 @@ class SurfingService {
     }
   };
 
+  getSurfDetails = async (params) => {
+    try {
+      const queryParams = Object.keys(params)
+        .map((param) => param + "=" + (params[param]))
+        .join("&");
+
+      const resp = await axios.get(
+        `${this.url}/development/surf-score?${queryParams}`
+      );
+
+      if (resp.status !== 200) {
+        return false;
+      }
+      return resp.data;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
+
   getSurfAccountDetails = async (userId) => {
     // var data = '{\n    "user_id":"' + userId + '"\n}';
     var data = '';
