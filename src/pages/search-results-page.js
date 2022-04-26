@@ -28,7 +28,7 @@ const SearchResultsPage = () => {
   const [loading, setLoading] = useState(true);
   const [isNearby, setIsNearby] = useState(false); 
   const [center, setCenter] = useState([40.5842, -73.99967]);
-  
+  const [status, setStatus] = useState(0)
   const data = {
     "options": [{
           "value": "small",
@@ -49,6 +49,12 @@ const SearchResultsPage = () => {
     "Surf Breaks" : "beaches",
     "Surf Lessons" : "lessons",
     "Surf Rentals" : "surfshops"
+  }
+
+  var id_dict = {
+    "beaches" : "surfline_id",
+    "lessons" : "shop_id",
+    "surfshops" : "shop_id"
   }
   const [searchType, setSearchType] = useState(data.options[0])
   const [searchOption, setSearchOption] = useState(data.options[0].label)
@@ -137,7 +143,8 @@ const SearchResultsPage = () => {
         params["search-type"] = option_dict[routerOption]
       } else if (searchType) {
         params["search-type"] = option_dict[searchType.label]
-       setSearchOption(searchType.label)
+        setSearchOption(searchType.label)
+        console.log("search type:", searchOption)
       }
 
       if(routerIsNearby) {
@@ -158,7 +165,7 @@ const SearchResultsPage = () => {
       const resp = await surfingObject.getSurfData(params)
       
       console.log(resp)
-
+      setStatus(resp.statusCode)
       if (!resp) {
         setSurfData([])
         return
@@ -174,9 +181,12 @@ const SearchResultsPage = () => {
       console.log("search type:", searchOption)
       console.log("initial center", center)
 
-      if(res.length > 0){
+      if(resp.statusCode === 200){
         var location = res[0]
-        setCenter([location[lat_dict[option_dict[searchOption]]], location[lon_dict[option_dict[searchOption]]]])
+        const option = params["search-type"]
+        console.log("search Option 1:", option)
+        console.log("latitude: ", lat_dict[option_dict[searchOption]])
+        setCenter([location[lat_dict[option]], location[lon_dict[option]]])
       }
 
       console.log("center after call:", center)
@@ -249,12 +259,13 @@ const SearchResultsPage = () => {
             </Form>
             <hr className="my-4" />
             <Row>
-              {surfData && surfData.length > 0 && surfData.map(loc =>
+              {surfData.length > 0 && console.log("Yes we got results", surfData[0])}
+              {surfData && status === 200 && surfData.map(loc =>
                   <Col
-                      key={loc.surfline_id}
+                      key={loc[id_dict[option_dict[searchOption]]]}
                       sm="6"
                       className="mb-5 hover-animate"
-                      onMouseEnter={() => onCardEnter(loc.surfline_id)}
+                      onMouseEnter={() => onCardEnter(loc[id_dict[option_dict[searchOption]]])}
                       onMouseLeave={() => onCardLeave()}
                   >
                       <CardSurf data={loc} type={option_dict[searchOption]}/>
@@ -267,8 +278,8 @@ const SearchResultsPage = () => {
             lg="6"
             className="mt-1 map-side-lg pr-lg-0" 
           > 
-              {console.log(center)}
-              {!loading && mapLoaded &&
+              {console.log("search page center", center, searchOption)}
+              {!loading && status === 200 && center[0] !== 'undefined' && mapLoaded &&
                   <MapSurf
                       className="map-full shadow-left"
                       center={center}
