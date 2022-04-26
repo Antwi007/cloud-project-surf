@@ -48,9 +48,10 @@ const SearchResultsPage = () => {
   var option_dict = {
     "Surf Breaks" : "beaches",
     "Surf Lessons" : "lessons",
-    "Surf Rentals" : "“surfshops”"
+    "Surf Rentals" : "surfshops"
   }
   const [searchType, setSearchType] = useState(data.options[0])
+  const [searchOption, setSearchOption] = useState(data.options[0].label)
   
   const handleSearchKeyChange = (e) => {
     setSearchKey(e.target.value);
@@ -66,19 +67,26 @@ const SearchResultsPage = () => {
     getSurfResults();
   };
 
+  var lon_dict = {
+    "beaches" : "beach_lon",
+    "lessons" : "shop_lon",
+    "surfshops" : "shop_lon"
+  }
+
+  var lat_dict = {
+    "beaches" : "beach_lat",
+    "lessons" : "shop_lat",
+    "surfshops" : "shop_lat"
+  }
+
   useEffect(() => {
 
-    if(surfData[0]){
-      var location = surfData[0]
-      setCenter([location.beach_lat, location.beach_lon])
-    }
-    
     setMapLoaded(true)
 
     setTap(size.width > 700 ? true : false)
     setDragging(size.width > 700 ? true : false)
    
-    }, [size.width, surfData])
+    }, [size.width])
 
   
   useEffect(() => {
@@ -89,9 +97,6 @@ const SearchResultsPage = () => {
     let routerLat = null;
     let routerLon = null;
 
-    console.log(router.query);
-
-
     if (typeof router.query !== 'undefined' && router.query.searchKey) {
       routerSearchKey = router.query.searchKey;
       setSearchKey(routerSearchKey);
@@ -99,7 +104,7 @@ const SearchResultsPage = () => {
 
     if (typeof router.query !== 'undefined' && router.query.option) {
       routerOption= router.query.option;
-      setSearchType(routerOption);
+      setSearchOption(routerOption);
     }
 
     if (typeof router.query !== 'undefined' && router.query.isNearby){
@@ -116,7 +121,6 @@ const SearchResultsPage = () => {
       getSurfResults(routerSearchKey, routerOption, routerIsNearby, routerLat, routerLon)
     }
     
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
     
   async function getSurfResults(routerSearchKey, routerOption, routerIsNearby, routerLat, routerLon) {
@@ -133,6 +137,7 @@ const SearchResultsPage = () => {
         params["search-type"] = option_dict[routerOption]
       } else if (searchType) {
         params["search-type"] = option_dict[searchType.label]
+       setSearchOption(searchType.label)
       }
 
       if(routerIsNearby) {
@@ -151,9 +156,9 @@ const SearchResultsPage = () => {
       console.log("params there I go: ", params);
 
       const resp = await surfingObject.getSurfData(params)
-
-      console.log(resp);
       
+      console.log(resp)
+
       if (!resp) {
         setSurfData([])
         return
@@ -165,6 +170,17 @@ const SearchResultsPage = () => {
       for (var i in obj) {
         res.push(obj[i])
       }
+      setSurfData(res)
+      console.log("search type:", searchOption)
+      console.log("initial center", center)
+
+      if(res.length > 0){
+        var location = res[0]
+        setCenter([location[lat_dict[option_dict[searchOption]]], location[lon_dict[option_dict[searchOption]]]])
+      }
+
+      console.log("center after call:", center)
+      
     } catch (error) {
       setSurfData([])
     } finally {
@@ -233,7 +249,7 @@ const SearchResultsPage = () => {
             </Form>
             <hr className="my-4" />
             <Row>
-              {surfData && surfData.length > 0 && surfData?.map(loc =>
+              {surfData && surfData.length > 0 && surfData.map(loc =>
                   <Col
                       key={loc.surfline_id}
                       sm="6"
@@ -241,7 +257,7 @@ const SearchResultsPage = () => {
                       onMouseEnter={() => onCardEnter(loc.surfline_id)}
                       onMouseLeave={() => onCardLeave()}
                   >
-                      <CardSurf data={loc} />
+                      <CardSurf data={loc} type={option_dict[searchOption]}/>
                   </Col>
               )}
             </Row>
@@ -251,6 +267,7 @@ const SearchResultsPage = () => {
             lg="6"
             className="mt-1 map-side-lg pr-lg-0" 
           > 
+              {console.log(center)}
               {!loading && mapLoaded &&
                   <MapSurf
                       className="map-full shadow-left"
@@ -260,6 +277,7 @@ const SearchResultsPage = () => {
                       tap={tap}
                       geoJSON={surfData}
                       hoverCard={hoverCard}
+                      type={option_dict[searchOption]}
                   />
               }
           </Col>

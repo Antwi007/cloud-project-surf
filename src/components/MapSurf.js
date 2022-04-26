@@ -37,14 +37,35 @@ const MapSurf = (props) => {
         popupAnchor: [0, -18],
         tooltipAnchor: [0, 19]
     })
+    
+    var lon_dict = {
+        "beaches" : "beach_lon",
+        "lessons" : "shop_lon",
+        "surfshops" : "shop_lon"
+      }
 
-    const markers = props.geoJSON && props.geoJSON?.map(feature =>
+    var lat_dict = {
+        "beaches" : "beach_lat",
+        "lessons" : "shop_lat",
+        "surfshops" : "shop_lat"
+      }
+
+    var name_dict = {
+        "beaches" : "beach_name",
+        "lessons" : "shop_name",
+        "surfshops" : "shop_name"
+    }
+    const type = props.type
+
+    const markers = props.geoJSON && props.geoJSON.map(feature =>
         [
-            feature.beach_lat,
-            feature.beach_lon
+            feature[lat_dict[type]],
+            feature[lon_dict[type]]
         ]
     )
 
+    
+    
     return (
         <MapContainer
             center={props.center}
@@ -62,7 +83,7 @@ const MapSurf = (props) => {
                 attribution={tileLayers[1].attribution}
 
             />
-            {props.geoJSON && props.geoJSON?.map(feature => {
+            {props.geoJSON && props.geoJSON.map(feature => {
                 const data = feature
                 return (
                         <Marker
@@ -70,9 +91,9 @@ const MapSurf = (props) => {
                             icon={hover === data.surfline_id || props.hoverCard === data.surfline_id ? highlightIcon : icon}
                             opacity={0}
                             position={[
-                                data.beach_lat, data.beach_lon]}
+                                data[lat_dict[type]], data[lon_dict[type]]]}
                             onMouseEnter={() => {
-                                setHover(data.id)
+                                setHover(data.surfline_id)
                             }}
                             onMouseLeave={() => {
                                 setHover(false)
@@ -82,10 +103,10 @@ const MapSurf = (props) => {
                                 permanent={true}
                                 interactive={true}
                                 direction="top"
-                                className={`map-custom-tooltip ${hover === data.surfline_id || props.hoverCard === data.surfline_id ? 'active' : ''}`}
+                                className={`map-custom-tooltip ${ hover === data.surfline_id || props.hoverCard === data.surfline_id ? 'active' : ''}`}
 
                             >
-                                {data.beach_name}
+                                {data[name_dict[type]]}
                             </Tooltip>
 
                             <Popup className="map-custom-popup" maxWidth="600" minWidth="200">
@@ -100,9 +121,9 @@ const MapSurf = (props) => {
                                         <div className="image" />
                                     }
                                     <div className="text">
-                                        {data.beach_name &&
+                                        {data[name_dict[type]] &&
                                             <h6>
-                                                <Link to="/surf-page-detail"> {data.beach_name} </Link>
+                                                <Link to="/surf-page-detail"> {data[name_dict[type]]} </Link>
                                             </h6>
                                         }
                                     </div>
