@@ -4,7 +4,8 @@ import {
   GET_ACCOUNT_DETAILS,
   GET_SURF_ACCOUNT_DETAILS,
   PUT_SURF_ACCOUNT_DETAILS,
-  PUT_PROFILE_PIC
+  PUT_PROFILE_PIC,
+  CHANGE_LOCATION,
 } from "./types";
 
 export const signIn = (userId) => {
@@ -45,5 +46,12 @@ export const putProfilePic = (profilePic) => {
   return {
     type: PUT_PROFILE_PIC,
     payload: profilePic,
+  }
+}
+
+export const changeLocation = (location) => {
+  return {
+    type: CHANGE_LOCATION,
+    payload: location,
   }
 }

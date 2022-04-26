@@ -1,4 +1,4 @@
-import { SIGN_IN, SIGN_OUT, GET_ACCOUNT_DETAILS } from "../actions/types";
+import { SIGN_IN, SIGN_OUT, GET_ACCOUNT_DETAILS, CHANGE_LOCATION } from "../actions/types";
 
 const INTIAL_STATE = {
   isSignedIn: null,
@@ -6,6 +6,8 @@ const INTIAL_STATE = {
   fullName: null,
   firstName: null,
   email: null,
+  nearby_lat: null,
+  nearby_lon: null,
 };
 
 const giveFirstandFullName = (fullStr) => {
@@ -29,6 +31,9 @@ const authReducer = (state = INTIAL_STATE, action) => {
       const firstName = firstAndFullName[0]
       const fullName = firstAndFullName[1]
       return { ...state, ...action.payload, firstName, fullName}
+    case CHANGE_LOCATION:
+      console.log("yoooo!!!!!", action.payload);
+      return { ...state, ...action.payload}
     default:
       return state;
   }
