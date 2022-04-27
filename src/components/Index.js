@@ -4,7 +4,7 @@ import {
   Row,
   Col,
 } from 'reactstrap';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import SearchBar from "./SearchBar"
 import surf_options from "../data/surf-options.json"
@@ -16,7 +16,13 @@ const Index = () => {
   const dispatch = useDispatch();
   const [status, setStatus] = useState(null);
 
+  var nearby_lat = useSelector(state => state.auth.nearby_lat);
+  var nearby_lon = useSelector(state => state.auth.nearby_lon);
+
   const getLocation = () => {
+    if (nearby_lat || nearby_lon) {
+      return;
+    }
     if (!navigator.geolocation) {
       setStatus('Geolocation is not supported by your browser');
     } else {

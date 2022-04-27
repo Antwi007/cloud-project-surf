@@ -6,6 +6,7 @@ import {
   PUT_SURF_ACCOUNT_DETAILS,
   PUT_PROFILE_PIC,
   CHANGE_LOCATION,
+  REMOVE_SURFING_ACCOUNT
 } from "./types";
 
 export const signIn = (userId) => {
@@ -53,5 +54,11 @@ export const changeLocation = (location) => {
   return {
     type: CHANGE_LOCATION,
     payload: location,
+  }
+}
+
+export const removeSurfingAccount = () => {
+  return {
+    type: REMOVE_SURFING_ACCOUNT,
   }
 }

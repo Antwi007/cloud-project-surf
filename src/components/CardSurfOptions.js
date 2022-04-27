@@ -15,7 +15,6 @@ const CardSurfOptions = (props) => {
 
   const nearby_lat = useSelector(state => state.auth.nearby_lat)
   const nearby_lon = useSelector(state => state.auth.nearby_lon)
-  console.log("locations", nearby_lat, nearby_lon)
   const data = props.data;
   const router = useHistory();
 
