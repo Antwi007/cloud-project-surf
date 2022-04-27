@@ -1,48 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import {
   Container,
   Row,
   Col,
 } from 'reactstrap';
-import { useDispatch, useSelector } from 'react-redux';
 
 import SearchBar from "./SearchBar"
 import surf_options from "../data/surf-options.json"
 import CardSurfOptions from "./CardSurfOptions"
-import { changeLocation } from '../actions';
 
 const Index = () => {
-
-  const dispatch = useDispatch();
-  const [status, setStatus] = useState(null);
-
-  var nearby_lat = useSelector(state => state.auth.nearby_lat);
-  var nearby_lon = useSelector(state => state.auth.nearby_lon);
-
-  const getLocation = () => {
-    if (nearby_lat || nearby_lon) {
-      return;
-    }
-    if (!navigator.geolocation) {
-      setStatus('Geolocation is not supported by your browser');
-    } else {
-      setStatus('Locating...');
-      navigator.geolocation.getCurrentPosition((position) => {
-        setStatus('Got it!');
-        dispatch(changeLocation({
-          nearby_lat: position.coords.latitude,
-          nearby_lon: position.coords.longitude
-        }));
-      }, () => {
-        setStatus('Unable to retrieve your location');
-      });
-    }
-  }
-
-  useEffect(() => {
-    getLocation();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   const data = {
     "searchOptions": [{
