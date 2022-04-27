@@ -1,14 +1,13 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
-import { Container, Row, Col, Card, CardHeader, Badge } from 'reactstrap'
-import history from '../history';
+import { Container, Row, Col, Card, CardHeader, Badge } from 'reactstrap';
 import SurfingService from '../apis/SurfingService';
 
 import data from '../data/user-profile.json';
 import geoJSON from '../data/surf-results-page.json';
 import sadSurf from '../components/images/sad_surf3.jpeg';
 
-import { getAccountDetails, putProfilePic, putSurfAccountDetails } from '../actions';
+import { putProfilePic, putSurfAccountDetails } from '../actions';
 
 import CardSurf from '../components/CardSurf';
 
@@ -253,7 +252,7 @@ const Profile = () => {
     var nameShownText = null;
     if (surfProfile.fullName) {
         nameShownText = surfProfile.fullName + "'s Favorites"
-    } else if (authProfile.fullName){
+    } else if (authProfile.fullName) {
         nameShownText = authProfile.fullName + "'s Favorites"
     } else {
         nameShownText = "'s Favorites"
@@ -356,12 +355,22 @@ const Profile = () => {
                                 <h4 className="mb-5">
                                     {nameShownText}
                                 </h4>
-                                {surfProfile.favorites.length > 0 ?
+                                {(surfProfile.favorites && surfProfile.favorites.length > 0) ?
                                     <Row>
-                                        {geoJSON.features.map(listing =>
-                                            <Col sm="6" lg="4" className="mb-30px hover-animate" key={listing.properties.name}>
-                                                <CardSurf data={listing.properties} />
+                                        {surfProfile.favorites.map(listing => {
+                                            var name = null;
+
+                                            if (data["beach_name"] !== undefined) {
+                                                name = data["beach_name"]
+                                            } else if (data["lesson_name"] !== undefined) {
+                                                name = data["lesson_name"]
+                                            } else if (data["shop_name"] !== undefined) {
+                                                name = data["shop_name"]
+                                            }
+                                            return <Col sm="6" lg="4" className="mb-30px hover-animate" key={name}>
+                                                <CardSurf data={listing} />
                                             </Col>
+                                        }
                                         )}
                                     </Row> :
                                     <div class="card text-center" style={{ border: 'none', flexDirection: 'row' }}>

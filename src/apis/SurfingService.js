@@ -143,6 +143,63 @@ class SurfingService {
     const resp = await axios(config);
     console.log("done", resp)
   }
+
+  getFavorites = async (userId) => {
+      console.log("getting favorites")
+      let baseURL = "https://usvfzvu80m.execute-api.us-east-1.amazonaws.com/development/user/favorites?user_id=" + userId;
+
+      var config = {
+        method: 'get',
+        url: baseURL,
+      };
+
+      var favs = await axios(config);
+      console.log("favs!!", favs.data)
+      favs = favs.data.map(async (id) => {
+        const surfData = await this.getSurfData(id);
+        console.log("look at this?", surfData)
+        return surfData
+      })
+      console.log("favs?", favs)
+
+      return favs;
+  }
+
+  putFavorites = async (userId, beachId) => {
+    var data = '{\n    "user_id":"';
+    data += userId + '",\n    "beach_id": "';
+    data += beachId + '"\n}';
+
+    var config = {
+      method: 'put',
+      url: 'https://usvfzvu80m.execute-api.us-east-1.amazonaws.com/development/user/favorites',
+      headers: {
+        'Content-Type': 'text/plain'
+      },
+      data: data
+    };
+
+    const resp = await axios(config);
+    console.log("done", resp)
+  }
+
+  deleteFavorites = async (userId, beachId) => {
+    var data = '{\n    "user_id":"';
+    data += userId + '",\n    "beach_id": "';
+    data += beachId + '"\n}';
+
+    var config = {
+      method: 'delete',
+      url: 'https://usvfzvu80m.execute-api.us-east-1.amazonaws.com/development/user/favorites',
+      headers: {
+        'Content-Type': 'text/plain'
+      },
+      data: data
+    };
+
+    const resp = await axios(config);
+    console.log("done", resp)
+  }
 }
 
 export default SurfingService;
