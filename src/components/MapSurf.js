@@ -1,4 +1,4 @@
-import React, {  useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { MapContainer, Marker, Popup, TileLayer, Tooltip, Circle } from 'react-leaflet'
 import L from "leaflet";
@@ -7,7 +7,6 @@ import MarkerIconHighlight from './images/marker-hover.svg'
 
 
 const MapSurf = (props) => {
-
     let tileLayers = []
 
     tileLayers[1] = { tiles: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>', subdomains: 'abcd' }
@@ -19,6 +18,8 @@ const MapSurf = (props) => {
 
     const [hover, setHover] = useState(false)
     const [focus, setFocus] = useState(true)
+
+    console.log("hCard", props.hoverCard)
 
     const icon = L.icon({
         iconUrl: MarkerIcon,
@@ -37,32 +38,32 @@ const MapSurf = (props) => {
         popupAnchor: [0, -18],
         tooltipAnchor: [0, 19]
     })
-    
+
     var lon_dict = {
-        "beaches" : "beach_lon",
-        "lessons" : "shop_lon",
-        "surfshops" : "shop_lon"
-      }
+        "beaches": "beach_lon",
+        "lessons": "shop_lon",
+        "surfshops": "shop_lon"
+    }
 
     var lat_dict = {
-        "beaches" : "beach_lat",
-        "lessons" : "shop_lat",
-        "surfshops" : "shop_lat"
-      }
+        "beaches": "beach_lat",
+        "lessons": "shop_lat",
+        "surfshops": "shop_lat"
+    }
 
     var name_dict = {
-        "beaches" : "beach_name",
-        "lessons" : "shop_name",
-        "surfshops" : "shop_name"
+        "beaches": "beach_name",
+        "lessons": "shop_name",
+        "surfshops": "shop_name"
     }
 
     var id_dict = {
-        "beaches" : "surfline_id",
-        "lessons" : "shop_id",
-        "surfshops" : "shop_id"
-      }
-    const type = props.type
+        "beaches": "surfline_id",
+        "lessons": "shop_id",
+        "surfshops": "shop_id"
+    }
 
+    const type = props.type
     const markers = props.geoJSON && props.geoJSON.map(feature =>
         [
             feature[lat_dict[type]],
@@ -70,31 +71,34 @@ const MapSurf = (props) => {
         ]
     )
 
-    
-    
-    return (
-        <MapContainer
-            center={props.center}
-            zoom={props.zoom}
-            scrollWheelZoom={focus}
-            bounds={props.geoJSON ? markers : null}
-            className={props.className}
-            dragging={props.dragging}
-            tap={props.tap}
-            onFocus={() => setFocus(true)}
-            onBlur={() => setFocus(false)}
-        >
-            <TileLayer
-                url={tileLayers[1].tiles}
-                attribution={tileLayers[1].attribution}
+    useEffect(() => {
+        setHover(props.hoverCard);
+      }, [props.hoverCard]);
 
-            />
-            {props.geoJSON && props.geoJSON.map(feature => {
-                const data = feature
-                return (
+    if (props.geoJSON && props.geoJSON.length > 0 && props.geoJSON[0][lat_dict[type]]) {
+        return (
+            <MapContainer
+                center={props.center}
+                zoom={props.zoom}
+                scrollWheelZoom={focus}
+                bounds={props.geoJSON ? markers : null}
+                className={props.className}
+                dragging={props.dragging}
+                tap={props.tap}
+                onFocus={() => setFocus(true)}
+                onBlur={() => setFocus(false)}
+            >
+                <TileLayer
+                    url={tileLayers[1].tiles}
+                    attribution={tileLayers[1].attribution}
+
+                />
+                {props.geoJSON && props.geoJSON.map(feature => {
+                    const data = feature
+                    return (
                         <Marker
                             key={data[id_dict[type]]}
-                            icon={hover === data[id_dict[type]] || props.hoverCard ===data[id_dict[type]] ? highlightIcon : icon}
+                            icon={(hover === data[id_dict[type]] || props.hoverCard === data[id_dict[type]]) ? highlightIcon : icon}
                             opacity={0}
                             position={[
                                 data[lat_dict[type]], data[lon_dict[type]]]}
@@ -109,7 +113,7 @@ const MapSurf = (props) => {
                                 permanent={true}
                                 interactive={true}
                                 direction="top"
-                                className={`map-custom-tooltip ${ hover === data[id_dict[type]] || props.hoverCard === data[id_dict[type]] ? 'active' : ''}`}
+                                className={`map-custom-tooltip ${(hover === data[id_dict[type]] || props.hoverCard === data[id_dict[type]]) ? 'active' : ''}`}
 
                             >
                                 {data[name_dict[type]]}
@@ -136,27 +140,37 @@ const MapSurf = (props) => {
                                 </div>
                             </Popup>
                         </Marker>
-                )
-            }
-            )}
-            {props.markerPosition &&
-                <Marker
-                    position={props.markerPosition}
-                    icon={icon}
+                    )
+                }
+                )}
+                {props.markerPosition &&
+                    <Marker
+                        position={props.markerPosition}
+                        icon={icon}
+                    />
+                }
+                {props.circlePosition &&
+                    <Circle
+                        center={props.circlePosition}
+                        color={'#4E66F8'}
+                        fillColor={'#8798fa'}
+                        opacity={.5}
+                        radius={props.circleRadius}
+                        weight={2}
+                    />
+                }
+            </MapContainer>
+        )
+    } else {
+        return (
+            <MapContainer>
+                <TileLayer
+                    url={tileLayers[1].tiles}
+                    attribution={tileLayers[1].attribution}
                 />
-            }
-            {props.circlePosition &&
-                <Circle
-                    center={props.circlePosition}
-                    color={'#4E66F8'}
-                    fillColor={'#8798fa'}
-                    opacity={.5}
-                    radius={props.circleRadius}
-                    weight={2}
-                />
-            }
-        </MapContainer>
-    )
+            </MapContainer>
+        )
+    }
 }
 
 export default MapSurf;

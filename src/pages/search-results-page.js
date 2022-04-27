@@ -70,7 +70,7 @@ const SearchResultsPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    getSurfResults();
+    await getSurfResults();
   };
 
   var lon_dict = {
@@ -170,8 +170,13 @@ const SearchResultsPage = () => {
       const resp = await surfingObject.getSurfData(params)
 
       console.log(resp)
-      setStatus(resp.statusCode)
       if (!resp) {
+        setSurfData([])
+        return
+      }
+
+      setStatus(resp.statusCode)
+      if (resp.statusCode !== 200) {
         setSurfData([])
         return
       }
@@ -234,7 +239,7 @@ const SearchResultsPage = () => {
                     id="form_search"
                     className="pr-4"
                     value={searchKey}
-                    onChange={handleSearchKeyChange}
+                    onChange={(e) => handleSearchKeyChange(e)}
                   />
                 </div>
               </div>
@@ -265,8 +270,8 @@ const SearchResultsPage = () => {
             <hr className="my-4" />
             <Row>
               {surfData.length > 0 && console.log("Yes we got results", surfData[0])}
-              {surfData && status === 200 && surfData.map(loc =>
-                <Col
+              {surfData && status === 200 && surfData.map(loc => {
+                return <Col
                   key={loc[id_dict[option_dict[searchOption]]]}
                   sm="6"
                   className="mb-5 hover-animate"
@@ -275,6 +280,7 @@ const SearchResultsPage = () => {
                 >
                   <CardSurf data={loc} type={option_dict[searchOption]} />
                 </Col>
+              }
               )}
             </Row>
           </Col>
@@ -284,7 +290,7 @@ const SearchResultsPage = () => {
               className="mt-1 map-side-lg pr-lg-0"
             >
               {console.log("search page center", center, searchOption)}
-              {!loading && status === 200 && center[0] !== 'undefined' && mapLoaded &&
+              {!loading && (status === 200 || status === 204) && center[0] !== 'undefined' && mapLoaded &&
                 <MapSurf
                   className="map-full shadow-left"
                   center={center}
@@ -299,8 +305,8 @@ const SearchResultsPage = () => {
             </Col>
           </div>
         </Row>
-      </Container>
-    </React.Fragment>
+      </Container >
+    </React.Fragment >
   )
 }
 

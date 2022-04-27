@@ -6,8 +6,8 @@ const INTIAL_STATE = {
   fullName: null,
   firstName: null,
   email: null,
-  nearby_lat: null,
-  nearby_lon: null,
+  nearby_lat: 40.8090636,
+  nearby_lon: -73.9627811,
 };
 
 const giveFirstandFullName = (fullStr) => {
