@@ -37,6 +37,12 @@ class GoogleAuth extends React.Component {
       try {
         const surfAccount = await surfingObject.getSurfAccountDetails(userId);
         console.log("got account data", surfAccount);
+        /* const favorites = await surfingObject.getFavorites(userId);
+        console.log("got favorites", favorites)
+        const accountData = {...surfAccount.data, favorites: favorites.data} 
+        console.log("constructed accountData", accountData)
+        this.props.getSurfAccountDetails(accountData);
+        */
         this.props.getSurfAccountDetails(surfAccount.data);
         const profilePicUrl = await surfingObject.getProfilePic(userId);
         this.props.putProfilePic(profilePicUrl);
