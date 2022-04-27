@@ -16,9 +16,10 @@ import SurfingService  from '../apis/SurfingService'
 import CardSurf from '../components/CardSurf'
 import MapSurf from '../components/MapSurf'
 
+const surfingObject = new SurfingService();
+
 const SearchResultsPage = () => {
   const router = useLocation();
-  const surfingObject = new SurfingService();
   const [searchKey, setSearchKey] = useState("");
   const [mapLoaded, setMapLoaded] = useState(false)
   const [dragging, setDragging] = useState(false)
