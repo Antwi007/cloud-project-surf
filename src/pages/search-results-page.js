@@ -15,6 +15,8 @@ import UseWindowSize from '../hooks/UseWindowSize'
 import SurfingService from '../apis/SurfingService'
 import CardSurf from '../components/CardSurf'
 import MapSurf from '../components/MapSurf'
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const surfingObject = new SurfingService();
 
@@ -28,7 +30,8 @@ const SearchResultsPage = () => {
   const [surfData, setSurfData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [center, setCenter] = useState([40.5842, -73.99967]);
-  const [status, setStatus] = useState(0)
+  const [status, setStatus] = useState(0);
+  const postsPerPage = 10;
   const data = {
     "options": [{
       "value": "small",
@@ -263,6 +266,15 @@ const SearchResultsPage = () => {
               </div>
             </Form>
             <hr className="my-4" />
+            <Row>
+            {loading && 
+                [...Array(postsPerPage)].map((el, index) => (
+                  <Col key={index} sm="6" className="mb-5 hover-animate">
+                    <Skeleton count={5} />
+                  </Col>
+                ))
+              }
+            </Row>
             <Row>
               {surfData.length > 0 && console.log("Yes we got results", surfData[0])}
               {surfData && status === 200 && surfData.map(loc =>
