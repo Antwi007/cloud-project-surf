@@ -12,8 +12,8 @@ import {
 } from 'reactstrap'
 
 import UseWindowSize from '../hooks/UseWindowSize';
-
-import data from '../data/surf-details.json'
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 import MapSurf from '../components/MapSurf'
 import Swiper from '../components/Swiper'
@@ -43,6 +43,7 @@ const SurfPageDetail = () => {
     const [details, setDetails] = useState({})
     const [nearbyBeaches, setNearbyBeaches] = useState([])
     const [favoriteAdded, setFavoriteAdded] = useState(false)
+    const [loading, setLoading] = useState(true);
     const location = useLocation()
     const { query, search_type } = location.state
 
@@ -78,7 +79,9 @@ const SurfPageDetail = () => {
 
         } catch (error) {
             console.log(error)
-        }
+        }finally {
+            setLoading(false)
+          }
     }
 
     var name_dict = {
@@ -200,6 +203,15 @@ const SurfPageDetail = () => {
                                 </section>
                             }
                             {search_type === "beaches" && <h4 className="mb-4 mt-2">Nearby restaurants</h4>}
+                            <Row>
+                                {loading && search_type === "beaches" &&
+                                    [...Array(2)].map((el, index) => (
+                                    <Col key={index} sm="6" className="mb-5 hover-animate">
+                                        <Skeleton count={5} />
+                                    </Col>
+                                    ))
+                                }
+                            </Row>
                             {search_type === "beaches" && Object.keys(details).length !== 0 &&
                                 <Swiper
                                     className="swiper-container-mx-negative pt-3 pb-5"
