@@ -32,7 +32,7 @@ const authReducer = (state = INTIAL_STATE, action) => {
       const fullName = firstAndFullName[1]
       return { ...state, ...action.payload, firstName, fullName}
     case CHANGE_LOCATION:
-      console.log("yoooo!!!!!", action.payload);
+      console.log("yooooooo!", action.payload)
       return { ...state, ...action.payload}
     default:
       return state;

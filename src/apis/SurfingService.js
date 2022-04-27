@@ -60,12 +60,13 @@ class SurfingService {
     var config = {
       method: 'get',
       url: 'https://usvfzvu80m.execute-api.us-east-1.amazonaws.com/development/user/accountDetails?user_id=' + userId,
-      headers: { },
-      data : data
+      headers: {},
+      data: data
     };
 
     const resp = await axios(config);
-    console.log("done", resp)
+    console.log("surfing account details", resp)
+    return resp;
   }
 
   createSurfingAccount = async (userId) => {
@@ -81,11 +82,12 @@ class SurfingService {
       data: data
     };
 
+    console.log("creating new account", resp)
     const resp = await axios(config);
-    console.log("done", resp)
   }
 
   putSurfingAccount = async (userId, accountDetails) => {
+    console.log("putting surfing account info")
     var data = '{\n    "user_id":"' + userId;
     data += '",\n    "details": {\n        "location": "' + accountDetails.location;
     data += '",\n        "fullName": "' + accountDetails.fullName;
@@ -107,15 +109,21 @@ class SurfingService {
   }
 
   getProfilePic = async (userId) => {
-    let baseURL = "https://surfworld-user-profile-pics.s3.amazonaws.com/" + userId;
+    try {
+      let baseURL = "https://surfworld-user-profile-pics.s3.amazonaws.com/" + userId;
 
-    var config = {
-      method: 'get',
-      url: baseURL,
-    };
+      var config = {
+        method: 'get',
+        url: baseURL,
+      };
 
-    const resp = await axios(config);
-    console.log("done", resp)
+      await axios(config);
+
+      return baseURL;
+    }
+    catch {
+      return null;
+    }
   }
 
   putProfilePic = async (userId, image) => {

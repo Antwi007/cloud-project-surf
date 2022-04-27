@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import {
-    Container,
-    Row,
-    Col,
-    Form,
-    Label,
-    Input,
-    Button
+  Container,
+  Row,
+  Col,
+  Form,
+  Label,
+  Input,
+  Button
 } from 'reactstrap'
 
 import Select from 'react-select'
 import UseWindowSize from '../hooks/UseWindowSize'
-import SurfingService  from '../apis/SurfingService'
+import SurfingService from '../apis/SurfingService'
 import CardSurf from '../components/CardSurf'
 import MapSurf from '../components/MapSurf'
 
@@ -27,39 +27,38 @@ const SearchResultsPage = () => {
   const [hoverCard, setHoverCard] = useState(null)
   const [surfData, setSurfData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isNearby, setIsNearby] = useState(false); 
   const [center, setCenter] = useState([40.5842, -73.99967]);
   const [status, setStatus] = useState(0)
   const data = {
     "options": [{
-          "value": "small",
-          "label": "Surf Breaks"
-      },
-      {
-          "value": "medium",
-          "label": "Surf Lessons"
-      },
-      {
-          "value": "large",
-          "label": "Surf Rentals"
-      }
+      "value": "small",
+      "label": "Surf Breaks"
+    },
+    {
+      "value": "medium",
+      "label": "Surf Lessons"
+    },
+    {
+      "value": "large",
+      "label": "Surf Rentals"
+    }
     ]
   }
 
   var option_dict = {
-    "Surf Breaks" : "beaches",
-    "Surf Lessons" : "lessons",
-    "Surf Rentals" : "surfshops"
+    "Surf Breaks": "beaches",
+    "Surf Lessons": "lessons",
+    "Surf Rentals": "surfshops"
   }
 
   var id_dict = {
-    "beaches" : "surfline_id",
-    "lessons" : "shop_id",
-    "surfshops" : "shop_id"
+    "beaches": "surfline_id",
+    "lessons": "shop_id",
+    "surfshops": "shop_id"
   }
   const [searchType, setSearchType] = useState(data.options[0])
   const [searchOption, setSearchOption] = useState(data.options[0].label)
-  
+
   const handleSearchKeyChange = (e) => {
     setSearchKey(e.target.value);
   };
@@ -75,15 +74,15 @@ const SearchResultsPage = () => {
   };
 
   var lon_dict = {
-    "beaches" : "beach_lon",
-    "lessons" : "shop_lon",
-    "surfshops" : "shop_lon"
+    "beaches": "beach_lon",
+    "lessons": "shop_lon",
+    "surfshops": "shop_lon"
   }
 
   var lat_dict = {
-    "beaches" : "beach_lat",
-    "lessons" : "shop_lat",
-    "surfshops" : "shop_lat"
+    "beaches": "beach_lat",
+    "lessons": "shop_lat",
+    "surfshops": "shop_lat"
   }
 
   useEffect(() => {
@@ -92,10 +91,10 @@ const SearchResultsPage = () => {
 
     setTap(size.width > 700 ? true : false)
     setDragging(size.width > 700 ? true : false)
-   
-    }, [size.width])
 
-  
+  }, [size.width])
+
+
   useEffect(() => {
 
     let routerSearchKey = null;
@@ -110,13 +109,12 @@ const SearchResultsPage = () => {
     }
 
     if (typeof router.query !== 'undefined' && router.query.option) {
-      routerOption= router.query.option;
+      routerOption = router.query.option;
       setSearchOption(routerOption);
     }
 
-    if (typeof router.query !== 'undefined' && router.query.isNearby){
+    if (typeof router.query !== 'undefined' && router.query.isNearby) {
       routerIsNearby = router.query.isNearby;
-      setIsNearby(routerIsNearby);
     }
     if (typeof router.query !== 'undefined' && router.query.nearby_lat) {
       routerLat = router.query.nearby_lat;
@@ -127,9 +125,9 @@ const SearchResultsPage = () => {
     if (typeof router.query !== 'undefined' && router.query.option && router.query.option) {
       getSurfResults(routerSearchKey, routerOption, routerIsNearby, routerLat, routerLon)
     }
-    
+
   }, [])
-    
+
   async function getSurfResults(routerSearchKey, routerOption, routerIsNearby, routerLat, routerLon) {
     try {
       const params = {}
@@ -148,23 +146,29 @@ const SearchResultsPage = () => {
         console.log("search type:", searchOption)
       }
 
-      if(routerIsNearby) {
+      if (routerSearchKey) {
+        params["is_nearby"] = false
+      } else {
+        params["is_nearby"] = router.query.isNearby
+      }
+
+      /* if (routerIsNearby) {
         params["is_nearby"] = routerIsNearby
       } else if (!isNearby) {
         params["is_nearby"] = isNearby
-      }
-     
-      if(routerLat) {
+      } */
+
+      if (routerLat) {
         params["nearby_lat"] = routerLat;
       }
-      if(routerLon) {
+      if (routerLon) {
         params["nearby_lon"] = routerLon;
       }
 
       console.log("params there I go: ", params);
 
       const resp = await surfingObject.getSurfData(params)
-      
+
       console.log(resp)
       setStatus(resp.statusCode)
       if (!resp) {
@@ -182,7 +186,7 @@ const SearchResultsPage = () => {
       console.log("search type:", searchOption)
       console.log("initial center", center)
 
-      if(resp.statusCode === 200){
+      if (resp.statusCode === 200) {
         var location = res[0]
         const option = params["search-type"]
         console.log("search Option 1:", option)
@@ -191,7 +195,7 @@ const SearchResultsPage = () => {
       }
 
       console.log("center after call:", center)
-      
+
     } catch (error) {
       setSurfData([])
     } finally {
@@ -201,11 +205,11 @@ const SearchResultsPage = () => {
   }
 
   const onCardEnter = (id) => {
-      setHoverCard(id)
+    setHoverCard(id)
   }
   const onCardLeave = () => {
     setHoverCard(null)
-    }
+  }
 
   return (
     <React.Fragment>
@@ -216,28 +220,28 @@ const SearchResultsPage = () => {
             <hr className="my-4" />
             <Form onSubmit={handleSubmit}>
               <div className="mb-4">
-                  <Label for="form_search" className="form-label">
-                    Keyword
-                  </Label>
-                  <div className="input-label-absolute input-label-absolute-right">
-                    <div className="label-absolute">
-                      <i className="fa fa-search" />
-                    </div>
-                      <Input
-                        type="search"
-                        name="search"
-                        placeholder="Keywords"
-                        id="form_search"
-                        className="pr-4"
-                        value={searchKey}
-                        onChange={handleSearchKeyChange}
-                      />
+                <Label for="form_search" className="form-label">
+                  Keyword
+                </Label>
+                <div className="input-label-absolute input-label-absolute-right">
+                  <div className="label-absolute">
+                    <i className="fa fa-search" />
                   </div>
+                  <Input
+                    type="search"
+                    name="search"
+                    placeholder="Keywords"
+                    id="form_search"
+                    className="pr-4"
+                    value={searchKey}
+                    onChange={handleSearchKeyChange}
+                  />
                 </div>
-                <div className="mb-4">
-                  <Label for="form_length" className="form-label">
-                    Search Category
-                  </Label>
+              </div>
+              <div className="mb-4">
+                <Label for="form_length" className="form-label">
+                  Search Category
+                </Label>
                 <div className="mb-4">
                   <Select
                     name="search-type"
@@ -255,48 +259,48 @@ const SearchResultsPage = () => {
                     <i className="fas fa-search mr-1" />
                     Search
                   </Button>
-              </div>
+                </div>
               </div>
             </Form>
             <hr className="my-4" />
             <Row>
               {surfData.length > 0 && console.log("Yes we got results", surfData[0])}
               {surfData && status === 200 && surfData.map(loc =>
-                  <Col
-                      key={loc[id_dict[option_dict[searchOption]]]}
-                      sm="6"
-                      className="mb-5 hover-animate"
-                      onMouseEnter={() => onCardEnter(loc[id_dict[option_dict[searchOption]]])}
-                      onMouseLeave={() => onCardLeave()}
-                  >
-                      <CardSurf data={loc} type={option_dict[searchOption]}/>
-                  </Col>
+                <Col
+                  key={loc[id_dict[option_dict[searchOption]]]}
+                  sm="6"
+                  className="mb-5 hover-animate"
+                  onMouseEnter={() => onCardEnter(loc[id_dict[option_dict[searchOption]]])}
+                  onMouseLeave={() => onCardLeave()}
+                >
+                  <CardSurf data={loc} type={option_dict[searchOption]} />
+                </Col>
               )}
             </Row>
           </Col>
           <div id="map">
-          <Col
-            lg="6"
-            className="mt-1 map-side-lg pr-lg-0" 
-          > 
+            <Col
+              lg="6"
+              className="mt-1 map-side-lg pr-lg-0"
+            >
               {console.log("search page center", center, searchOption)}
               {!loading && status === 200 && center[0] !== 'undefined' && mapLoaded &&
-                  <MapSurf
-                      className="map-full shadow-left"
-                      center={center}
-                      zoom={14}
-                      dragging={dragging}
-                      tap={tap}
-                      geoJSON={surfData}
-                      hoverCard={hoverCard}
-                      type={option_dict[searchOption]}
-                  />
+                <MapSurf
+                  className="map-full shadow-left"
+                  center={center}
+                  zoom={14}
+                  dragging={dragging}
+                  tap={tap}
+                  geoJSON={surfData}
+                  hoverCard={hoverCard}
+                  type={option_dict[searchOption]}
+                />
               }
-          </Col>
+            </Col>
           </div>
         </Row>
       </Container>
-     </React.Fragment>
+    </React.Fragment>
   )
 }
 

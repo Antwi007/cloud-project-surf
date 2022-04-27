@@ -1,5 +1,5 @@
-import React from 'react'
-import { connect } from 'react-redux';
+import React, { useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux';
 import { Container, Row, Col, Card, CardHeader, Badge } from 'reactstrap'
 import history from '../history';
 import SurfingService from '../apis/SurfingService';
@@ -28,101 +28,239 @@ export async function getStaticProps() {
     }
 }
 
-class profile extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            changed: false,
-            location: null,
-            fullName: null,
-            title: null,
-            mantra: null,
-            profilePic: null,
-            profilePicChanged: null,
-            firstName: null,
-            favorites: [],
+const Profile = () => {
+
+    const dispatch = useDispatch();
+
+    const surfProfile = useSelector(state => state.surfProfile)
+    const authProfile = useSelector(state => state.auth)
+    const isSignedIn = useSelector(state => state.auth.isSignedIn)
+    const [changed, setChanged] = useState(false)
+    const [profilePicChanged, setProfilePicChanged] = useState(false)
+    const [localProfilePic, setLocalProfilePic] = useState(null)
+
+    console.log(surfProfile)
+
+    const notLoggedIn = <div class="card text-center"
+        style={{
+            border: 'none',
+            flexDirection: 'row',
+            width: '80%',
+            marginTop: '8%',
+        }}>
+        <img
+            src={sadSurf}
+            alt=""
+            style={{ border: 'none', width: '50%' }}
+        />
+        <h2 style={{ alignSelf: 'center', width: '50%' }}>
+            You are not logged into our website.
+            <br />
+            <br />
+            You can login using your Google Account from the top right!
+        </h2>
+    </div>
+
+    var profileImage = null;
+    if (localProfilePic) {
+        profileImage = <img
+            src={localProfilePic}
+            alt=""
+            className="d-block avatar avatar-xxl p-2 mb-2"
+            style={{ marginLeft: '5vh' }}
+        />
+    }
+    else if (surfProfile.profilePic) {
+        profileImage = <img
+            src={surfProfile.profilePic}
+            alt=""
+            className="d-block avatar avatar-xxl p-2 mb-2"
+            style={{ marginLeft: '5vh' }}
+        />
+    } else {
+        profileImage = <img
+            src={`/content/img/${data.avatar}`}
+            alt=""
+            className="d-block avatar avatar-xxl p-2 mb-2"
+            style={{ marginLeft: '5vh' }}
+        />
+    }
+
+    var profilePicNameDiv = null;
+    if (surfProfile.fullName) {
+        profilePicNameDiv = <input
+            type='text'
+            onChange={(e) => {
+                var tempSurfProfile = { ...surfProfile, fullName: e.target.value }
+                dispatch(putSurfAccountDetails(tempSurfProfile));
+                setChanged(true)
+            }}
+            value={surfProfile.fullName}
+            style={{
+                border: 'none',
+                backgroundColor: 'transparent',
+                textAlign: 'center',
+                fontSize: 18,
+                fontWeight: 'bold',
+                alignSelf: 'center',
+                marginTop: '1vh',
+            }}
+        />
+    } else {
+        profilePicNameDiv = <input
+            type='text'
+            onChange={(e) => {
+                var tempSurfProfile = { ...surfProfile, fullName: e.target.value }
+                dispatch(putSurfAccountDetails(tempSurfProfile));
+                setChanged(true)
+            }}
+            value={authProfile.fullName}
+            style={{
+                border: 'none',
+                backgroundColor: 'transparent',
+                textAlign: 'center',
+                fontSize: 18,
+                fontWeight: 'bold',
+                alignSelf: 'center',
+                marginTop: '1vh',
+            }}
+        />
+    }
+
+    var locationDiv = null;
+    if (surfProfile.location) {
+        locationDiv = <input
+            type='text'
+            onChange={(e) => {
+                var tempSurfProfile = { ...surfProfile, location: e.target.value }
+                dispatch(putSurfAccountDetails(tempSurfProfile));
+                setChanged(true)
+            }}
+            value={surfProfile.location}
+            style={{
+                border: 'none',
+                backgroundColor: 'transparent',
+                textAlign: 'center',
+                fontSize: 14,
+                alignSelf: 'center'
+            }}
+        />
+    } else {
+        locationDiv = <input
+            type='text'
+            onChange={(e) => {
+                var tempSurfProfile = { ...surfProfile, location: e.target.value }
+                dispatch(putSurfAccountDetails(tempSurfProfile));
+                setChanged(true)
+            }}
+            value={"Los Angeles, CA"}
+            style={{
+                border: 'none',
+                backgroundColor: 'transparent',
+                textAlign: 'center',
+                fontSize: 14,
+                alignSelf: 'center'
+            }}
+        />
+    }
+
+    const save = () => {
+        if (changed) {
+            surfingObject.putSurfingAccount(authProfile.userId, surfProfile)
         }
-        this.handleLocationChange = this.handleLocationChange.bind(this)
-        this.handleFullNameChange = this.handleFullNameChange.bind(this)
-        this.handleTitleChange = this.handleTitleChange.bind(this)
-        this.handleMantraChange = this.handleMantraChange.bind(this)
-        this.handleProfilePicChange = this.handleProfilePicChange.bind(this)
+        if (profilePicChanged) {
+            surfingObject.putProfilePic(authProfile.userId, surfProfile.profilePic)
+        }
+
+        setProfilePicChanged(false)
+        setChanged(false)
     }
 
-    componentDidMount() {
-        this.unblock = history.block(() => {
-            if (this.state.changed) {
-                const { profilePicChanged, changed, ...copy } = this.state
-                this.props.putSurfAccountDetails(copy)
-                // surfingObject.putSurfingAccount(this.props.auth.userId, this.state)
-            }
-            if (this.state.profilePicChanged) {
-                surfingObject.putProfilePic(this.props.auth.userId, this.props.surfProfile.profilePic)
-            }
-            return true;
-        });
-    }
-    componentWillUnmount() {
-        this.unblock();
-    }
-
-    handleLocationChange = (e) => {
-        this.setState({
-            location: e.target.value,
-            changed: true
-        })
-    }
-
-    handleFullNameChange = (e) => {
-        this.setState({
-            fullName: e.target.value,
-            changed: true
-        })
-    }
-
-    handleTitleChange = (e) => {
-        this.setState({
-            title: e.target.value,
-            changed: true
-        })
+    var titleDiv = null;
+    if (surfProfile.title) {
+        titleDiv = <input
+            type='text'
+            onChange={(e) => {
+                var tempSurfProfile = { ...surfProfile, title: e.target.value }
+                dispatch(putSurfAccountDetails(tempSurfProfile));
+                setChanged(true)
+            }}
+            value={surfProfile.title}
+            style={{
+                border: 'none',
+                backgroundColor: 'transparent',
+                fontWeight: 'bold',
+                marginLeft: '-0.3vh',
+            }}
+        />
+    } else {
+        titleDiv = <input
+            type='text'
+            onChange={(e) => {
+                var tempSurfProfile = { ...surfProfile, title: e.target.value }
+                dispatch(putSurfAccountDetails(tempSurfProfile));
+                setChanged(true)
+            }}
+            value={"Hello!"}
+            style={{
+                border: 'none',
+                backgroundColor: 'transparent',
+                fontWeight: 'bold',
+                marginLeft: '-0.3vh',
+            }}
+        />
     }
 
-    handleMantraChange = (e) => {
-        this.setState({
-            mantra: e.target.value,
-            changed: true
-        })
+    var mantraDiv = null;
+    if (surfProfile.mantra) {
+        mantraDiv = <input
+            type='text'
+            onChange={(e) => {
+                var tempSurfProfile = { ...surfProfile, mantra: e.target.value }
+                dispatch(putSurfAccountDetails(tempSurfProfile));
+                setChanged(true)
+            }}
+            class='text-muted'
+            value={surfProfile.mantra}
+            style={{
+                border: 'none',
+                backgroundColor: 'transparent',
+                width: '100%',
+                marginLeft: '-0.3vh',
+                fontColor: 'gray',
+            }}
+        />
+    } else {
+        mantraDiv = <input
+            type='text'
+            onChange={(e) => {
+                var tempSurfProfile = { ...surfProfile, mantra: e.target.value }
+                dispatch(putSurfAccountDetails(tempSurfProfile));
+                setChanged(true)
+            }}
+            class='text-muted'
+            value={"Hello there fam!"}
+            style={{
+                border: 'none',
+                backgroundColor: 'transparent',
+                width: '100%',
+                marginLeft: '-0.3vh',
+                fontColor: 'gray',
+            }}
+        />
     }
 
-    handleProfilePicChange = (e) => {
-        this.setState({
-            profilePicChanged: true,
-            profilePic: e
-        })
-        this.props.putProfilePic(e);
+    var nameShownText = null;
+    if (surfProfile.fullName) {
+        nameShownText = surfProfile.fullName + "'s Favorites"
+    } else if (authProfile.fullName){
+        nameShownText = authProfile.fullName + "'s Favorites"
+    } else {
+        nameShownText = "'s Favorites"
     }
 
-    render() {
-        const notLoggedIn = <div class="card text-center" 
-            style={{ 
-                border: 'none', 
-                flexDirection: 'row',
-                width: '80%',
-                marginTop: '8%', 
-            }}>
-            <img
-                src={sadSurf}
-                alt=""
-                style={{ border: 'none', width: '50%' }}
-            />
-            <h2 style={{ alignSelf: 'center', width: '50%' }}>
-                You are not logged into our website.
-                <br />
-                <br />
-                You can login using your Google Account from the top right!
-            </h2>
-        </div>;
-        return this.props.auth.isSignedIn ? (
+    if (isSignedIn) {
+        return (
             <section className="py-5">
                 <Container className="mt-6 ">
                     <Row>
@@ -131,20 +269,17 @@ class profile extends React.Component {
                                 <CardHeader className="bg-gray-100 py-4 border-0 text-center">
                                     <a className="d-inline-block">
                                         <div>
-                                            <img
-                                                src={this.props.surfProfile.profilePic ?
-                                                    URL.createObjectURL(this.props.surfProfile.profilePic)
-                                                    : `/content/img/${data.avatar}`}
-                                                alt=""
-                                                className="d-block avatar avatar-xxl p-2 mb-2"
-                                                style={{ marginLeft: '5vh' }}
-                                            />
+                                            {profileImage}
                                         </div>
                                         <form>
                                             <input
                                                 type='file'
                                                 title=" "
-                                                onChange={(e) => this.handleProfilePicChange(e.target.files[0])}
+                                                onChange={(e) => {
+                                                    dispatch(putProfilePic(e.target.files[0]));
+                                                    setLocalProfilePic(URL.createObjectURL(e.target.files[0]));
+                                                    setProfilePicChanged(true);
+                                                }}
                                                 style={{
                                                     border: 'none',
                                                     backgroundColor: 'transparent',
@@ -156,55 +291,51 @@ class profile extends React.Component {
                                     </a>
                                     <h5>
                                         <form>
-                                            <input
-                                                type='text'
-                                                onChange={(e) => this.handleFullNameChange(e)}
-                                                defaultValue={this.props.surfProfile.fullName || this.props.auth.fullName}
-                                                style={{
-                                                    border: 'none',
-                                                    backgroundColor: 'transparent',
-                                                    textAlign: 'center',
-                                                    fontSize: 18,
-                                                    fontWeight: 'bold',
-                                                    alignSelf: 'center',
-                                                    marginTop: '1vh',
-                                                }}
-                                            />
+                                            {profilePicNameDiv}
                                         </form>
                                     </h5>
                                     <p className="text-muted text-sm mb-0">
                                         <form>
-                                            <input
-                                                type='text'
-                                                onChange={(e) => this.handleLocationChange(e)}
-                                                defaultValue={this.props.surfProfile.location || data.location}
-                                                style={{
-                                                    border: 'none',
-                                                    backgroundColor: 'transparent',
-                                                    textAlign: 'center',
-                                                    fontSize: 14,
-                                                    alignSelf: 'center'
-                                                }}
-                                            />
+                                            {locationDiv}
                                         </form>
                                     </p>
                                 </CardHeader>
                             </Card>
+                            {(changed || profilePicChanged) ?
+                                <div>
+                                    <button
+                                        type="button"
+                                        class="btn btn-primary"
+                                        style={{
+                                            marginTop: '5%',
+                                            marginLeft: '35%',
+                                            width: '30%',
+                                        }}
+                                        onClick={() => save()}
+                                    >
+                                        Save
+                                    </button>
+                                </div> : <div>
+                                    <button
+                                        type="button"
+                                        class="btn btn-dark"
+                                        disabled={true}
+                                        style={{
+                                            marginTop: '5%',
+                                            marginLeft: '35%',
+                                            width: '30%',
+                                        }}
+                                        onClick={() => save()}
+                                    >
+                                        Save
+                                    </button>
+                                </div>
+                            }
                         </Col>
                         <Col lg="9" className="pl-lg-5">
                             <h1 className="hero-heading mb-0">
                                 <form>
-                                    <input
-                                        type='text'
-                                        onChange={(e) => this.handleTitleChange(e)}
-                                        defaultValue={this.props.surfProfile.title || "Hello!"}
-                                        style={{
-                                            border: 'none',
-                                            backgroundColor: 'transparent',
-                                            fontWeight: 'bold',
-                                            marginLeft: '-0.3vh',
-                                        }}
-                                    />
+                                    {titleDiv}
                                 </form>
                             </h1>
                             <div className="text-block">
@@ -216,28 +347,16 @@ class profile extends React.Component {
                                 <div>
                                     <p class='text-muted'>
                                         <form>
-                                            <input
-                                                type='text'
-                                                onChange={(e) => this.handleMantraChange(e)}
-                                                class='text-muted'
-                                                defaultValue={this.props.surfProfile.mantra || "Welcome to my page Fam!"}
-                                                style={{
-                                                    border: 'none',
-                                                    backgroundColor: 'transparent',
-                                                    width: '100%',
-                                                    marginLeft: '-0.3vh',
-                                                    fontColor: 'gray',
-                                                }}
-                                            />
+                                            {mantraDiv}
                                         </form>
                                     </p>
                                 </div>
                             </div>
                             <div className="text-block">
                                 <h4 className="mb-5">
-                                    {this.state.fullName ?? (this.props.surfProfile.fullName || this.props.auth.fullName)}'s Favorites
+                                    {nameShownText}
                                 </h4>
-                                {this.state.favorites.length > 0 ?
+                                {surfProfile.favorites.length > 0 ?
                                     <Row>
                                         {geoJSON.features.map(listing =>
                                             <Col sm="6" lg="4" className="mb-30px hover-animate" key={listing.properties.name}>
@@ -265,22 +384,12 @@ class profile extends React.Component {
                         </Col>
                     </Row>
                 </Container>
-            </section >   
-        ) : notLoggedIn
+            </section>
+        )
+    } else {
+        return notLoggedIn;
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        auth: state.auth,
-        surfProfile: state.surfProfile,
-    };
-};
-
-export default connect(
-    mapStateToProps,
-    { getAccountDetails, putProfilePic, putSurfAccountDetails }
-)(profile);
-
-
+export default Profile;
 
