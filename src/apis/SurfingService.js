@@ -53,6 +53,30 @@ class SurfingService {
     }
   };
 
+  sendEmail = async (params) => {
+    try {
+
+      const body =  {
+        "user_id": params["user_id"],
+        "type": params["type"],
+        "body": params["body"]
+      }
+
+      const resp = await axios.post(
+        `${this.url}/development/send_email`, body
+      );
+            
+      if (resp.status !== 200) {
+        return false;
+      }
+      
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
+
   getSurfAccountDetails = async (userId) => {
     // var data = '{\n    "user_id":"' + userId + '"\n}';
     var data = '';

@@ -43,6 +43,9 @@ const SurfPageDetail = () => {
     const [details, setDetails] = useState({})
     const [nearbyBeaches, setNearbyBeaches] = useState([])
     const [favoriteAdded, setFavoriteAdded] = useState(false)
+
+    const [isSurfBreak, setIsSurfBreak] = useState(false);
+
     const [loading, setLoading] = useState(true);
     const location = useLocation()
     const { query, search_type } = location.state
@@ -74,7 +77,10 @@ const SurfPageDetail = () => {
             }
             const resp = await surfingObject.getSurfDetails(params)
             if (resp.statusCode === 200) {
-                setDetails(resp.body)
+                if ("surfline-data" in resp.body){
+                    setIsSurfBreak(true)
+                }
+                setDetails(resp.body);
             }
 
         } catch (error) {
@@ -82,6 +88,33 @@ const SurfPageDetail = () => {
         }finally {
             setLoading(false)
           }
+    }
+
+    async function sendDetailsEmail() {
+        try {
+            const params = {}
+  
+            // params["user_id"] = "aschreiber1";
+            params["user_id"] = userId;
+            params["type"] = search_type;
+            params["body"] = (isSurfBreak) ? details : query;                        
+            
+            const resp = await surfingObject.sendEmail(params)
+
+            
+            if (resp === true) {
+                alert('Successfully sent email, please check in a few minutes.')
+                return
+            } else {
+                alert('Sorry there was a problem. Please try again later.')
+                return
+            }
+
+        } catch (error) {
+            console.log(error);
+            alert('Sorry there was a problem. Please try again later.');
+        }
+        return
     }
 
     var name_dict = {
@@ -316,6 +349,7 @@ const SurfPageDetail = () => {
                                                     &nbsp;Surf Location added to Favorites!
                                                 </a>
                                             </button> :
+                                            <>
                                             <button
                                                 onClick={async () => {
                                                     var tempFavs = surfProfile.favorites ?? []
@@ -331,10 +365,13 @@ const SurfPageDetail = () => {
                                                     <i className="fa fa-heart" />
                                                     &nbsp;Add Surf Location to Favorites
                                                 </a>
+                                                
                                             </button>
+                                            
+                                            </>
                                         }
-
-                                    </p>
+                                        
+                                    </p><Button color="primary" onClick={sendDetailsEmail}>Email me details</Button>
                                 </div>
                             </div>
                         </Col>
