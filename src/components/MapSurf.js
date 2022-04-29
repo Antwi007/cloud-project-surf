@@ -19,8 +19,6 @@ const MapSurf = (props) => {
     const [hover, setHover] = useState(false)
     const [focus, setFocus] = useState(true)
 
-    console.log("hCard", props.hoverCard)
-
     const icon = L.icon({
         iconUrl: MarkerIcon,
         shadowUrl: '',
@@ -64,18 +62,28 @@ const MapSurf = (props) => {
     }
 
     const type = props.type
-    const markers = props.geoJSON && props.geoJSON.map(feature =>
-        [
-            feature[lat_dict[type]],
-            feature[lon_dict[type]]
-        ]
+    const markers = props.geoJSON && props.geoJSON.map(feature => {
+        var toReturn = null;
+        if (feature.lat && feature.lon) {
+            toReturn = [
+                feature.lat,
+                feature.lon
+            ]
+        } else {
+            toReturn = [
+                feature[lat_dict[type]],
+                feature[lon_dict[type]]
+            ]
+        }
+        return toReturn;
+    }
     )
 
     useEffect(() => {
         setHover(props.hoverCard);
-      }, [props.hoverCard]);
+    }, [props.hoverCard]);
 
-    if ((props.geoJSON && props.geoJSON.length > 0 && props.geoJSON[0][lat_dict[type]]) || props.circlePosition ) {
+    if ((props.geoJSON && props.geoJSON.length > 0 && props.geoJSON[0][lat_dict[type]]) || props.circlePosition) {
         return (
             <MapContainer
                 center={props.center}

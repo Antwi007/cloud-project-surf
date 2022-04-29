@@ -93,8 +93,6 @@ const Profile = () => {
 
     var nameShownText = fullName ? fullName + "'s Favorites" : "'s Favorites" 
 
-    console.log("Title", title)
-
     if (isSignedIn) {
         return (
             <section className="py-5">
@@ -275,6 +273,15 @@ const Profile = () => {
                                             } else if (listing["shop_name"] !== undefined) {
                                                 name = listing["shop_name"]
                                             }
+
+                                            listing["beach_lat"] = listing["lat"]
+                                            listing["shop_lat"] = listing["lat"]
+
+                                            listing["beach_lon"] = listing["lon"]
+                                            listing["shop_lon"] = listing["lon"]
+
+                                            listing["surfline_id"] = listing["id"]
+
                                             return <Col sm="6" lg="4" className="mb-30px hover-animate" key={name}>
                                                 <CardSurf data={listing} />
                                             </Col>

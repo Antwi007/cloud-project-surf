@@ -229,7 +229,7 @@ class SurfingService {
 
     const resp = await axios(config);
 
-    return resp.data.body;
+    return {...resp.data.body, id: surfId};
   }
 }
 

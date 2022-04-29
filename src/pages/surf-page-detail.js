@@ -142,7 +142,6 @@ const SurfPageDetail = () => {
     }
 
     useEffect(() => {
-        console.log(query);
         if (search_type === "beaches") {
             getSurfResults(query["surfline_id"]);
         }
@@ -159,7 +158,6 @@ const SurfPageDetail = () => {
         }
     }, [])
 
-    console.log(details)
     return (
         <React.Fragment>
             <section>
@@ -286,6 +284,8 @@ const SurfPageDetail = () => {
                                             zoom={14}
                                             dragging={dragging}
                                             tap={tap}
+                                            geoJSON={[query]}
+                                            type={search_type}
                                         />
                                     }
                                 </div>
