@@ -64,7 +64,7 @@ const SurfPageDetail = () => {
         setDragging(size.width > 700 ? true : false)
 
         if (surfProfile.favorites) {
-            setFavoriteAdded(surfProfile.favorites.includes(query))
+            setFavoriteAdded(surfProfile.favorites.includes(query.surfline_id))
         }
     }, [size.width, surfProfile])
 
@@ -335,12 +335,12 @@ const SurfPageDetail = () => {
                                             <button
                                                 onClick={async () => {
                                                     var tempFavs = surfProfile.favorites.filter(function(loc) { 
-                                                        return loc !== query
+                                                        return loc !== query.surfline_id
                                                     })
                                                     var tempSurfProfile = { ...surfProfile, favorites: tempFavs }
                                                     dispatch(putSurfAccountDetails(tempSurfProfile));
                                                     setFavoriteAdded(false);
-                                                    await surfingObject.deleteFavorites(userId, tempSurfProfile);
+                                                    await surfingObject.deleteFavorites(userId, query.surfline_id);
                                                 }}
                                                 style={{ border: 'none', backgroundColor: 'transparent' }}
                                             >
@@ -353,11 +353,11 @@ const SurfPageDetail = () => {
                                             <button
                                                 onClick={async () => {
                                                     var tempFavs = surfProfile.favorites ?? []
-                                                    tempFavs.push(query)
+                                                    tempFavs.push(query.surfline_id)
                                                     var tempSurfProfile = { ...surfProfile, favorites: tempFavs }
                                                     dispatch(putSurfAccountDetails(tempSurfProfile));
                                                     setFavoriteAdded(true);
-                                                    await surfingObject.putFavorites(userId, tempSurfProfile);
+                                                    await surfingObject.putFavorites(userId, query.surfline_id);
                                                 }}
                                                 style={{ border: 'none', backgroundColor: 'transparent' }}
                                             >

@@ -165,11 +165,9 @@ class SurfingService {
     };
 
     const resp = await axios(config);
-    console.log("done", resp)
   }
 
   getFavorites = async (userId) => {
-      console.log("getting favorites")
       let baseURL = "https://usvfzvu80m.execute-api.us-east-1.amazonaws.com/development/user/favorites?user_id=" + userId;
 
       var config = {
@@ -178,13 +176,9 @@ class SurfingService {
       };
 
       var favs = await axios(config);
-      console.log("favs!!", favs.data)
-      favs = favs.data.map(async (id) => {
-        const surfData = await this.getSurfData(id);
-        console.log("look at this?", surfData)
-        return surfData
+      favs = favs.data.filter((f) => {
+        return f !== '[object Object]'
       })
-      console.log("favs?", favs)
 
       return favs;
   }
@@ -204,7 +198,6 @@ class SurfingService {
     };
 
     const resp = await axios(config);
-    console.log("done", resp)
   }
 
   deleteFavorites = async (userId, beachId) => {
@@ -222,7 +215,21 @@ class SurfingService {
     };
 
     const resp = await axios(config);
-    console.log("done", resp)
+  }
+
+  getFavoriteLocation = async (surfId) => {
+
+    let baseURL = "https://usvfzvu80m.execute-api.us-east-1.amazonaws.com/development/get_favorite?id=" + surfId;
+
+    var config = {
+      method: 'get',
+      url: baseURL,
+      headers: { }
+    };
+
+    const resp = await axios(config);
+
+    return resp.data.body;
   }
 }
 
