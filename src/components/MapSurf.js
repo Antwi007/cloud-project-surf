@@ -143,7 +143,7 @@ const MapSurf = (props) => {
                                     <div className="text">
                                         {data[name_dict[type]] &&
                                             <h6>
-                                                <Link to="/surf-page-detail"> {data[name_dict[type]]} </Link>
+                                                <Link Link to={{ pathname: '/surf-page-detail', state: { query: data, search_type: type } }}> {data[name_dict[type]]} </Link>
                                             </h6>
                                         }
                                     </div>
