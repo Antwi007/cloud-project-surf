@@ -34,6 +34,7 @@ const CardSurf = (props) => {
                         <Link to={{ pathname: '/surf-page-detail', state: { query: data, search_type: type } }}>
                             <div className="text-decoration-none text-dark">
                                 {data["beach_name"]}
+                                
                             </div>
                         </Link>
                     </CardTitle>

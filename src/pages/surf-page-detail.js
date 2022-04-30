@@ -9,6 +9,10 @@ import {
     Form,
     Button,
     FormGroup,
+    Modal,
+    ModalHeader,
+    ModalBody,
+    ModalFooter,
 } from 'reactstrap'
 
 import UseWindowSize from '../hooks/UseWindowSize';
@@ -19,6 +23,8 @@ import MapSurf from '../components/MapSurf'
 import Swiper from '../components/Swiper'
 import SurfingService from '../apis/SurfingService';
 import { putSurfAccountDetails } from '../actions';
+import WeatherCard from '../components/WeatherCard';
+import WindCard from '../components/WindCard'
 
 const surfingObject = new SurfingService();
 
@@ -43,7 +49,8 @@ const SurfPageDetail = () => {
     const [details, setDetails] = useState({})
     const [nearbyBeaches, setNearbyBeaches] = useState([])
     const [favoriteAdded, setFavoriteAdded] = useState(false)
-
+    const [errorVisible, setErrorVisible] = useState(false);
+    const [error, setError] = useState("");
     const [isSurfBreak, setIsSurfBreak] = useState(false);
 
     const [loading, setLoading] = useState(true);
@@ -66,6 +73,7 @@ const SurfPageDetail = () => {
         if (surfProfile.favorites) {
             setFavoriteAdded(surfProfile.favorites.includes(query.surfline_id))
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [size.width, surfProfile])
 
     async function getSurfResults(surf_id) {
@@ -100,13 +108,14 @@ const SurfPageDetail = () => {
             params["body"] = (isSurfBreak) ? details : query;                        
             
             const resp = await surfingObject.sendEmail(params)
-
-            
+  
             if (resp === true) {
-                alert('Successfully sent email, please check in a few minutes.')
+                setError('Successfully sent email, please check in a few minutes.')
+                setErrorVisible(true)
                 return
             } else {
-                alert('Sorry there was a problem. Please try again later.')
+                setError('Sorry there was a problem. Please try again later.')
+                setErrorVisible(true)
                 return
             }
 
@@ -156,7 +165,13 @@ const SurfPageDetail = () => {
                 setNearbyBeaches(res)
             }
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    const dismissError = () => {
+        setError("");
+        setErrorVisible(false);
+      };
 
     return (
         <React.Fragment>
@@ -170,10 +185,6 @@ const SurfPageDetail = () => {
                                         {query[name_dict[search_type]]}
                                     </h1>
                                 }
-                                {/* <p className="text-primary">
-                                        <i className="fa-map-marker-alt fa mr-1" />
-                                        &nbsp;{data.location && data.location}
-                                    </p> */}
                                 {option_dict[search_type] &&
                                     <div className="text-muted text-uppercase mb-4">
                                         {option_dict[search_type]}
@@ -200,8 +211,22 @@ const SurfPageDetail = () => {
                                     <div className="text-block">
                                         <h4 className="mb-4">Beach Details</h4>
                                         <Row>
-                                            <Col>
-                                                Weather
+                                            {loading && search_type === "beaches" &&
+                                                    [...Array(2)].map((el, index) => (
+                                                    <Col key={index} sm="6" className="mb-5 hover-animate">
+                                                        <Skeleton count={5} />
+                                                    </Col>
+                                                    ))
+                                            }
+                                            <Col md="4">
+                                                {Object.keys(details).length !== 0 &&
+                                                <WeatherCard data={details["weather-data"]}></WeatherCard>
+                                                }
+                                            </Col>
+                                            <Col className="w-50">
+                                                {Object.keys(details).length !== 0 &&
+                                                <WindCard data={details["surfline-data"]}></WindCard>
+                                                }
                                             </Col>
                                         </Row>
                                     </div>
@@ -376,6 +401,19 @@ const SurfPageDetail = () => {
                             </div>
                         </Col>
                     </Row>
+                    <Modal
+                        isOpen={errorVisible}
+                        toggle={dismissError}
+                        className="text-center"
+                        >
+                        <ModalHeader className="border-0" toggle={dismissError}></ModalHeader>
+                        <ModalBody className="border-0">{error}</ModalBody>
+                        <ModalFooter className="border-0">
+                            <Button color="primary" onClick={dismissError}>
+                            Ok
+                            </Button>
+                        </ModalFooter>
+                    </Modal>
                 </Container>
             </section>
         </React.Fragment>
