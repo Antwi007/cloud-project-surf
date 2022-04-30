@@ -17,7 +17,16 @@ const CardSurf = (props) => {
         type = "lessons"
     } else if (data["shop_name"] !== undefined) {
         type = "surfshops"
-    } 
+    }
+
+    var secondaryText = null;
+    if (data["beach_name"] !== undefined) {
+        secondaryText = "SurfScore: " + data.surf_score.toFixed(2)
+    } else if (data["lesson_name"] !== undefined) {
+        secondaryText = "Distance from Loc: " + data.distance_from_coord_miles
+    } else if (data["shop_name"] !== undefined) {
+        secondaryText = "Distance from Loc: " + data.distance_from_coord_miles
+    }
 
     return (
 
@@ -33,18 +42,15 @@ const CardSurf = (props) => {
                     <CardTitle tag="h6">
                         <Link to={{ pathname: '/surf-page-detail', state: { query: data, search_type: type } }}>
                             <div className="text-decoration-none text-dark">
-                                {data["beach_name"]}
-                                
+                                {(data["beach_name"] ?? data["lesson_name"]) ?? data["shop_name"]}
                             </div>
                         </Link>
                     </CardTitle>
-                    {data.surf_score &&
-                        <CardSubtitle className="d-flex mb-3">
-                            <p className="flex-grow-1 mb-0 text-muted text-sm">
-                                SurfScore : {data.surf_score.toFixed(2)}
-                            </p>
-                        </CardSubtitle>
-                    }
+                    <CardSubtitle className="d-flex mb-3">
+                        <p className="flex-grow-1 mb-0 text-muted text-sm">
+                            {secondaryText}
+                        </p>
+                    </CardSubtitle>
                 </div>
             </CardBody>
         </Card>

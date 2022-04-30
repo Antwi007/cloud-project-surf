@@ -23,6 +23,8 @@ class SurfingService {
         `${this.url}/development/search?${queryParams}`
       );
 
+      console.log("GET SURF DATA URL", `${this.url}/development/search?${queryParams}`)
+
       if (resp.status !== 200) {
         return false;
       }
@@ -228,6 +230,8 @@ class SurfingService {
     };
 
     const resp = await axios(config);
+
+    console.log("GET FAV DATA URL", baseURL)
 
     return {...resp.data.body, id: surfId};
   }

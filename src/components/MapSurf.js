@@ -103,6 +103,7 @@ const MapSurf = (props) => {
                 />
                 {props.geoJSON && props.geoJSON.map(feature => {
                     const data = feature
+                    console.log("map surf hover", hover, (hover === data[id_dict[type]] || props.hoverCard === data[id_dict[type]]))
                     return (
                         <Marker
                             key={data[id_dict[type]]}
@@ -121,12 +122,13 @@ const MapSurf = (props) => {
                                 permanent={true}
                                 interactive={true}
                                 direction="top"
-                                className={`map-custom-tooltip ${(hover === data[id_dict[type]] || props.hoverCard === data[id_dict[type]]) ? 'active' : ''}`}
-
-                            >
-                                {data[name_dict[type]]}
-                            </Tooltip>
-
+                                children={
+                                    <div
+                                        className={`map-custom-tooltip ${(hover === data[id_dict[type]] || props.hoverCard === data[id_dict[type]]) ? 'active' : ''}`}>
+                                        {data[name_dict[type]]}
+                                    </div>
+                                }
+                            />
                             <Popup className="map-custom-popup" maxWidth="600" minWidth="200">
 
                                 <div className="popup-rental">
@@ -170,8 +172,19 @@ const MapSurf = (props) => {
             </MapContainer>
         )
     } else {
+        console.log(props)
         return (
-            <MapContainer>
+            <MapContainer
+                center={props.center}
+                zoom={props.zoom}
+                scrollWheelZoom={focus}
+                bounds={props.geoJSON ? markers : null}
+                className={props.className}
+                dragging={props.dragging}
+                tap={props.tap}
+                onFocus={() => setFocus(true)}
+                onBlur={() => setFocus(false)}
+            >
                 <TileLayer
                     url={tileLayers[1].tiles}
                     attribution={tileLayers[1].attribution}

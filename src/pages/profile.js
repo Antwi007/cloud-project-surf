@@ -48,6 +48,7 @@ const Profile = () => {
         var favoriteLocations = []
         for (var i = 0; i < surfProfile.favorites.length; i += 1) {
             var surfLocation = await surfingObject.getFavoriteLocation(surfProfile.favorites[i]);
+            console.log(surfLocation);
             favoriteLocations.push(surfLocation);
         }
         setFavorites(favoriteLocations);
