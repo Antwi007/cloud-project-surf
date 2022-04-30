@@ -60,12 +60,16 @@ const Header = () => {
         </Container>
         <Nav navbar className="ml-auto">
           <NavLink to="/search-results-page">
-            Results
+            <h6>
+             Catalog
+            </h6>
           </NavLink>
         </Nav>
         <Nav navbar className="ml-2">
           <NavLink to="/profile">
+            <h6>
             Profile
+            </h6>
           </NavLink>
         </Nav>
         <Nav navbar style={{ marginLeft: '1%', width: '40vh' }}>
