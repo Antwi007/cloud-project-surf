@@ -149,7 +149,7 @@ const SearchResultsPage = () => {
         console.log("search type:", searchOption)
       }
 
-      if (routerSearchKey) {
+      if (routerSearchKey || searchKey.length > 0) {
         params["is_nearby"] = false
       } else {
         params["is_nearby"] = router.query.isNearby

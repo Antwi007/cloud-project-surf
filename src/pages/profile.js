@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import { Container, Row, Col, Card, CardHeader, Badge } from 'reactstrap';
 import SurfingService from '../apis/SurfingService';
+import Skeleton from 'react-loading-skeleton'
 
 import data from '../data/user-profile.json';
 import sadSurf from '../components/images/sad_surf3.jpeg';
@@ -41,6 +42,7 @@ const Profile = () => {
     const [location, setLocation] = useState(null);
     const [title, setTitle] = useState(null);
     const [mantra, setMantra] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(async () => {
         var favoriteLocations = []
@@ -49,6 +51,7 @@ const Profile = () => {
             favoriteLocations.push(surfLocation);
         }
         setFavorites(favoriteLocations);
+        setLoading(false);
     }, [surfProfile.favorites])
 
     useEffect(() => {
@@ -91,7 +94,7 @@ const Profile = () => {
         setChanged(false)
     }
 
-    var nameShownText = fullName ? fullName + "'s Favorites" : "'s Favorites" 
+    var nameShownText = fullName ? fullName + "'s Favorites" : "'s Favorites"
 
     if (isSignedIn) {
         return (
@@ -261,7 +264,7 @@ const Profile = () => {
                                 <h4 className="mb-5">
                                     {nameShownText}
                                 </h4>
-                                {(surfProfile.favorites && surfProfile.favorites.length > 0) ?
+                                {(!loading && surfProfile.favorites && surfProfile.favorites.length > 0) ?
                                     <Row>
                                         {favorites.map(listing => {
                                             var name = null;
@@ -288,21 +291,31 @@ const Profile = () => {
                                         }
                                         )}
                                     </Row> :
-                                    <div class="card text-center" style={{ border: 'none', flexDirection: 'row' }}>
-                                        <img
-                                            src={sadSurf}
-                                            alt=""
-                                            style={{ border: 'none', width: '50%' }}
-                                        />
-                                        <h2 style={{ alignSelf: 'center', width: '50%' }}>
-                                            You don't have any
-                                            <br />
-                                            favorite spots.
-                                            <br />
-                                            <br />
-                                            Let's go find some!
-                                        </h2>
-                                    </div>
+                                    (loading && surfProfile.favorites && surfProfile.favorites.length > 0) ?
+                                        <Row>
+                                            {loading &&
+                                                surfProfile.favorites.map((index) => (
+                                                    <Col key={index} sm="6" className="mb-5 hover-animate">
+                                                        <Skeleton count={5} />
+                                                    </Col>
+                                                ))
+                                            }
+                                        </Row> :
+                                        <div class="card text-center" style={{ border: 'none', flexDirection: 'row' }}>
+                                            <img
+                                                src={sadSurf}
+                                                alt=""
+                                                style={{ border: 'none', width: '50%' }}
+                                            />
+                                            <h2 style={{ alignSelf: 'center', width: '50%' }}>
+                                                You don't have any
+                                                <br />
+                                                favorite spots.
+                                                <br />
+                                                <br />
+                                                Let's go find some!
+                                            </h2>
+                                        </div>
                                 }
                             </div>
                         </Col>
