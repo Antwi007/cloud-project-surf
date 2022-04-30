@@ -17,6 +17,7 @@ import CardSurf from '../components/CardSurf'
 import MapSurf from '../components/MapSurf'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import sadSurf from '../components/images/sad_surf3.jpeg';
 
 const surfingObject = new SurfingService();
 
@@ -133,6 +134,7 @@ const SearchResultsPage = () => {
 
   async function getSurfResults(routerSearchKey, routerOption, routerIsNearby, routerLat, routerLon) {
     try {
+      setLoading(true);
       const params = {}
 
       if (routerSearchKey) {
@@ -175,12 +177,14 @@ const SearchResultsPage = () => {
       console.log(resp)
       if (!resp) {
         setSurfData([])
+        setLoading(false)
         return
       }
 
       setStatus(resp.statusCode)
       if (resp.statusCode !== 200) {
         setSurfData([])
+        setLoading(false)
         return
       }
 
@@ -218,8 +222,6 @@ const SearchResultsPage = () => {
   const onCardLeave = () => {
     setHoverCard(null)
   }
-
-  console.log("loading", loading, router.query)
 
   return (
     <React.Fragment>
@@ -274,7 +276,7 @@ const SearchResultsPage = () => {
             </Form>
             <hr className="my-4" />
             <Row>
-            {loading && 
+              {loading &&
                 [...Array(postsPerPage)].map((el, index) => (
                   <Col key={index} sm="6" className="mb-5 hover-animate">
                     <Skeleton count={5} />
@@ -297,14 +299,24 @@ const SearchResultsPage = () => {
               }
               )}
             </Row>
+            {(!loading && surfData.length === 0) &&
+              <div class="card text-center" style={{ border: 'none', flexDirection: 'row' }}>
+                <img
+                  src={sadSurf}
+                  alt=""
+                  style={{ border: 'none', width: '50%', marginRight: '10%' }}
+                />
+                <h2 style={{ alignSelf: 'center', width: '40%', marginLeft: '-15%' }}>
+                  No results for your search
+                </h2>
+              </div>}
           </Col>
           <div id="map">
             <Col
               lg="6"
               className="mt-1 map-side-lg pr-lg-0"
             >
-              {console.log("search page center", center, searchOption)}
-              {(loading === false) && (status === 200 || status === 204) && center[0] !== 'undefined' && mapLoaded &&
+              {((loading === false) && (status === 200 || status === 204) && center[0] !== 'undefined' && mapLoaded) ?
                 <MapSurf
                   className="map-full shadow-left"
                   center={center}
@@ -314,7 +326,7 @@ const SearchResultsPage = () => {
                   geoJSON={surfData}
                   hoverCard={hoverCard}
                   type={option_dict[searchOption]}
-                />
+                /> : null
               }
             </Col>
           </div>
