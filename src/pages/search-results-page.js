@@ -28,7 +28,7 @@ const SearchResultsPage = () => {
   const [tap, setTap] = useState(false)
   const [hoverCard, setHoverCard] = useState(null)
   const [surfData, setSurfData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(router.query !== undefined ? true : null);
   const [center, setCenter] = useState([40.5842, -73.99967]);
   const [status, setStatus] = useState(0);
   const postsPerPage = 10;
@@ -219,6 +219,8 @@ const SearchResultsPage = () => {
     setHoverCard(null)
   }
 
+  console.log("loading", loading, router.query)
+
   return (
     <React.Fragment>
       <Container fluid>
@@ -302,7 +304,7 @@ const SearchResultsPage = () => {
               className="mt-1 map-side-lg pr-lg-0"
             >
               {console.log("search page center", center, searchOption)}
-              {!loading && (status === 200 || status === 204) && center[0] !== 'undefined' && mapLoaded &&
+              {(loading === false) && (status === 200 || status === 204) && center[0] !== 'undefined' && mapLoaded &&
                 <MapSurf
                   className="map-full shadow-left"
                   center={center}
