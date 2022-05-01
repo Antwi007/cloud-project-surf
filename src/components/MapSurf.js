@@ -65,7 +65,6 @@ const MapSurf = (props) => {
 
     const type = props.type
     const markers = props.geoJSON && props.geoJSON.map(feature => {
-        console.log("my feature", feature)
         var toReturn = null;
         if (feature.lat && feature.lon) {
             toReturn = [
@@ -86,7 +85,7 @@ const MapSurf = (props) => {
         setHover(props.hoverCard);
     }, [props.hoverCard]);
 
-    console.log("props", props.hoverCard);
+    console.log("map surf", props);
 
     if ((props.geoJSON && props.geoJSON.length > 0 && props.geoJSON[0][lat_dict[type]]) || props.circlePosition) {
         return (

@@ -44,11 +44,31 @@ const Profile = () => {
     const [mantra, setMantra] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    /* async function getSurfResults(surf_id) {
+        try {
+            const params = {}
+
+            if (surf_id) {
+                params["id"] = surf_id;
+            }
+            const resp = await surfingObject.getSurfDetails(params)
+            if (resp.statusCode === 200) {
+                return resp.body
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+    } */
+
+    console.log("profile pic", profilePic)
+
     useEffect(async () => {
         var favoriteLocations = []
         for (var i = 0; i < surfProfile.favorites.length; i += 1) {
             var surfLocation = await surfingObject.getFavoriteLocation(surfProfile.favorites[i]);
-            console.log(surfLocation);
+            // var surfLocationData = await getSurfResults(surfLocation.id);
+            // console.log("surf favorite", surfLocation, surfLocationData);
             favoriteLocations.push(surfLocation);
         }
         setFavorites(favoriteLocations);
@@ -56,11 +76,16 @@ const Profile = () => {
     }, [surfProfile.favorites])
 
     useEffect(() => {
-        setProfilePic(surfProfile.profilePic || `/content/img/${data.avatar}`)
-        setFullName(surfProfile.fullName ? surfProfile.fullName : authProfile.fullName)
-        setLocation(surfProfile.location ? surfProfile.location : "Los Angeles, CA")
-        setTitle(surfProfile.title ? surfProfile.title : "Hello!")
-        setMantra(surfProfile.mantra ? surfProfile.mantra : "Hello there Fam!")
+        try {
+            var u = URL.createObjectURL(surfProfile.profilePic);
+            setProfilePic(u)
+        } catch {
+            setProfilePic(surfProfile.profilePic ? surfProfile.profilePic : `/content/img/${data.avatar}`)
+        }
+        setFullName((surfProfile.fullName && surfProfile.fullName !== "undefined") ? surfProfile.fullName : authProfile.fullName)
+        setLocation((surfProfile.location && surfProfile.location !== "null") ? surfProfile.location : "Los Angeles, CA")
+        setTitle((surfProfile.title && surfProfile.title !== "null") ? surfProfile.title : "Hello!")
+        setMantra((surfProfile.mantra && surfProfile.mantra !== "null") ? surfProfile.mantra : "Hello there Fam!")
     }, [surfProfile])
 
     const notLoggedIn = <div class="card text-center"
@@ -119,8 +144,10 @@ const Profile = () => {
                                                 type='file'
                                                 title=" "
                                                 onChange={(e) => {
+                                                    console.log(e.target.files[0])
+                                                    var u = URL.createObjectURL(e.target.files[0])
                                                     dispatch(putProfilePic(e.target.files[0]));
-                                                    setProfilePic(URL.createObjectURL(e.target.files[0]));
+                                                    setProfilePic(u);
                                                     setProfilePicChanged(true);
                                                 }}
                                                 style={{
@@ -278,15 +305,15 @@ const Profile = () => {
                                                 name = listing["shop_name"]
                                             }
 
-                                            listing["beach_lat"] = listing["lat"]
-                                            listing["shop_lat"] = listing["lat"]
+                                            listing["beach_lat"] = listing["beach_lat"] ?? listing["lat"]
+                                            listing["shop_lat"] =  listing["shop_lat"] ?? listing["lat"]
 
-                                            listing["beach_lon"] = listing["lon"]
-                                            listing["shop_lon"] = listing["lon"]
+                                            listing["beach_lon"] = listing["beach_lon"] ?? listing["lon"]
+                                            listing["shop_lon"] = listing["shop_lon"] ?? listing["lon"]
 
-                                            listing["surfline_id"] = listing["id"]
+                                            listing["surfline_id"] = listing["surfline_id"] ?? listing["id"]
 
-                                            console.log("listing", listing)
+                                            // console.log("listing", listing)
 
                                             return <Col sm="6" lg="4" className="mb-30px hover-animate" key={name}>
                                                 <CardSurf data={listing} />

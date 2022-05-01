@@ -59,6 +59,7 @@ const SurfPageDetail = () => {
     const [loading, setLoading] = useState(true);
     const location = useLocation()
     const { query, search_type } = location.state
+    // console.log("query", query, "search type", search_type)
 
     const size = UseWindowSize()
 
@@ -202,9 +203,8 @@ const SurfPageDetail = () => {
         setHoverCard(null)
     }
 
-    console.log("surf page details", query)
-    console.log("geoJSON", geoJSON)
-    console.log("restaurants", details["yelp-data"] ? details["yelp-data"]["restaurants"] : null)
+    console.log("wind card", details["surfline-data"])
+    console.log("gjson", geoJSON)
 
     return (
         <React.Fragment>

@@ -28,8 +28,6 @@ const SearchResultsPage = () => {
   const surfSearchParams = useSelector(state => state.surfSearch.surfSearchParams);
   const dispatch = useDispatch();
 
-  console.log("surf search", surfSearch);
-
   const router = useLocation();
   const [searchKey, setSearchKey] = useState(surfSearch.keyword);
   const [mapLoaded, setMapLoaded] = useState(false)
@@ -71,10 +69,8 @@ const SearchResultsPage = () => {
     "lessons": "shop_id",
     "surfshops": "shop_id"
   }
-  const [searchType, setSearchType] = useState(surfSearchParams.searchType || data.options[0])
-  const [searchOption, setSearchOption] = useState(surfSearchParams.searchOption || data.options[0].label)
-
-  console.log(surfData, surfSearchParams)
+  const [searchType, setSearchType] = useState(surfSearchParams.searchType || data.options.find((el) => el.label === router.query.option))
+  const [searchOption, setSearchOption] = useState(surfSearchParams.searchOption || router.query.option)
 
   const handleSearchKeyChange = (e) => {
     setSearchKey(e.target.value);
@@ -131,6 +127,7 @@ const SearchResultsPage = () => {
 
     if (typeof router.query !== 'undefined' && router.query.option) {
       routerOption = router.query.option;
+      setSearchType(data.options.find((el) => el.label === routerOption));
       setSearchOption(routerOption);
       dispatch(putSurfSearchParams(
         ["searchOption", routerOption]
@@ -232,8 +229,6 @@ const SearchResultsPage = () => {
       }
       setSurfData(res)
       dispatch(putSurfData(res))
-      console.log("search type:", searchOption)
-      console.log("initial center", center)
 
       if (resp.statusCode === 200) {
         var location = res[0]
