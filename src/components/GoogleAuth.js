@@ -33,25 +33,32 @@ class GoogleAuth extends React.Component {
         email: googleUserAccount.getEmail(),
       }
       this.props.getAccountDetails(accountDetails);
+
+      var surfAccount = null;
       
       try {
-        const surfAccount = await surfingObject.getSurfAccountDetails(userId);
-        console.log("got account data", surfAccount);
+        surfAccount = await surfingObject.getSurfAccountDetails(userId);
+      }
+      catch {
+        if (!surfAccount) {
+          await surfingObject.createSurfingAccount(userId);
+        }
+      }
+
+      try {
         const favorites = await surfingObject.getFavorites(userId);
-        console.log("got favorites", favorites)
         const accountData = {...surfAccount.data, favorites: favorites} 
-        console.log("constructed accountData", accountData)
         this.props.getSurfAccountDetails(accountData);
+      }
+      catch {}
+
+      try {
         const profilePicUrl = await surfingObject.getProfilePic(userId);
         this.props.putProfilePic(profilePicUrl);
       }
-      catch {
-        console.log("creating new account")
-        await surfingObject.createSurfingAccount(userId);
-      }
+      catch {}
 
     } else {
-      console.log("signing out")
       this.props.signOut();
       this.props.removeSurfingAccount();
     }

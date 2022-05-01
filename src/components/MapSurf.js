@@ -40,7 +40,7 @@ const MapSurf = (props) => {
     var lon_dict = {
         "beaches": "beach_lon",
         "lessons": "shop_lon",
-        "surfshops": "shop_lon"
+        "surfshops": "shop_lon",
     }
 
     var lat_dict = {
@@ -52,17 +52,20 @@ const MapSurf = (props) => {
     var name_dict = {
         "beaches": "beach_name",
         "lessons": "shop_name",
-        "surfshops": "shop_name"
+        "surfshops": "shop_name",
+        "restaurants": "name",
     }
 
     var id_dict = {
         "beaches": "surfline_id",
         "lessons": "shop_id",
-        "surfshops": "shop_id"
+        "surfshops": "shop_id",
+        "restaurants": "id",
     }
 
     const type = props.type
     const markers = props.geoJSON && props.geoJSON.map(feature => {
+        console.log("my feature", feature)
         var toReturn = null;
         if (feature.lat && feature.lon) {
             toReturn = [
@@ -82,6 +85,8 @@ const MapSurf = (props) => {
     useEffect(() => {
         setHover(props.hoverCard);
     }, [props.hoverCard]);
+
+    console.log("props", props.hoverCard);
 
     if ((props.geoJSON && props.geoJSON.length > 0 && props.geoJSON[0][lat_dict[type]]) || props.circlePosition) {
         return (
@@ -103,14 +108,32 @@ const MapSurf = (props) => {
                 />
                 {props.geoJSON && props.geoJSON.map(feature => {
                     const data = feature
-                    console.log("map surf hover", hover, (hover === data[id_dict[type]] || props.hoverCard === data[id_dict[type]]))
+                    var toReturn = null;
+                    if (feature.lat && feature.lon) {
+                        toReturn = [
+                            feature.lat,
+                            feature.lon
+                        ]
+                    } else {
+                        toReturn = [
+                            feature[lat_dict[type]],
+                            feature[lon_dict[type]]
+                        ]
+                    }
+                    const shouldHover = (
+                        data["id"] !== undefined && data["id"] === props.hoverCard
+                        ||
+                        (
+                            data[id_dict[type]] !== undefined &&
+                            (hover === data[id_dict[type]] || props.hoverCard === data[id_dict[type]])
+                        )
+                    )
                     return (
                         <Marker
                             key={data[id_dict[type]]}
-                            icon={(hover === data[id_dict[type]] || props.hoverCard === data[id_dict[type]]) ? highlightIcon : icon}
+                            icon={shouldHover ? highlightIcon : icon}
                             opacity={0}
-                            position={[
-                                data[lat_dict[type]], data[lon_dict[type]]]}
+                            position={toReturn}
                             onMouseEnter={() => {
                                 setHover(data[id_dict[type]])
                             }}
@@ -124,7 +147,7 @@ const MapSurf = (props) => {
                                 direction="top"
                                 children={
                                     <div
-                                        className={`map-custom-tooltip ${(hover === data[id_dict[type]] || props.hoverCard === data[id_dict[type]]) ? 'active' : ''}`}>
+                                        className={`map-custom-tooltip ${shouldHover ? 'active' : ''}`}>
                                         {data[name_dict[type]]}
                                     </div>
                                 }

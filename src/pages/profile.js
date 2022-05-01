@@ -57,10 +57,10 @@ const Profile = () => {
 
     useEffect(() => {
         setProfilePic(surfProfile.profilePic || `/content/img/${data.avatar}`)
-        setFullName(surfProfile.fullName !== 'undefined' ? surfProfile.fullName : authProfile.fullName)
-        setLocation(surfProfile.location !== 'null' ? surfProfile.location : "Los Angeles, CA")
-        setTitle(surfProfile.title !== 'null' ? surfProfile.title : "Hello!")
-        setMantra(surfProfile.mantra !== 'null' ? surfProfile.mantra : "Hello there Fam!")
+        setFullName(surfProfile.fullName ? surfProfile.fullName : authProfile.fullName)
+        setLocation(surfProfile.location ? surfProfile.location : "Los Angeles, CA")
+        setTitle(surfProfile.title ? surfProfile.title : "Hello!")
+        setMantra(surfProfile.mantra ? surfProfile.mantra : "Hello there Fam!")
     }, [surfProfile])
 
     const notLoggedIn = <div class="card text-center"
@@ -285,6 +285,8 @@ const Profile = () => {
                                             listing["shop_lon"] = listing["lon"]
 
                                             listing["surfline_id"] = listing["id"]
+
+                                            console.log("listing", listing)
 
                                             return <Col sm="6" lg="4" className="mb-30px hover-animate" key={name}>
                                                 <CardSurf data={listing} />

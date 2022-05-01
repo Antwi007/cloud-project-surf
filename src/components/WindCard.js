@@ -1,9 +1,17 @@
 import React from 'react';
-import { Card,CardText, CardBody, Col } from 'reactstrap';
+import { Card, CardText, CardBody, Col } from 'reactstrap';
 import Icon from './WeatherIcon';
 
 const WeatherCard = (props) => {
- const data = props.data[0];
+  const data = props.data[0];
+
+  const date = new Date(data["time"]);
+
+  var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+  const dateStr = days[date.getDay()] + ", " + months[date.getMonth()] + " " + (date.getDay()+1)
+
 
   return (
     <div>
@@ -11,13 +19,13 @@ const WeatherCard = (props) => {
         <CardBody>
           <Col className="justify-content-center">
             <div className="text-center">
-            <Icon></Icon>
+              <Icon></Icon>
             </div>
             <CardText className="text-center">
-              Time: {data["time"]}
+              Date: {dateStr}
             </CardText>
             <p className="text-center">
-             Surf Height : {data["min-surf-height"]}-{data["max-surf-height"]} ft
+              Surf Height : {data["min-surf-height"]}-{data["max-surf-height"]} ft
             </p>
             <p className="text-center">
               Human Relation : {data["HumanRelation"]}

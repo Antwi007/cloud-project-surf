@@ -12,7 +12,13 @@ const CardRestaurant = (props) => {
 
     const data = props.data
     return (
-        <Card className="h-100 border-0 shadow">
+        <Card 
+            className="h-100 border-0 shadow"
+            onMouseEnter={() => {
+                props.onCardEnter(data.id)
+            }}
+            onMouseLeave={() => {props.onCardEnter()}}
+        >
             <div
                 style={{
                     backgroundImage: `url(${data.image_url})`,

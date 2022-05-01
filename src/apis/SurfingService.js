@@ -58,7 +58,7 @@ class SurfingService {
   sendEmail = async (params) => {
     try {
 
-      const body =  {
+      const body = {
         "user_id": params["user_id"],
         "type": params["type"],
         "body": params["body"]
@@ -67,11 +67,11 @@ class SurfingService {
       const resp = await axios.post(
         `${this.url}/development/send_email`, body
       );
-            
+
       if (resp.status !== 200) {
         return false;
       }
-      
+
       return true;
     } catch (error) {
       console.log(error);
@@ -110,6 +110,7 @@ class SurfingService {
 
     console.log("creating new account", resp)
     const resp = await axios(config);
+    console.log("tried to create account", resp);
   }
 
   putSurfingAccount = async (userId, accountDetails) => {
@@ -170,19 +171,19 @@ class SurfingService {
   }
 
   getFavorites = async (userId) => {
-      let baseURL = "https://usvfzvu80m.execute-api.us-east-1.amazonaws.com/development/user/favorites?user_id=" + userId;
+    let baseURL = "https://usvfzvu80m.execute-api.us-east-1.amazonaws.com/development/user/favorites?user_id=" + userId;
 
-      var config = {
-        method: 'get',
-        url: baseURL,
-      };
+    var config = {
+      method: 'get',
+      url: baseURL,
+    };
 
-      var favs = await axios(config);
-      favs = favs.data.filter((f) => {
-        return f !== '[object Object]'
-      })
+    var favs = await axios(config);
+    favs = favs.data.filter((f) => {
+      return f !== '[object Object]' && f !== "undefined"
+    })
 
-      return favs;
+    return favs;
   }
 
   putFavorites = async (userId, beachId) => {
@@ -221,19 +222,28 @@ class SurfingService {
 
   getFavoriteLocation = async (surfId) => {
 
-    let baseURL = "https://usvfzvu80m.execute-api.us-east-1.amazonaws.com/development/get_favorite?id=" + surfId;
+    var categories = ["beach", "shop", "lesson"]
 
-    var config = {
-      method: 'get',
-      url: baseURL,
-      headers: { }
-    };
+    for (let c of categories) {
+      let baseURL = "https://usvfzvu80m.execute-api.us-east-1.amazonaws.com/development/get_favorite?id=" + surfId;
+      baseURL += "&category=" + c;
 
-    const resp = await axios(config);
+      var config = {
+        method: 'get',
+        url: baseURL,
+        headers: {}
+      };
 
-    console.log("GET FAV DATA URL", baseURL)
+      var resp = await axios(config);
 
-    return {...resp.data.body, id: surfId};
+      console.log("params", surfId, c)
+      console.log("got resp", resp)
+
+      if (resp.data.statusCode === 200) {
+        return { ...resp.data.body, id: surfId };
+      }
+    }
+
   }
 }
 

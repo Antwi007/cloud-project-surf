@@ -22,10 +22,12 @@ const CardSurf = (props) => {
     var secondaryText = null;
     if (data["beach_name"] !== undefined) {
         secondaryText = "SurfScore: " + data.surf_score.toFixed(2)
-    } else if (data["lesson_name"] !== undefined) {
-        secondaryText = "Distance from Loc: " + data.distance_from_coord_miles
-    } else if (data["shop_name"] !== undefined) {
-        secondaryText = "Distance from Loc: " + data.distance_from_coord_miles
+    } else if (data["lesson_name"] !== undefined && data.distance_from_coord_miles) {
+        secondaryText = "Distance from Loc: " + data.distance_from_coord_miles;
+    } else if (data["shop_name"] !== undefined && data.distance_from_coord_miles) {
+        secondaryText = "Distance from Loc: " + data.distance_from_coord_miles;
+    } else if (data["lesson_name"] !== undefined || data["shop_name"] !== undefined ) {
+        secondaryText = "Rating: " + data.rating;
     }
 
     return (

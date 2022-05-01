@@ -50,24 +50,23 @@ const Swiper = (props) => {
     breakpoints: breakpoints,
     autoplay: props.autoplay
       ? {
-          delay: props.delay,
-        }
+        delay: props.delay,
+      }
       : false,
     pagination:
       props.pagination !== false
         ? {
-            el: `.swiper-pagination.${props.paginationClass}`,
-            clickable: true,
-            dynamicBullets: true,
-          }
+          el: `.swiper-pagination.${props.paginationClass}`,
+          clickable: true,
+          dynamicBullets: true,
+        }
         : false,
     navigation: {
       nextEl: props.navigation ? ".swiper-button-next" : "",
       prevEl: props.navigation ? ".swiper-button-prev" : "",
     },
-    wrapperClass: `swiper-wrapper ${
-      props.wrapperClass ? props.wrapperClass : ""
-    }`,
+    wrapperClass: `swiper-wrapper ${props.wrapperClass ? props.wrapperClass : ""
+      }`,
   };
 
   return props.data ? (
@@ -78,11 +77,10 @@ const Swiper = (props) => {
             key={slide}
             style={{
               // backgroundColor:'red',
-              backgroundImage: `${
-                props.darken
+              backgroundImage: `${props.darken
                   ? "linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.3)),linear-gradient(to left, rgba(0,0,0,0), rgba(0,0,0,0.9)),"
                   : ""
-              } \
+                } \
                 url(/content/img/photo/${slide})`,
             }}
           />
@@ -90,18 +88,20 @@ const Swiper = (props) => {
           <div key={index} className="h-auto w-50 px-2">
             {props.cards && (
               <div className="w-100 h-100 hover-animate">
-                    <CardRestaurant
-                     data = {slide}
-                    />
+                <CardRestaurant
+                  data={slide}
+                  onCardEnter={props.onCardEnter}
+                  onCardExit={props.onCardExit}
+                />
               </div>
             )}
             {props.beaches && (
               <div className="w-100 h-100 hover-animate">
-                    <CardBeach
-                     data = {slide}
-                     type= {props.type}
-                     center= {props.center}
-                    />
+                <CardBeach
+                  data={slide}
+                  type={props.type}
+                  center={props.center}
+                />
               </div>
             )}
           </div>

@@ -271,6 +271,8 @@ const SearchResultsPage = () => {
     ))
   }
 
+  console.log("search results page", surfData)
+
   return (
     <React.Fragment>
       <Container fluid>

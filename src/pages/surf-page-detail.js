@@ -52,6 +52,9 @@ const SurfPageDetail = () => {
     const [errorVisible, setErrorVisible] = useState(false);
     const [error, setError] = useState("");
     const [isSurfBreak, setIsSurfBreak] = useState(false);
+    const [geoJSON, setGeoJSON] = useState([])
+    const [addedRests, setAddedRests] = useState(false);
+    const [hoverCard, setHoverCard] = useState(null)
 
     const [loading, setLoading] = useState(true);
     const location = useLocation()
@@ -64,17 +67,36 @@ const SurfPageDetail = () => {
     const userId = useSelector(state => state.auth.userId)
 
     useEffect(() => {
+        setGeoJSON([query])
+        setHoverCard(query.surfline_id ?? query.shop_id)
+    }, [])
 
+    useEffect(() => {
         setMapLoaded(true)
 
         setTap(size.width > 700 ? true : false)
         setDragging(size.width > 700 ? true : false)
 
         if (surfProfile.favorites) {
-            setFavoriteAdded(surfProfile.favorites.includes(query.surfline_id))
+            setFavoriteAdded(surfProfile.favorites.includes(query.surfline_id ?? query.shop_id))
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [size.width, surfProfile])
+
+    useEffect(() => {
+        if (!addedRests && details["yelp-data"] && details["yelp-data"]["restaurants"]) {
+            var tempGeoJSON = [...geoJSON]
+            for (let r of details["yelp-data"]["restaurants"]) {
+                tempGeoJSON.push({
+                    lat: r.coordinates.latitude,
+                    lon: r.coordinates.longitude,
+                    ...r
+                })
+            }
+            setGeoJSON(tempGeoJSON)
+            setAddedRests(true)
+        }
+    }, [details])
 
     async function getSurfResults(surf_id) {
         try {
@@ -85,7 +107,7 @@ const SurfPageDetail = () => {
             }
             const resp = await surfingObject.getSurfDetails(params)
             if (resp.statusCode === 200) {
-                if ("surfline-data" in resp.body){
+                if ("surfline-data" in resp.body) {
                     setIsSurfBreak(true)
                 }
                 setDetails(resp.body);
@@ -93,22 +115,22 @@ const SurfPageDetail = () => {
 
         } catch (error) {
             console.log(error)
-        }finally {
+        } finally {
             setLoading(false)
-          }
+        }
     }
 
     async function sendDetailsEmail() {
         try {
             const params = {}
-  
+
             // params["user_id"] = "aschreiber1";
             params["user_id"] = userId;
             params["type"] = search_type;
-            params["body"] = (isSurfBreak) ? details : query;                        
-            
+            params["body"] = (isSurfBreak) ? details : query;
+
             const resp = await surfingObject.sendEmail(params)
-  
+
             if (resp === true) {
                 setError('Successfully sent email, please check in a few minutes.')
                 setErrorVisible(true)
@@ -165,13 +187,24 @@ const SurfPageDetail = () => {
                 setNearbyBeaches(res)
             }
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const dismissError = () => {
         setError("");
         setErrorVisible(false);
-      };
+    };
+
+    const onCardEnter = (id) => {
+        setHoverCard(id)
+    }
+    const onCardExit = () => {
+        setHoverCard(null)
+    }
+
+    console.log("surf page details", query)
+    console.log("geoJSON", geoJSON)
+    console.log("restaurants", details["yelp-data"] ? details["yelp-data"]["restaurants"] : null)
 
     return (
         <React.Fragment>
@@ -212,20 +245,20 @@ const SurfPageDetail = () => {
                                         <h4 className="mb-4">Beach Details</h4>
                                         <Row>
                                             {loading && search_type === "beaches" &&
-                                                    [...Array(2)].map((el, index) => (
+                                                [...Array(2)].map((el, index) => (
                                                     <Col key={index} sm="6" className="mb-5 hover-animate">
                                                         <Skeleton count={5} />
                                                     </Col>
-                                                    ))
+                                                ))
                                             }
                                             <Col md="4">
                                                 {Object.keys(details).length !== 0 &&
-                                                <WeatherCard data={details["weather-data"]}></WeatherCard>
+                                                    <WeatherCard data={details["weather-data"]}></WeatherCard>
                                                 }
                                             </Col>
                                             <Col className="w-50">
                                                 {Object.keys(details).length !== 0 &&
-                                                <WindCard data={details["surfline-data"]}></WindCard>
+                                                    <WindCard data={details["surfline-data"]}></WindCard>
                                                 }
                                             </Col>
                                         </Row>
@@ -262,9 +295,9 @@ const SurfPageDetail = () => {
                             <Row>
                                 {loading && search_type === "beaches" &&
                                     [...Array(2)].map((el, index) => (
-                                    <Col key={index} sm="6" className="mb-5 hover-animate">
-                                        <Skeleton count={5} />
-                                    </Col>
+                                        <Col key={index} sm="6" className="mb-5 hover-animate">
+                                            <Skeleton count={5} />
+                                        </Col>
                                     ))
                                 }
                             </Row>
@@ -279,6 +312,8 @@ const SurfPageDetail = () => {
                                     xl={5}
                                     data={details["yelp-data"]["restaurants"]}
                                     cards
+                                    onCardEnter={onCardEnter}
+                                    onCardExit={onCardExit}
                                 />
                             }
                             {(search_type === "lessons" || search_type === "surfshops") && <h4 className="mb-4 mt-2">Nearby Beaches</h4>}
@@ -309,8 +344,9 @@ const SurfPageDetail = () => {
                                             zoom={14}
                                             dragging={dragging}
                                             tap={tap}
-                                            geoJSON={[query]}
+                                            geoJSON={geoJSON}
                                             type={search_type}
+                                            hoverCard={hoverCard}
                                         />
                                     }
                                 </div>
@@ -359,13 +395,14 @@ const SurfPageDetail = () => {
                                         {favoriteAdded ?
                                             <button
                                                 onClick={async () => {
-                                                    var tempFavs = surfProfile.favorites.filter(function(loc) { 
-                                                        return loc !== query.surfline_id
+                                                    const id = query.surfline_id ?? query.shop_id
+                                                    var tempFavs = surfProfile.favorites.filter(function (loc) {
+                                                        return loc !== id
                                                     })
                                                     var tempSurfProfile = { ...surfProfile, favorites: tempFavs }
                                                     dispatch(putSurfAccountDetails(tempSurfProfile));
                                                     setFavoriteAdded(false);
-                                                    await surfingObject.deleteFavorites(userId, query.surfline_id);
+                                                    await surfingObject.deleteFavorites(userId, id);
                                                 }}
                                                 style={{ border: 'none', backgroundColor: 'transparent' }}
                                             >
@@ -375,27 +412,28 @@ const SurfPageDetail = () => {
                                                 </a>
                                             </button> :
                                             <>
-                                            <button
-                                                onClick={async () => {
-                                                    var tempFavs = surfProfile.favorites ?? []
-                                                    tempFavs.push(query.surfline_id)
-                                                    var tempSurfProfile = { ...surfProfile, favorites: tempFavs }
-                                                    dispatch(putSurfAccountDetails(tempSurfProfile));
-                                                    setFavoriteAdded(true);
-                                                    await surfingObject.putFavorites(userId, query.surfline_id);
-                                                }}
-                                                style={{ border: 'none', backgroundColor: 'transparent' }}
-                                            >
-                                                <a className="text-secondary text-sm text-muted">
-                                                    <i className="fa fa-heart" />
-                                                    &nbsp;Add Surf Location to Favorites
-                                                </a>
-                                                
-                                            </button>
-                                            
+                                                <button
+                                                    onClick={async () => {
+                                                        const id = query.surfline_id ?? query.shop_id
+                                                        var tempFavs = surfProfile.favorites ?? []
+                                                        tempFavs.push(id)
+                                                        var tempSurfProfile = { ...surfProfile, favorites: tempFavs }
+                                                        dispatch(putSurfAccountDetails(tempSurfProfile));
+                                                        setFavoriteAdded(true);
+                                                        await surfingObject.putFavorites(userId, id);
+                                                    }}
+                                                    style={{ border: 'none', backgroundColor: 'transparent' }}
+                                                >
+                                                    <a className="text-secondary text-sm text-muted">
+                                                        <i className="fa fa-heart" />
+                                                        &nbsp;Add Surf Location to Favorites
+                                                    </a>
+
+                                                </button>
+
                                             </>
                                         }
-                                        
+
                                     </p><Button color="primary" onClick={sendDetailsEmail}>Email me details</Button>
                                 </div>
                             </div>
@@ -405,12 +443,12 @@ const SurfPageDetail = () => {
                         isOpen={errorVisible}
                         toggle={dismissError}
                         className="text-center"
-                        >
+                    >
                         <ModalHeader className="border-0" toggle={dismissError}></ModalHeader>
                         <ModalBody className="border-0">{error}</ModalBody>
                         <ModalFooter className="border-0">
                             <Button color="primary" onClick={dismissError}>
-                            Ok
+                                Ok
                             </Button>
                         </ModalFooter>
                     </Modal>
