@@ -24,10 +24,6 @@ const surfSearchReducer = (state = INTIAL_STATE, action) => {
         case PUT_SURF_DATA:
             return { ...state, surfData: action.payload };
         case PUT_SURF_SEARCH_PARAMS:
-            console.log("reducer here", {
-                ...state.surfSearchParams,
-                [action.payload[0]]: action.payload[1]
-            })
             return { 
                 ...state, 
                 surfSearchParams: {
