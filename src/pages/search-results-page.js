@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   Container,
   Row,
@@ -18,20 +19,30 @@ import MapSurf from '../components/MapSurf'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import sadSurf from '../components/images/sad_surf3.jpeg';
+import { putSurfKeyword, putSurfData, putSurfSearchParams } from '../actions';
 
 const surfingObject = new SurfingService();
 
 const SearchResultsPage = () => {
+  const surfSearch = useSelector(state => state.surfSearch);
+  const surfSearchParams = useSelector(state => state.surfSearch.surfSearchParams);
+  const dispatch = useDispatch();
+
+  console.log("surf search", surfSearch);
+
   const router = useLocation();
-  const [searchKey, setSearchKey] = useState("");
+  const [searchKey, setSearchKey] = useState(surfSearch.keyword);
   const [mapLoaded, setMapLoaded] = useState(false)
-  const [dragging, setDragging] = useState(false)
-  const [tap, setTap] = useState(false)
-  const [hoverCard, setHoverCard] = useState(null)
-  const [surfData, setSurfData] = useState([]);
-  const [loading, setLoading] = useState(router.query !== undefined ? true : null);
-  const [center, setCenter] = useState([40.5842, -73.99967]);
-  const [status, setStatus] = useState(0);
+  const [dragging, setDragging] = useState(surfSearchParams.dragging || false)
+  const [tap, setTap] = useState(surfSearchParams.tap || false)
+  const [hoverCard, setHoverCard] = useState(surfSearchParams.hoverCard || null)
+  const [surfData, setSurfData] = useState(surfSearch.surfData);
+  const [loading, setLoading] = useState(
+    router.query !== undefined ? true
+      : (surfSearch.surfData) ? false
+        : null);
+  const [center, setCenter] = useState(surfSearchParams.center || [40.5842, -73.99967]);
+  const [status, setStatus] = useState(surfSearchParams.status || 0);
   const postsPerPage = 10;
   const data = {
     "options": [{
@@ -60,15 +71,19 @@ const SearchResultsPage = () => {
     "lessons": "shop_id",
     "surfshops": "shop_id"
   }
-  const [searchType, setSearchType] = useState(data.options[0])
-  const [searchOption, setSearchOption] = useState(data.options[0].label)
+  const [searchType, setSearchType] = useState(surfSearchParams.searchType || data.options[0])
+  const [searchOption, setSearchOption] = useState(surfSearchParams.searchOption || data.options[0].label)
+
+  console.log(surfData, surfSearchParams)
 
   const handleSearchKeyChange = (e) => {
     setSearchKey(e.target.value);
+    dispatch(putSurfKeyword(e.target.value));
   };
 
-  const handleTypeChange = (e, useStateHook) => {
+  const handleTypeChange = (e) => {
     setSearchType(data.options.find((el) => el.value === e.value));
+    dispatch(putSurfSearchParams(["searchType", data.options.find((el) => el.value === e.value)]))
   };
   const size = UseWindowSize();
 
@@ -95,7 +110,8 @@ const SearchResultsPage = () => {
 
     setTap(size.width > 700 ? true : false)
     setDragging(size.width > 700 ? true : false)
-
+    dispatch(putSurfSearchParams(["dragging", size.width > 700 ? true : false]))
+    dispatch(putSurfSearchParams(["tap", size.width > 700 ? true : false]))
   }, [size.width])
 
 
@@ -110,11 +126,15 @@ const SearchResultsPage = () => {
     if (typeof router.query !== 'undefined' && router.query.searchKey) {
       routerSearchKey = router.query.searchKey;
       setSearchKey(routerSearchKey);
+      dispatch(putSurfKeyword(routerSearchKey));
     }
 
     if (typeof router.query !== 'undefined' && router.query.option) {
       routerOption = router.query.option;
       setSearchOption(routerOption);
+      dispatch(putSurfSearchParams(
+        ["searchOption", routerOption]
+      ))
     }
 
     if (typeof router.query !== 'undefined' && router.query.isNearby) {
@@ -135,6 +155,9 @@ const SearchResultsPage = () => {
   async function getSurfResults(routerSearchKey, routerOption, routerIsNearby, routerLat, routerLon) {
     try {
       setLoading(true);
+      dispatch(putSurfSearchParams(
+        ["loading", true]
+      ))
       const params = {}
 
       if (routerSearchKey) {
@@ -148,6 +171,9 @@ const SearchResultsPage = () => {
       } else if (searchType) {
         params["search-type"] = option_dict[searchType.label]
         setSearchOption(searchType.label)
+        dispatch(putSurfSearchParams(
+          ["searchOption", searchType.label]
+        ))
         console.log("search type:", searchOption)
       }
 
@@ -177,14 +203,24 @@ const SearchResultsPage = () => {
       console.log(resp)
       if (!resp) {
         setSurfData([])
+        dispatch(putSurfData([]));
         setLoading(false)
+        dispatch(putSurfSearchParams(["loading", false]))
         return
       }
 
       setStatus(resp.statusCode)
+      dispatch(putSurfSearchParams(
+        ["status", resp.statusCode]
+      ))
+
       if (resp.statusCode !== 200) {
         setSurfData([])
+        dispatch(putSurfData([]));
         setLoading(false)
+        dispatch(putSurfSearchParams(
+          ["loading", false]
+        ))
         return
       }
 
@@ -195,6 +231,7 @@ const SearchResultsPage = () => {
         res.push(obj[i])
       }
       setSurfData(res)
+      dispatch(putSurfData(res))
       console.log("search type:", searchOption)
       console.log("initial center", center)
 
@@ -204,24 +241,38 @@ const SearchResultsPage = () => {
         console.log("search Option 1:", option)
         console.log("latitude: ", lat_dict[option_dict[searchOption]])
         setCenter([location[lat_dict[option]], location[lon_dict[option]]])
+        dispatch(putSurfSearchParams(["center", [location[lat_dict[option]], location[lon_dict[option]]]]));
       }
 
       console.log("center after call:", center)
+      // console.log("finally call", surfSearchParams)
 
     } catch (error) {
       setSurfData([])
+      dispatch(putSurfData([]))
     } finally {
       setLoading(false)
+      dispatch(putSurfSearchParams(
+        ["loading", false]
+      ))
     }
 
   }
 
   const onCardEnter = (id) => {
     setHoverCard(id)
+    dispatch(putSurfSearchParams(
+      ["hoverCard", id]
+    ))
   }
   const onCardLeave = () => {
-    setHoverCard(null)
+    dispatch(putSurfSearchParams(
+      ["hoverCard", null]
+    ))
   }
+
+  console.log(surfSearch, surfData)
+  console.log(surfSearchParams.status)
 
   return (
     <React.Fragment>
@@ -263,7 +314,7 @@ const SearchResultsPage = () => {
                     isSearchable
                     className="form-control dropdown bootstrap-select"
                     classNamePrefix="selectpicker"
-                    onChange={(e) => handleTypeChange(e, setSearchType)}
+                    onChange={(e) => handleTypeChange(e)}
                   />
                 </div>
                 <div className="mb-4">
@@ -316,7 +367,7 @@ const SearchResultsPage = () => {
               lg="6"
               className="mt-1 map-side-lg pr-lg-0"
             >
-              {((loading === false) && (status === 200 || status === 204) && center[0] !== 'undefined' && mapLoaded) ?
+              {((loading === false) && (status === 200 || status === 204 || surfData.length > 0) && center[0] !== 'undefined' && mapLoaded) ?
                 <MapSurf
                   className="map-full shadow-left"
                   center={center}

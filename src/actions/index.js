@@ -6,7 +6,10 @@ import {
   PUT_SURF_ACCOUNT_DETAILS,
   PUT_PROFILE_PIC,
   CHANGE_LOCATION,
-  REMOVE_SURFING_ACCOUNT
+  REMOVE_SURFING_ACCOUNT,
+  PUT_SURF_KEYWORD,
+  PUT_SURF_DATA,
+  PUT_SURF_SEARCH_PARAMS,
 } from "./types";
 
 export const signIn = (userId) => {
@@ -60,5 +63,26 @@ export const changeLocation = (location) => {
 export const removeSurfingAccount = () => {
   return {
     type: REMOVE_SURFING_ACCOUNT,
+  }
+}
+
+export const putSurfKeyword = (keyword) => {
+  return {
+    type: PUT_SURF_KEYWORD,
+    payload: keyword,
+  }
+}
+
+export const putSurfData = (surfData) => {
+  return {
+    type: PUT_SURF_DATA,
+    payload: surfData,
+  }
+}
+
+export const putSurfSearchParams = (searchParams) => {
+  return {
+    type: PUT_SURF_SEARCH_PARAMS,
+    payload: searchParams
   }
 }
