@@ -96,8 +96,7 @@ class SurfingService {
   }
 
   createSurfingAccount = async (userId, email) => {
-    console.log(userId)
-    var data = '{\n    "user_id":"' + userId + '",\n    "details": {}\n}'
+    var data = '{\n    "user_id":"' + userId + '",\n    "details": {\n        "email":"' + email + '"\n    }\n}';
 
     var config = {
       method: 'put',
@@ -111,7 +110,6 @@ class SurfingService {
     console.log("creating new account", resp)
     const resp = await axios(config);
     console.log("tried to create account", resp);
-    await this.putSurfingAccount(userId, {email});
   }
 
   putSurfingAccount = async (userId, accountDetails) => {
