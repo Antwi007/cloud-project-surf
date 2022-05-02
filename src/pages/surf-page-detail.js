@@ -123,6 +123,13 @@ const SurfPageDetail = () => {
 
     async function sendDetailsEmail() {
         try {
+
+            if (userId === null){
+                setError('Please make sure you are signed in.')
+                setErrorVisible(true)
+                return
+            }
+
             const params = {}
 
             // params["user_id"] = "aschreiber1";
@@ -131,20 +138,19 @@ const SurfPageDetail = () => {
             params["body"] = (isSurfBreak) ? details : query;
 
             const resp = await surfingObject.sendEmail(params)
-
+            
             if (resp === true) {
                 setError('Successfully sent email, please check in a few minutes.')
                 setErrorVisible(true)
                 return
             } else {
-                setError('Sorry there was a problem. Please try again later.')
-                setErrorVisible(true)
+
                 return
             }
 
         } catch (error) {
-            console.log(error);
-            alert('Sorry there was a problem. Please try again later.');
+            setError('Sorry there was a problem. Please try again later.')
+            setErrorVisible(true)
         }
         return
     }
@@ -202,6 +208,7 @@ const SurfPageDetail = () => {
     const onCardExit = () => {
         setHoverCard(null)
     }
+    
 
     return (
         <React.Fragment>
@@ -220,9 +227,9 @@ const SurfPageDetail = () => {
                                         {option_dict[search_type]}
                                     </div>
                                 }
-                                {search_type === "beaches" && details["surf-score"] &&
+                                {search_type === "beaches" && query["surf_score"] &&
                                     <p>
-                                        Surf-Score <i className={`fa fa-star mr-1 text-secondary`} /> {details["surf-score"].toFixed(2)}
+                                        Surf-Score <i className={`fa fa-star mr-1 text-secondary`} /> {query["surf_score"].toFixed(2)}
                                     </p>
                                 }
                                 {search_type === "lessons" &&

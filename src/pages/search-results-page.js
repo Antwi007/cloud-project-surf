@@ -376,8 +376,8 @@ const SearchResultsPage = () => {
             </Col>
           </div>
         </Row>
-      </Container >
-    </React.Fragment >
+      </Container>
+    </React.Fragment>
   )
 }
 
