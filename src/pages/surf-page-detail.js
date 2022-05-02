@@ -220,9 +220,9 @@ const SurfPageDetail = () => {
                                         {option_dict[search_type]}
                                     </div>
                                 }
-                                {search_type === "beaches" && query["surf_score"] &&
+                                {search_type === "beaches" && details["surf-score"] &&
                                     <p>
-                                        Surf-Score <i className={`fa fa-star mr-1 text-secondary`} /> {query.surf_score.toFixed(2)}
+                                        Surf-Score <i className={`fa fa-star mr-1 text-secondary`} /> {details["surf-score"].toFixed(2)}
                                     </p>
                                 }
                                 {search_type === "lessons" &&
