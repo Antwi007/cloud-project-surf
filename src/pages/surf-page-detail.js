@@ -203,9 +203,6 @@ const SurfPageDetail = () => {
         setHoverCard(null)
     }
 
-    console.log("wind card", details["surfline-data"])
-    console.log("gjson", geoJSON)
-
     return (
         <React.Fragment>
             <section>
