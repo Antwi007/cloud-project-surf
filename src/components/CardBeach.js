@@ -33,10 +33,18 @@ const CardBeach = (props) => {
     "id": data["surfline_id"]
   }
 
+  console.log("this is props", props)
+
   return (
     <Card className="card-poster gradient-overlay hover-animate mb-4 mb-lg-0">
         <div>
-        <Link to={{ pathname: '/surf-page-detail', state: { query: query, search_type: type}}}>
+        <Link 
+          to={{ 
+            pathname: '/surf-page-detail', 
+            state: { query: query, search_type: type},
+            id: props.data.id
+          }}
+        >
           <div className="tile-link" />
         </Link>
         </div>

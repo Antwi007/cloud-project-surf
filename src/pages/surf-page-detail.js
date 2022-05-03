@@ -42,7 +42,7 @@ export async function getStaticProps() {
 }
 
 
-const SurfPageDetail = () => {
+const SurfPageDetail = (props) => {
     const [mapLoaded, setMapLoaded] = useState(false)
     const [dragging, setDragging] = useState(false)
     const [tap, setTap] = useState(false)
@@ -71,7 +71,7 @@ const SurfPageDetail = () => {
     useEffect(() => {
         setGeoJSON([query])
         setHoverCard(query.surfline_id ?? query.shop_id)
-    }, [])
+    }, [props.location.id])
 
     useEffect(() => {
         setMapLoaded(true)
@@ -83,7 +83,7 @@ const SurfPageDetail = () => {
             setFavoriteAdded(surfProfile.favorites.includes(query.surfline_id ?? query.shop_id))
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [size.width, surfProfile])
+    }, [size.width, surfProfile, props.location.id])
 
     useEffect(() => {
         if (!addedRests && details["yelp-data"] && details["yelp-data"]["restaurants"]) {
@@ -98,7 +98,7 @@ const SurfPageDetail = () => {
             setGeoJSON(tempGeoJSON)
             setAddedRests(true)
         }
-    }, [details])
+    }, [details, props.location.id])
 
     async function getSurfResults(surf_id) {
         try {
@@ -108,6 +108,7 @@ const SurfPageDetail = () => {
                 params["id"] = surf_id;
             }
             const resp = await surfingObject.getSurfDetails(params)
+            console.log("got it", resp)
             if (resp.statusCode === 200) {
                 if ("surfline-data" in resp.body) {
                     setIsSurfBreak(true)
@@ -180,9 +181,12 @@ const SurfPageDetail = () => {
         "surfshops": "shop_lat"
     }
 
-    useEffect(() => {
+    useEffect(async () => {
+        console.log("use effect called!!!!", query)
+        const id = query["surfline_id"] ?? query["id"]
         if (search_type === "beaches") {
-            getSurfResults(query["surfline_id"]);
+            getSurfResults(id);
+            console.log(id);
         }
 
         if (search_type === "lessons" || search_type === "surfshops") {
@@ -190,13 +194,19 @@ const SurfPageDetail = () => {
                 var obj = JSON.parse(query["nearest_beaches"])
                 var res = []
                 for (var i in obj) {
-                    res.push(obj[i])
+                    const bData = await surfingObject.getFavoriteLocation(obj[i]["surfline_id"] ?? obj[i]["id"] )
+                    res.push({
+                        ...bData, 
+                        ...obj[i],
+                        beach_lon: bData.lon,
+                        beach_lat: bData.lat
+                    })
                 }
                 setNearbyBeaches(res)
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [props.location.id])
 
     const dismissError = () => {
         setError("");
@@ -210,8 +220,8 @@ const SurfPageDetail = () => {
         setHoverCard(null)
     }
 
-
     return (
+        <div key={props.location.id}>
         <React.Fragment>
             <section>
                 <Container className="py-5 mt-6">
@@ -479,6 +489,7 @@ const SurfPageDetail = () => {
                 </Container>
             </section>
         </React.Fragment>
+        </div>
     )
 
 }

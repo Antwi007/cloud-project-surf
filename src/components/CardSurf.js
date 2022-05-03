@@ -35,14 +35,22 @@ const CardSurf = (props) => {
         <Card className="h-auto border-0 shadow">
             <div className="card-img-top overflow-hidden gradient-overlay">
                 <img src={data.thumbnail} alt={type} className="img-fluid" />
-                <Link to={{ pathname: '/surf-page-detail', state: { query: data, search_type: type } }}>
+                <Link to={{ 
+                    pathname: '/surf-page-detail', 
+                    state: { query: data, search_type: type },
+                    id: props.data.id 
+                }}>
                     <div className="tile-link" />
                 </Link>
             </div>
             <CardBody className="d-flex align-items-center">
                 <div className="w-100">
                     <CardTitle tag="h6">
-                        <Link to={{ pathname: '/surf-page-detail', state: { query: data, search_type: type } }}>
+                        <Link to={{ 
+                            pathname: '/surf-page-detail', 
+                            state: { query: data, search_type: type },
+                            id: props.data.id 
+                        }}>
                             <div className="text-decoration-none text-dark">
                                 {(data["beach_name"] ?? data["lesson_name"]) ?? data["shop_name"]}
                             </div>

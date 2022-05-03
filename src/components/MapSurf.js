@@ -71,10 +71,15 @@ const MapSurf = (props) => {
                 feature.lat,
                 feature.lon
             ]
-        } else {
+        } else if (feature[lat_dict[type]] && feature[lon_dict[type]]){
             toReturn = [
                 feature[lat_dict[type]],
                 feature[lon_dict[type]]
+            ]
+        } else {
+            toReturn = [
+                feature.shop_lat,
+                feature.shop_lon,
             ]
         }
         return toReturn;
@@ -84,8 +89,6 @@ const MapSurf = (props) => {
     useEffect(() => {
         setHover(props.hoverCard);
     }, [props.hoverCard]);
-
-    console.log("map surf", props);
 
     if ((props.geoJSON && props.geoJSON.length > 0 && props.geoJSON[0][lat_dict[type]]) || props.circlePosition) {
         return (
@@ -113,10 +116,15 @@ const MapSurf = (props) => {
                             feature.lat,
                             feature.lon
                         ]
-                    } else {
+                    } else if (feature[lat_dict[type]] && feature[lon_dict[type]]){
                         toReturn = [
                             feature[lat_dict[type]],
                             feature[lon_dict[type]]
+                        ]
+                    } else {
+                        toReturn = [
+                            feature.shop_lat,
+                            feature.shop_lon,
                         ]
                     }
                     const shouldHover = (
