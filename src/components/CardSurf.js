@@ -1,14 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from 'react-router-dom'
 import {
     Card,
     CardBody,
     CardTitle,
     CardSubtitle
-} from 'reactstrap'
+} from 'reactstrap';
+
+import '../scss/surfscore.scss';
 
 const CardSurf = (props) => {
-    const data = props.data
+    const data = props.data;
+    var color = "red"
+
     var type = null;
 
     if (data["beach_name"] !== undefined) {
@@ -21,6 +25,14 @@ const CardSurf = (props) => {
 
     var secondaryText = null;
     if (data["beach_name"] !== undefined) {
+
+        if (data.surf_score.toFixed(2) < 4){
+            color="red"
+        } else if (data.surf_score.toFixed(2)< 7){
+            color = "yellow"
+        } else{
+            color = "green"
+        }
         secondaryText = "SurfScore: " + data.surf_score.toFixed(2)
     } else if (data["lesson_name"] !== undefined && data.distance_from_coord_miles) {
         secondaryText = "Distance from Loc: " + data.distance_from_coord_miles;
@@ -50,7 +62,19 @@ const CardSurf = (props) => {
                     </CardTitle>
                     <CardSubtitle className="d-flex mb-3">
                         <p className="flex-grow-1 mb-0 text-muted text-sm">
-                            {secondaryText}
+                            
+                            {(data["beach_name"] !== undefined) ?
+                                <>
+                                <span>SurfScore: </span> <span className={color}>{data.surf_score.toFixed(2)}</span>
+
+                                </>
+                            :
+                            <>
+                                {secondaryText}
+                            </>
+                            }
+                            
+                            
                         </p>
                     </CardSubtitle>
                 </div>

@@ -19,6 +19,8 @@ import UseWindowSize from '../hooks/UseWindowSize';
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 
+import '../scss/surfscore.scss';
+
 import MapSurf from '../components/MapSurf'
 import Swiper from '../components/Swiper'
 import SurfingService from '../apis/SurfingService';
@@ -54,7 +56,8 @@ const SurfPageDetail = () => {
     const [isSurfBreak, setIsSurfBreak] = useState(false);
     const [geoJSON, setGeoJSON] = useState([])
     const [addedRests, setAddedRests] = useState(false);
-    const [hoverCard, setHoverCard] = useState(null)
+    const [hoverCard, setHoverCard] = useState(null);
+    const [surfScoreColor, setSurfScoreColor] = useState("");
 
     const [loading, setLoading] = useState(true);
     const location = useLocation()
@@ -194,6 +197,14 @@ const SurfPageDetail = () => {
                 setNearbyBeaches(res)
             }
         }
+
+        if (query["surf_score"] < 4){
+            setSurfScoreColor("red")
+        } else if (query["surf_score"] < 7){
+            setSurfScoreColor("yellow")
+        } else{
+            setSurfScoreColor("green")
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -229,7 +240,7 @@ const SurfPageDetail = () => {
                                 }
                                 {search_type === "beaches" && query["surf_score"] &&
                                     <p>
-                                        Surf-Score <i className={`fa fa-star mr-1 text-secondary`} /> {query["surf_score"].toFixed(2)}
+                                        Surf-Score <i className={`fa fa-star mr-1 text-secondary`} /> <span className={surfScoreColor}>{query["surf_score"].toFixed(2)}</span>
                                     </p>
                                 }
                                 {search_type === "lessons" &&
