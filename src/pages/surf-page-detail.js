@@ -69,7 +69,7 @@ const SurfPageDetail = (props) => {
     const authProfile = useSelector(state => state.auth);
     const userId = useSelector(state => state.auth.userId)
 
-    console.log("surf page detail", query)
+    // console.log("surf page detail", query)
 
     useEffect(() => {
         setGeoJSON([query])
@@ -89,6 +89,7 @@ const SurfPageDetail = (props) => {
     }, [size.width, surfProfile, props.location.id])
 
     useEffect(() => {
+        // console.log("called", addedRests, details["yelp-data"])
         if (!addedRests && details["yelp-data"] && details["yelp-data"]["restaurants"]) {
             var tempGeoJSON = [...geoJSON]
             for (let r of details["yelp-data"]["restaurants"]) {
@@ -111,7 +112,7 @@ const SurfPageDetail = (props) => {
                 params["id"] = surf_id;
             }
             const resp = await surfingObject.getSurfDetails(params)
-            console.log("got it", resp)
+            // console.log("got it", resp)
             if (resp.statusCode === 200) {
                 if ("surfline-data" in resp.body) {
                     setIsSurfBreak(true)

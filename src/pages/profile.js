@@ -80,7 +80,10 @@ const Profile = () => {
             var u = URL.createObjectURL(surfProfile.profilePic);
             setProfilePic(u)
         } catch {
-            setProfilePic(surfProfile.profilePic ? surfProfile.profilePic : `/content/img/${data.avatar}`)
+            // console.log("here's the url", surfProfile.profilePic ? surfProfile.profilePic : `/content/img/${data.avatar}`)
+            const randomNum = Math.floor(Math.random() * 10000)
+            // console.log(surfProfile.profilePic + "?v=" + randomNum)
+            setProfilePic(surfProfile.profilePic ? surfProfile.profilePic + "?v=" + randomNum : `/content/img/${data.avatar}`)
         }
         setFullName((surfProfile.fullName && surfProfile.fullName !== "undefined") ? surfProfile.fullName : authProfile.fullName)
         setLocation((surfProfile.location && surfProfile.location !== "null") ? surfProfile.location : "Los Angeles, CA")
@@ -147,7 +150,7 @@ const Profile = () => {
                                                 type='file'
                                                 title=" "
                                                 onChange={(e) => {
-                                                    console.log(e.target.files[0])
+                                                    // console.log(e.target.files[0])
                                                     var u = URL.createObjectURL(e.target.files[0])
                                                     dispatch(putProfilePic(e.target.files[0]));
                                                     setProfilePic(u);
