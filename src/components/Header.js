@@ -58,13 +58,7 @@ const Header = () => {
             </NavLink>
           </div>
         </Container>
-        <Nav navbar className="ml-auto">
-          <NavLink to="/search-results-page">
-            <h6>
-             Catalog
-            </h6>
-          </NavLink>
-        </Nav>
+
         <Nav navbar className="ml-2">
           <NavLink to="/profile">
             <h6>

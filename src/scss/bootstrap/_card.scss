@@ -7,7 +7,7 @@
   display: flex;
   flex-direction: column;
   min-width: 0; // See https://github.com/twbs/bootstrap/pull/22740#issuecomment-305868106
-  height: $card-height;
+  height: $card-height;  
   word-wrap: break-word;
   background-color: $card-bg;
   background-clip: border-box;
@@ -38,7 +38,7 @@
   flex: 1 1 auto;
   // Workaround for the image size bug in IE
   // See: https://github.com/twbs/bootstrap/pull/28855
-  min-height: 1px;
+  // min-height: 1px;
   padding: $card-spacer-x;
   color: $card-color;
 }
@@ -118,6 +118,7 @@
 // Card image
 .card-img-overlay {
   position: absolute;
+  height: 175px;
   top: 0;
   right: 0;
   bottom: 0;
@@ -130,6 +131,7 @@
 .card-img-bottom {
   flex-shrink: 0; // For IE: https://github.com/twbs/bootstrap/issues/29396
   width: 100%; // Required because we use flexbox and this inherently applies align-self: stretch
+  height: 175px;
 }
 
 .card-img,
