@@ -6,8 +6,8 @@ const INTIAL_STATE = {
   fullName: null,
   firstName: null,
   email: null,
-  nearby_lat: 40.8090636,
-  nearby_lon: -73.9627811,
+  nearby_lat: null,
+  nearby_lon: null,
 };
 
 const giveFirstandFullName = (fullStr) => {
@@ -32,7 +32,6 @@ const authReducer = (state = INTIAL_STATE, action) => {
       const fullName = firstAndFullName[1]
       return { ...state, ...action.payload, firstName, fullName}
     case CHANGE_LOCATION:
-      console.log("yooooooo!", action.payload)
       return { ...state, ...action.payload}
     default:
       return state;

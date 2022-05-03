@@ -5,11 +5,16 @@ import {
   Col,
 } from 'reactstrap';
 
-import SearchBar from "./SearchBar"
-import surf_options from "../data/surf-options.json"
-import CardSurfOptions from "./CardSurfOptions"
+import SearchBar from "./SearchBar";
+import surf_options from "../data/surf-options.json";
+import CardSurfOptions from "./CardSurfOptions";
+import { useSelector } from 'react-redux';
+import Skeleton from 'react-loading-skeleton';
 
 const Index = () => {
+
+  const nearby_lat = useSelector(state => state.auth.nearby_lat)
+  const nearby_lon = useSelector(state => state.auth.nearby_lon)
 
   const data = {
     "searchOptions": [{
@@ -60,16 +65,27 @@ const Index = () => {
               <h2>Quick Browse</h2>
             </div>
             <Row>
-              {surf_options.posts.map(block =>
-                <Col key={block.title}>
-                  <CardSurfOptions data={block} />
-                </Col>
+              {surf_options.posts.map(block => {
+                if (nearby_lat && nearby_lon) {
+                  return (
+                    <Col key={block.title}>
+                      <CardSurfOptions data={block} />
+                    </Col>
+                  )
+                } else {
+                  return (
+                    <Col key={block.title} sm="4" className="mb-5 hover-animate" >
+                      <Skeleton count={5} />
+                    </Col>
+                  )
+                }
+              }
               )}
             </Row>
           </Container>
         </section>
       }
-    </React.Fragment>
+    </React.Fragment >
   )
 };
 

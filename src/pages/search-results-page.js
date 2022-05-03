@@ -112,6 +112,7 @@ const SearchResultsPage = () => {
 
 
   useEffect(() => {
+    window.scrollTo(0, 0)
 
     let routerSearchKey = null;
     let routerOption = null;
@@ -352,7 +353,7 @@ const SearchResultsPage = () => {
                   style={{ border: 'none', width: '50%', marginRight: '10%' }}
                 />
                 <h2 style={{ alignSelf: 'center', width: '40%', marginLeft: '-15%' }}>
-                  No results for your search
+                  No results for your search, please try a new location
                 </h2>
               </div>}
           </Col>

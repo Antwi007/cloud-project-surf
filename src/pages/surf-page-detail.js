@@ -68,6 +68,7 @@ const SurfPageDetail = () => {
 
     const dispatch = useDispatch();
     const surfProfile = useSelector(state => state.surfProfile)
+    const authProfile = useSelector(state => state.auth);
     const userId = useSelector(state => state.auth.userId)
 
     useEffect(() => {
@@ -127,7 +128,7 @@ const SurfPageDetail = () => {
     async function sendDetailsEmail() {
         try {
 
-            if (userId === null){
+            if (userId === null) {
                 setError('Please make sure you are signed in.')
                 setErrorVisible(true)
                 return
@@ -141,7 +142,7 @@ const SurfPageDetail = () => {
             params["body"] = (isSurfBreak) ? details : query;
 
             const resp = await surfingObject.sendEmail(params)
-            
+
             if (resp === true) {
                 setError('Successfully sent email, please check in a few minutes.')
                 setErrorVisible(true)
@@ -219,7 +220,7 @@ const SurfPageDetail = () => {
     const onCardExit = () => {
         setHoverCard(null)
     }
-    
+
 
     return (
         <React.Fragment>
@@ -407,7 +408,7 @@ const SurfPageDetail = () => {
                                 }
                                 <div className="text-center">
                                     <p>
-                                        {favoriteAdded ?
+                                        {(favoriteAdded && authProfile.isSignedIn) ?
                                             <button
                                                 onClick={async () => {
                                                     const id = query.surfline_id ?? query.shop_id
@@ -420,10 +421,17 @@ const SurfPageDetail = () => {
                                                     await surfingObject.deleteFavorites(userId, id);
                                                 }}
                                                 style={{ border: 'none', backgroundColor: 'transparent' }}
+                                                disabled={!authProfile.isSignedIn}
                                             >
                                                 <a className="text-secondary text-sm">
-                                                    <i className="fa fa-heart" />
-                                                    &nbsp;Surf Location added to Favorites!
+                                                    {authProfile.isSignedIn ?
+                                                        <div>
+                                                            <i className="fa fa-heart" />
+                                                            &nbsp;Surf Location added to Favorites!
+                                                        </div> :
+                                                        <div>
+                                                            &nbsp;Login To Access Favorites
+                                                        </div>}
                                                 </a>
                                             </button> :
                                             <>
@@ -438,18 +446,30 @@ const SurfPageDetail = () => {
                                                         await surfingObject.putFavorites(userId, id);
                                                     }}
                                                     style={{ border: 'none', backgroundColor: 'transparent' }}
+                                                    disabled={!authProfile.isSignedIn}
                                                 >
                                                     <a className="text-secondary text-sm text-muted">
-                                                        <i className="fa fa-heart" />
-                                                        &nbsp;Add Surf Location to Favorites
+                                                        {authProfile.isSignedIn ?
+                                                            <div>
+                                                                <i className="fa fa-heart" />
+                                                                &nbsp;Add Surf Location to Favorites
+                                                            </div> :
+                                                            <div>
+                                                                &nbsp;Login To Access Favorites
+                                                            </div>}
                                                     </a>
 
                                                 </button>
 
                                             </>
                                         }
-
-                                    </p><Button color="primary" onClick={sendDetailsEmail}>Email me details</Button>
+                                    </p><Button 
+                                    color="primary" 
+                                    onClick={sendDetailsEmail}
+                                    disabled={!authProfile.isSignedIn}
+                                    >
+                                        Email me details
+                                    </Button>
                                 </div>
                             </div>
                         </Col>

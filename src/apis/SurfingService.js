@@ -122,6 +122,8 @@ class SurfingService {
     data += '",\n        "email": "' + accountDetails.email;
     data += '"\n    }\n}';
 
+    // console.log("putting surf", data)
+
     var config = {
       method: 'put',
       url: 'https://usvfzvu80m.execute-api.us-east-1.amazonaws.com/development/user/accountDetails',
@@ -168,6 +170,7 @@ class SurfingService {
     };
 
     const resp = await axios(config);
+    // console.log("image put", resp)
   }
 
   getFavorites = async (userId) => {
