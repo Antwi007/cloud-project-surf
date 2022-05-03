@@ -32,6 +32,8 @@ const Index = () => {
     ]
   }
 
+  // console.log("lat and lon", nearby_lat, nearby_lon);
+
   return (
     <React.Fragment>
       <section className="hero-home" style={{ backgroundImage: `url(content/img/photo-1534850336045-c6c6d287f89e.jpg)` }}>
