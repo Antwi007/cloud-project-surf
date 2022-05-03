@@ -44,6 +44,8 @@ const Profile = () => {
     const [mantra, setMantra] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    // console.log("surf profile", surfProfile)
+
     /* async function getSurfResults(surf_id) {
         try {
             const params = {}
@@ -60,8 +62,6 @@ const Profile = () => {
             console.log(error)
         }
     } */
-
-    console.log("profile pic", profilePic)
 
     useEffect(async () => {
         var favoriteLocations = []

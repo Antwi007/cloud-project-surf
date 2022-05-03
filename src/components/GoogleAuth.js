@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { signIn, signOut, getAccountDetails, getSurfAccountDetails, removeSurfingAccount, putProfilePic } from '../actions';
+import { signIn, signOut, getAccountDetails, 
+  getSurfAccountDetails, removeSurfingAccount, putProfilePic,
+  putSurfAccountDetails } from '../actions';
 import SurfingService  from '../apis/SurfingService';
 
 const surfingObject = new SurfingService();
@@ -35,20 +37,26 @@ class GoogleAuth extends React.Component {
       this.props.getAccountDetails(accountDetails);
 
       var surfAccount = null;
+      const em = googleUserAccount.getEmail();
       
       try {
         surfAccount = await surfingObject.getSurfAccountDetails(userId);
+        this.props.putSurfAccountDetails({...surfAccount.data, email: em })
       }
       catch {
         if (!surfAccount) {
-          await surfingObject.createSurfingAccount(userId, googleUserAccount.getEmail());
+          await surfingObject.createSurfingAccount(userId, em);
+          this.props.putSurfAccountDetails({email: em })
         }
       }
+
+      // console.log("surf account", {...surfAccount.data, email: em })
 
       try {
         const favorites = await surfingObject.getFavorites(userId);
         const accountData = {...surfAccount.data, favorites: favorites} 
-        this.props.getSurfAccountDetails(accountData);
+        // console.log("putting favorites", accountData)
+        this.props.putSurfAccountDetails(accountData);
       }
       catch {}
 
@@ -103,5 +111,7 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { signIn, signOut, getAccountDetails, getSurfAccountDetails, removeSurfingAccount, putProfilePic }
+  { signIn, signOut, getAccountDetails, 
+    getSurfAccountDetails, removeSurfingAccount, putProfilePic,
+    putSurfAccountDetails }
 )(GoogleAuth);
