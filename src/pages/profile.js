@@ -108,12 +108,13 @@ const Profile = () => {
         </h2>
     </div>
 
-    const save = () => {
+    const save = async () => {
         if (changed) {
-            surfingObject.putSurfingAccount(authProfile.userId, surfProfile)
+            await surfingObject.putSurfingAccount(authProfile.userId, surfProfile)
         }
         if (profilePicChanged) {
-            surfingObject.putProfilePic(authProfile.userId, surfProfile.profilePic)
+            const resp = await surfingObject.putProfilePic(authProfile.userId, surfProfile.profilePic)
+            // console.log("put profile pic", resp)
         }
 
         setProfilePicChanged(false)
@@ -121,6 +122,8 @@ const Profile = () => {
     }
 
     var nameShownText = fullName ? fullName + "'s Favorites" : "'s Favorites"
+
+    // console.log("profile pic changed", profilePicChanged)
 
     if (isSignedIn) {
         return (
@@ -139,7 +142,7 @@ const Profile = () => {
                                                 style={{ marginLeft: '5vh' }}
                                             />
                                         </div>
-                                        <form>
+                                        <form onSubmit={e => { e.preventDefault(); }}>
                                             <input
                                                 type='file'
                                                 title=" "
@@ -160,7 +163,7 @@ const Profile = () => {
                                         </form>
                                     </a>
                                     <h5>
-                                        <form>
+                                        <form onSubmit={e => { e.preventDefault(); }}>
                                             <input
                                                 type='text'
                                                 onChange={(e) => {
@@ -183,7 +186,7 @@ const Profile = () => {
                                         </form>
                                     </h5>
                                     <p className="text-muted text-sm mb-0">
-                                        <form>
+                                        <form onSubmit={e => { e.preventDefault(); }}>
                                             <input
                                                 type='text'
                                                 onChange={(e) => {
@@ -238,7 +241,7 @@ const Profile = () => {
                         </Col>
                         <Col lg="9" className="pl-lg-5">
                             <h1 className="hero-heading mb-0">
-                                <form>
+                                <form onSubmit={e => { e.preventDefault(); }}>
                                     <input
                                         type='text'
                                         onChange={(e) => {
@@ -265,7 +268,7 @@ const Profile = () => {
                                 </p>
                                 <div>
                                     <p class='text-muted'>
-                                        <form>
+                                        <form onSubmit={e => { e.preventDefault(); }}>
                                             <input
                                                 type='text'
                                                 onChange={(e) => {
@@ -306,7 +309,7 @@ const Profile = () => {
                                             }
 
                                             listing["beach_lat"] = listing["beach_lat"] ?? listing["lat"]
-                                            listing["shop_lat"] =  listing["shop_lat"] ?? listing["lat"]
+                                            listing["shop_lat"] = listing["shop_lat"] ?? listing["lat"]
 
                                             listing["beach_lon"] = listing["beach_lon"] ?? listing["lon"]
                                             listing["shop_lon"] = listing["shop_lon"] ?? listing["lon"]

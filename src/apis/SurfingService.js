@@ -170,6 +170,7 @@ class SurfingService {
     };
 
     const resp = await axios(config);
+    // console.log("image put", resp)
   }
 
   getFavorites = async (userId) => {
