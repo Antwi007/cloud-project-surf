@@ -18,7 +18,11 @@ const CardSurfOptions = (props) => {
   const data = props.data;
   const router = useHistory();
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
+
+    if (!(nearby_lat && nearby_lon)) {
+      return;
+    }
 
     event.preventDefault();
     let query = {};
@@ -34,7 +38,10 @@ const CardSurfOptions = (props) => {
   };
 
   return (
-    <Card className="card-poster gradient-overlay hover-animate mb-4 mb-lg-0" onClick={handleSubmit}>
+    <Card 
+      className="card-poster gradient-overlay hover-animate mb-4 mb-lg-0" 
+      onClick={handleSubmit}
+    >
       <div>
         <BrowserRouter>
           <Link to="#">
