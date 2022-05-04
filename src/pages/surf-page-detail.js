@@ -137,6 +137,14 @@ const SurfPageDetail = (props) => {
                     setIsSurfBreak(true)
                 }
                 setDetails(resp.body);
+
+                if (resp.body["surf-score"] < 4) {
+                    setSurfScoreColor("red")
+                } else if (resp.body["surf-score"] < 7) {
+                    setSurfScoreColor("yellow")
+                } else {
+                    setSurfScoreColor("green")
+                }
             }
 
         } catch (error) {
@@ -227,16 +235,12 @@ const SurfPageDetail = (props) => {
             }
         }
 
-        if (details["surf-score"] < 4) {
-            setSurfScoreColor("red")
-        } else if (details["surf-score"] < 7) {
-            setSurfScoreColor("yellow")
-        } else {
-            setSurfScoreColor("green")
-        }
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.location.id, query])
 
+
+    console.log()
     const dismissError = () => {
         setError("");
         setErrorVisible(false);
