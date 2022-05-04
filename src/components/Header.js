@@ -83,7 +83,6 @@ const Header = () => {
         } */}
         {isSignedIn && userMenu && userMenu.map(item =>
               <Dropdown
-                  nav
                   inNavbar
                   className="ml-lg-3"
                   isOpen={dropdownOpen[item.title]}
