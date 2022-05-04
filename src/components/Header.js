@@ -18,6 +18,8 @@ const Header = () => {
   var nearby_lat = useSelector(state => state.auth.nearby_lat);
   var nearby_lon = useSelector(state => state.auth.nearby_lon);
 
+  var isSignedIn = useSelector(state => state.auth.isSignedIn);
+
   const getLocation = () => {
     if (nearby_lat || nearby_lon) {
       return;
@@ -59,13 +61,13 @@ const Header = () => {
           </div>
         </Container>
 
-        <Nav navbar className="ml-2">
+        {isSignedIn && <Nav navbar className="ml-2">
           <NavLink to="/profile">
             <h6>
-            Profile
+              Profile
             </h6>
           </NavLink>
-        </Nav>
+        </Nav>}
         <Nav navbar style={{ marginLeft: '1%', width: '40vh' }}>
           <GoogleAuth />
         </Nav>

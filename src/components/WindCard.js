@@ -15,7 +15,14 @@ const WindCard = (props) => {
   var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-  const dateStr = days[date.getDay()] + ", " + months[date.getMonth()] + " " + (date.getDay()+1)
+  const dateStr = days[date.getDay()] + ", " + months[date.getMonth()] + " " + (date.getDay() + 1)
+
+  var surfHeight = "2-3";
+  var humanRelation = "Thigh to waist"
+  try {
+    surfHeight = data["min-surf-height"] + "-" + data["max-surf-height"]
+    humanRelation = data["HumanRelation"]
+  } catch { }
 
 
   return (
@@ -30,10 +37,10 @@ const WindCard = (props) => {
               Date: {dateStr}
             </CardText>
             <p className="text-center">
-              Surf Height : {data["min-surf-height"]}-{data["max-surf-height"]} ft
+              Surf Height : {surfHeight} ft
             </p>
             <p className="text-center">
-              Human Relation : {data["HumanRelation"]}
+              Human Relation : {humanRelation}
             </p>
           </Col>
         </CardBody>
