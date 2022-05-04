@@ -1,0 +1,14 @@
+[
+  {
+     "img": "/img/avatar-7.jpg",
+     "type": "avatar",
+     "title": "Jack London",
+     "dropdown": [
+        {
+          "title": "Profile",
+          "link": "/profile"
+       }
+     ]
+    
+  }
+]
