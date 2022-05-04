@@ -126,7 +126,10 @@ const SearchResultsPage = () => {
       dispatch(putSurfKeyword(routerSearchKey));
     }
 
-    if (typeof router.query !== 'undefined' && router.query.option) {
+    if (typeof router.query !== 'undefined') {
+      if (!router.query.option) {
+        router.query["option"] = "Surf Breaks"
+      }
       routerOption = router.query.option;
       setSearchType(data.options.find((el) => el.label === routerOption));
       setSearchOption(routerOption);
@@ -144,7 +147,7 @@ const SearchResultsPage = () => {
     if (typeof router.query !== 'undefined' && router.query.nearby_lon) {
       routerLon = router.query.nearby_lon;
     }
-    if (typeof router.query !== 'undefined' && router.query.option && router.query.option) {
+    if (typeof router.query !== 'undefined' && router.query.option) {
       getSurfResults(routerSearchKey, routerOption, routerIsNearby, routerLat, routerLon)
     }
 
@@ -267,7 +270,7 @@ const SearchResultsPage = () => {
     ))
   }
 
-  console.log("search results page", surfData)
+  // console.log("search results page", surfData)
 
   return (
     <React.Fragment>
