@@ -37,7 +37,7 @@ const Profile = () => {
     const [changed, setChanged] = useState(false)
     const [profilePicChanged, setProfilePicChanged] = useState(false)
     const [favorites, setFavorites] = useState([]);
-    const [profilePic, setProfilePic] = useState(null)
+    const [profilePic, setProfilePic] = useState(null);
     const [fullName, setFullName] = useState(null);
     const [location, setLocation] = useState(null);
     const [title, setTitle] = useState(null);

@@ -24,12 +24,14 @@ const Header = () => {
   var nearby_lon = useSelector(state => state.auth.nearby_lon);
 
   var isSignedIn = useSelector(state => state.auth.isSignedIn);
+  var surfProfile = useSelector(state => state.surfProfile);
 
   const [dropdownAnimate, setDropdownAnimate] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState({});
   const toggleDropdown = (name) => {
     setDropdownOpen({ ...dropdownOpen, [name]: !dropdownOpen[name] })
-}
+  }
+  const [profilePic, setProfilePic] = useState(null);
 
   const getLocation = () => {
     if (nearby_lat || nearby_lon) {
@@ -54,8 +56,23 @@ const Header = () => {
 
   useEffect(() => {
     getLocation();
+  }, []);
+
+  useEffect(() => {
+    // console.log("use effect called", surfProfile)
+    try {
+      var u = URL.createObjectURL(surfProfile.profilePic);
+      setProfilePic(u)
+    } catch {
+      // console.log("here's the url", surfProfile.profilePic ? surfProfile.profilePic : `/content/img/${data.avatar}`)
+      const randomNum = Math.floor(Math.random() * 10000)
+      // console.log(surfProfile.profilePic + "?v=" + randomNum)
+      setProfilePic(surfProfile.profilePic ? surfProfile.profilePic + "?v=" + randomNum : `/content${userMenu[0].img}`)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [surfProfile.profilePic])
+
+  // console.log("surf profile", surfProfile)
 
   return (
     <header className="header">
@@ -82,36 +99,36 @@ const Header = () => {
         </Nav>
         } */}
         {isSignedIn && userMenu && userMenu.map(item =>
-              <Dropdown
-                  inNavbar
-                  className="ml-lg-3"
-                  isOpen={dropdownOpen[item.title]}
-                  toggle={() => toggleDropdown(item.title)}
-                  size="md"
-              >
-                  <DropdownToggle
-                      nav
-                      style={item.type === "avatar" && { padding: 0 , width: '20vh'}}
-                      onClick={() => setDropdownAnimate({ ...dropdownAnimate, [item.title]: !dropdownOpen[item.img] })}
-                  >
-                      <img src={`/content${item.img}`} alt={item.title} className="avatar avatar-md avatar-border-white mr-2" />
-                         
-                  </DropdownToggle>
-                  <DropdownMenu className={dropdownAnimate[item.title] === false ? 'hide' : ''} end>
-                      {item.dropdown &&
-                          item.dropdown.map(dropdownItem =>
-                              <NavLink to="/profile">
-                                  <DropdownItem>
-                                      {dropdownItem.title}
-                                  </DropdownItem>
-                              </NavLink>
-                          )}   
-                        <DropdownItem>
-                           <GoogleAuth />
-                        </DropdownItem>
-                  </DropdownMenu>
-              </Dropdown>
-          )}
+          <Dropdown
+            inNavbar
+            className="ml-lg-3"
+            isOpen={dropdownOpen[item.title]}
+            toggle={() => toggleDropdown(item.title)}
+            size="md"
+          >
+            <DropdownToggle
+              nav
+              style={item.type === "avatar" && { padding: 0, width: '20vh' }}
+              onClick={() => setDropdownAnimate({ ...dropdownAnimate, [item.title]: !dropdownOpen[item.img] })}
+            >
+              <img src={profilePic} alt={item.title} className="avatar avatar-md avatar-border-white mr-2" />
+
+            </DropdownToggle>
+            <DropdownMenu className={dropdownAnimate[item.title] === false ? 'hide' : ''} end>
+              {item.dropdown &&
+                item.dropdown.map(dropdownItem =>
+                  <NavLink to="/profile">
+                    <DropdownItem>
+                      {dropdownItem.title}
+                    </DropdownItem>
+                  </NavLink>
+                )}
+              <DropdownItem>
+                <GoogleAuth />
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        )}
         {
           !isSignedIn &&
           <Nav navbar style={{ marginLeft: '1%', width: '40vh' }}>
@@ -119,7 +136,7 @@ const Header = () => {
           </Nav>
         }
 
-    </Navbar>
+      </Navbar>
 
     </header>
   );
