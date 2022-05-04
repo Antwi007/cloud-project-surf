@@ -67,6 +67,7 @@ const Profile = () => {
         var favoriteLocations = []
         for (var i = 0; i < surfProfile.favorites.length; i += 1) {
             var surfLocation = await surfingObject.getFavoriteLocation(surfProfile.favorites[i]);
+            // console.log("get favorite", surfLocation)
             // var surfLocationData = await getSurfResults(surfLocation.id);
             // console.log("surf favorite", surfLocation, surfLocationData);
             favoriteLocations.push(surfLocation);
@@ -302,6 +303,8 @@ const Profile = () => {
                                     <Row>
                                         {favorites.map(listing => {
                                             var name = null;
+
+                                            // console.log("listing", listing)
 
                                             if (listing["beach_name"] !== undefined) {
                                                 name = listing["beach_name"]

@@ -69,11 +69,19 @@ const SurfPageDetail = (props) => {
     const authProfile = useSelector(state => state.auth);
     const userId = useSelector(state => state.auth.userId)
 
-    // console.log("surf page detail", query)
+    console.log("surf page detail", query, search_type)
 
     useEffect(() => {
         setGeoJSON([query])
-        setHoverCard(query.surfline_id ?? query.shop_id)
+        var id = null;
+        if (query.surfline_id) {
+            id = query.surfline_id
+        } else if (query.shop_id) {
+            id = query.shop_id
+        } else if (query.id) {
+            id = query.id
+        }
+        setHoverCard(id)
     }, [props.location.id])
 
     useEffect(() => {
@@ -82,8 +90,17 @@ const SurfPageDetail = (props) => {
         setTap(size.width > 700 ? true : false)
         setDragging(size.width > 700 ? true : false)
 
+        var id = null;
+        if (query.surfline_id) {
+            id = query.surfline_id
+        } else if (query.shop_id) {
+            id = query.shop_id
+        } else if (query.id) {
+            id = query.id
+        }
+
         if (surfProfile.favorites) {
-            setFavoriteAdded(surfProfile.favorites.includes(query.surfline_id ?? query.shop_id))
+            setFavoriteAdded(surfProfile.favorites.includes(id))
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [size.width, surfProfile, props.location.id])
@@ -105,6 +122,7 @@ const SurfPageDetail = (props) => {
     }, [details, props.location.id])
 
     async function getSurfResults(surf_id) {
+        console.log("get surf results called", surf_id)
         try {
             const params = {}
 
@@ -186,11 +204,11 @@ const SurfPageDetail = (props) => {
     }
 
     useEffect(async () => {
+        // console.log("use effeeeeeect", search_type, search_type === "lessons" || search_type === "surfshops")
         const id = query["surfline_id"] ?? query["id"]
         if (search_type === "beaches") {
-            getSurfResults(id);
+            await getSurfResults(id);
         }
-
         if (search_type === "lessons" || search_type === "surfshops") {
             if (query["nearest_beaches"]) {
                 var obj = JSON.parse(query["nearest_beaches"])
@@ -216,7 +234,7 @@ const SurfPageDetail = (props) => {
             setSurfScoreColor("green")
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [props.location.id])
+    }, [props.location.id, query])
 
     const dismissError = () => {
         setError("");
@@ -410,7 +428,14 @@ const SurfPageDetail = (props) => {
                                             {(favoriteAdded && authProfile.isSignedIn) ?
                                                 <button
                                                     onClick={async () => {
-                                                        const id = query.surfline_id ?? query.shop_id
+                                                        var id = null;
+                                                        if (query.surfline_id) {
+                                                            id = query.surfline_id
+                                                        } else if (query.shop_id) {
+                                                            id = query.shop_id
+                                                        } else if (query.id) {
+                                                            id = query.id
+                                                        }
                                                         var tempFavs = surfProfile.favorites.filter(function (loc) {
                                                             return loc !== id
                                                         })
@@ -436,7 +461,14 @@ const SurfPageDetail = (props) => {
                                                 <>
                                                     <button
                                                         onClick={async () => {
-                                                            const id = query.surfline_id ?? query.shop_id
+                                                            var id = null;
+                                                            if (query.surfline_id) {
+                                                                id = query.surfline_id
+                                                            } else if (query.shop_id) {
+                                                                id = query.shop_id
+                                                            } else if (query.id) {
+                                                                id = query.id
+                                                            }
                                                             var tempFavs = surfProfile.favorites ?? []
                                                             tempFavs.push(id)
                                                             var tempSurfProfile = { ...surfProfile, favorites: tempFavs }
