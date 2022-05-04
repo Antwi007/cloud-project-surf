@@ -24,7 +24,8 @@ import Swiper from '../components/Swiper'
 import SurfingService from '../apis/SurfingService';
 import { putSurfAccountDetails } from '../actions';
 import WeatherCard from '../components/WeatherCard';
-import WindCard from '../components/WindCard'
+import WindCard from '../components/WindCard';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const surfingObject = new SurfingService();
 
@@ -249,216 +250,184 @@ const SurfPageDetail = (props) => {
     }
 
     return (
-        <div key={props.location.id}>
-            <React.Fragment>
-                <section>
-                    <Container className="py-5 mt-6">
-                        <Row>
-                            <Col lg="8">
-                                <div className="text-block">
-                                    {query[name_dict[search_type]] &&
-                                        <h1>
-                                            {query[name_dict[search_type]]}
-                                        </h1>
-                                    }
-                                    {option_dict[search_type] &&
-                                        <div className="text-muted text-uppercase mb-4">
-                                            {option_dict[search_type]}
-                                        </div>
-                                    }
-                                    {search_type === "beaches" && query["surf_score"] &&
-                                        <p>
-                                            Surf-Score <i className={`fa fa-star mr-1 text-secondary`} /> <span className={surfScoreColor}>{query["surf_score"].toFixed(2)}</span>
-                                        </p>
-                                    }
-                                    {search_type === "lessons" &&
-                                        <ul className="list-inline text-sm mb-4">
-                                            <li
-                                                key={1}
-                                                className="list-inline-item mr-3"
-                                            >
-                                                Rating ({query["number_reviews"]}) <i className={`fa fa-star mr-1 text-secondary`} /> {query["rating"]}
-                                            </li>
-                                        </ul>
-                                    }
-                                </div>
-                                {search_type === "beaches" &&
-                                    <React.Fragment>
-                                        <div className="text-block">
-                                            <h4 className="mb-4">Beach Details</h4>
-                                            <Row>
-                                                {loading && search_type === "beaches" &&
-                                                    [...Array(2)].map((el, index) => (
-                                                        <Col key={index} sm="6" className="mb-5 hover-animate">
-                                                            <Skeleton count={5} />
-                                                        </Col>
-                                                    ))
-                                                }
-                                                <Col md="4">
-                                                    {Object.keys(details).length !== 0 &&
-                                                        <WeatherCard data={details["weather-data"]}></WeatherCard>
-                                                    }
-                                                </Col>
-                                                <Col className="w-50">
-                                                    {Object.keys(details).length !== 0 &&
-                                                        <WindCard data={details["surfline-data"]}></WindCard>
-                                                    }
-                                                </Col>
-                                            </Row>
-                                        </div>
-                                    </React.Fragment>
-                                }
-                                {(search_type === "lessons" || search_type === "surfshops") && <h4 className="mb-4 mt-2">Location Details</h4>}
-                                {(search_type === "lessons" || search_type === "surfshops") &&
-                                    <section>
-                                        <Container>
-                                            <Row>
-                                                {query["address1"] && (
-                                                    <Col md="4" className="text-center text-md-left mb-4 mb-md-0">
-                                                        <div className="icon-rounded mb-4 bg-primary-light">
-                                                            <svg className="svg-icon w-2rem h-2rem text-primary">
-                                                                <use xlinkHref="content/svg/orion-svg-sprite.svg#map-location-1" />
-                                                            </svg>
-                                                        </div>
-                                                        <h3 className="h5">Address</h3>
-                                                        <p className="text-muted">
-                                                            {query["address1"]}
-                                                            <br />
-                                                            {query["city"] && query["city"]}, {query["state"] && query["state"]}, {query["zip_code"] && query["zip_code"]}
-                                                            <br />
-                                                            {query["phone_number"] && query["phone_number"]}
-                                                        </p>
-                                                    </Col>
-                                                )}
-                                            </Row>
-                                        </Container>
-                                    </section>
-                                }
-                                {search_type === "beaches" && <h4 className="mb-4 mt-2">Nearby restaurants</h4>}
-                                <Row>
-                                    {loading && search_type === "beaches" &&
-                                        [...Array(2)].map((el, index) => (
-                                            <Col key={index} sm="6" className="mb-5 hover-animate">
-                                                <Skeleton count={5} />
-                                            </Col>
-                                        ))
-                                    }
-                                </Row>
-                                {search_type === "beaches" && Object.keys(details).length !== 0 &&
-                                    <Swiper
-                                        className="swiper-container-mx-negative pt-3 pb-5"
-                                        perView={1}
-                                        spaceBetween={20}
-                                        roundLengths
-                                        md={2}
-                                        lg={3}
-                                        xl={5}
-                                        data={details["yelp-data"]["restaurants"]}
-                                        cards
-                                        onCardEnter={onCardEnter}
-                                        onCardExit={onCardExit}
-                                    />
-                                }
-                                {(search_type === "lessons" || search_type === "surfshops") && <h4 className="mb-4 mt-2">Nearby Beaches</h4>}
-                                {(search_type === "lessons" || search_type === "surfshops") &&
-                                    <Swiper
-                                        className="swiper-container-mx-negative pt-3 pb-5"
-                                        perView={1}
-                                        spaceBetween={20}
-                                        roundLengths
-                                        md={2}
-                                        lg={3}
-                                        xl={5}
-                                        data={nearbyBeaches}
-                                        type="beaches"
-                                        center={[query[lat_dict[search_type]], query[lon_dict[search_type]]]}
-                                        beaches
-                                    />
-                                }
-                                <div className="text-block">
-                                    <h3 className="mb-4">Location</h3>
-                                    <div className="map-wrapper-300 mb-3">
-                                        {mapLoaded &&
-                                            <MapSurf
-                                                className="h-100"
-                                                center={[query[lat_dict[search_type]], query[lon_dict[search_type]]]}
-                                                circlePosition={[query[lat_dict[search_type]], query[lon_dict[search_type]]]}
-                                                circleRadius={500}
-                                                zoom={14}
-                                                dragging={dragging}
-                                                tap={tap}
-                                                geoJSON={geoJSON}
-                                                type={search_type}
-                                                hoverCard={hoverCard}
-                                            />
+        <ErrorBoundary>
+            <div key={props.location.id}>
+                <React.Fragment>
+                    <section>
+                        <Container className="py-5 mt-6">
+                            <Row>
+                                <Col lg="8">
+                                    <div className="text-block">
+                                        {query[name_dict[search_type]] &&
+                                            <h1>
+                                                {query[name_dict[search_type]]}
+                                            </h1>
+                                        }
+                                        {option_dict[search_type] &&
+                                            <div className="text-muted text-uppercase mb-4">
+                                                {option_dict[search_type]}
+                                            </div>
+                                        }
+                                        {search_type === "beaches" && query["surf_score"] &&
+                                            <p>
+                                                Surf-Score <i className={`fa fa-star mr-1 text-secondary`} /> <span className={surfScoreColor}>{query["surf_score"].toFixed(2)}</span>
+                                            </p>
+                                        }
+                                        {search_type === "lessons" &&
+                                            <ul className="list-inline text-sm mb-4">
+                                                <li
+                                                    key={1}
+                                                    className="list-inline-item mr-3"
+                                                >
+                                                    Rating ({query["number_reviews"]}) <i className={`fa fa-star mr-1 text-secondary`} /> {query["rating"]}
+                                                </li>
+                                            </ul>
                                         }
                                     </div>
-                                </div>
-                            </Col>
-                            <Col lg="4">
-                                <div
-                                    style={{ top: "100px" }}
-                                    className="p-4 shadow ml-lg-4 rounded sticky-top"
-                                >
-                                    <img
-                                        src={query.thumbnail}
-                                        alt={query[name_dict[search_type]]}
-                                        style={{ width: "100%" }}
-                                        className="my-3"
-                                    />
-                                    <hr className="my-4" />
-                                    {(search_type === "lessons" || search_type === "surfshops") &&
-                                        <Button
-                                            type="submit"
-                                            color="primary"
-                                            block
-                                            onClick={() => {
-                                                window.location.href = query["yelp_url"]
-                                            }}
-                                        >
-                                            Visit Website
-
-                                        </Button>
-                                    }
-                                    {(search_type === "lessons" || search_type === "surfshops") &&
-                                        <hr className="my-4" />
-                                    }
-                                    <div className="text-center">
-                                        <p>
-                                            {(favoriteAdded && authProfile.isSignedIn) ?
-                                                <button
-                                                    onClick={async () => {
-                                                        var id = null;
-                                                        if (query.surfline_id) {
-                                                            id = query.surfline_id
-                                                        } else if (query.shop_id) {
-                                                            id = query.shop_id
-                                                        } else if (query.id) {
-                                                            id = query.id
+                                    {search_type === "beaches" &&
+                                        <React.Fragment>
+                                            <div className="text-block">
+                                                <h4 className="mb-4">Beach Details</h4>
+                                                <Row>
+                                                    {loading && search_type === "beaches" &&
+                                                        [...Array(2)].map((el, index) => (
+                                                            <Col key={index} sm="6" className="mb-5 hover-animate">
+                                                                <Skeleton count={5} />
+                                                            </Col>
+                                                        ))
+                                                    }
+                                                    <Col md="4">
+                                                        {Object.keys(details).length !== 0 &&
+                                                            <WeatherCard data={details["weather-data"]}></WeatherCard>
                                                         }
-                                                        var tempFavs = surfProfile.favorites.filter(function (loc) {
-                                                            return loc !== id
-                                                        })
-                                                        var tempSurfProfile = { ...surfProfile, favorites: tempFavs }
-                                                        dispatch(putSurfAccountDetails(tempSurfProfile));
-                                                        setFavoriteAdded(false);
-                                                        await surfingObject.deleteFavorites(userId, id);
-                                                    }}
-                                                    style={{ border: 'none', backgroundColor: 'transparent' }}
-                                                    disabled={!authProfile.isSignedIn}
-                                                >
-                                                    <a className="text-secondary text-sm">
-                                                        {authProfile.isSignedIn ?
-                                                            <div>
-                                                                <i className="fa fa-heart" />
-                                                                &nbsp;Surf Location added to Favorites!
-                                                            </div> :
-                                                            <div>
-                                                                &nbsp;Login To Access Favorites
-                                                            </div>}
-                                                    </a>
-                                                </button> :
-                                                <>
+                                                    </Col>
+                                                    <Col className="w-50">
+                                                        {Object.keys(details).length !== 0 &&
+                                                            <WindCard data={details["surfline-data"]}></WindCard>
+                                                        }
+                                                    </Col>
+                                                </Row>
+                                            </div>
+                                        </React.Fragment>
+                                    }
+                                    {(search_type === "lessons" || search_type === "surfshops") && <h4 className="mb-4 mt-2">Location Details</h4>}
+                                    {(search_type === "lessons" || search_type === "surfshops") &&
+                                        <section>
+                                            <Container>
+                                                <Row>
+                                                    {query["address1"] && (
+                                                        <Col md="4" className="text-center text-md-left mb-4 mb-md-0">
+                                                            <div className="icon-rounded mb-4 bg-primary-light">
+                                                                <svg className="svg-icon w-2rem h-2rem text-primary">
+                                                                    <use xlinkHref="content/svg/orion-svg-sprite.svg#map-location-1" />
+                                                                </svg>
+                                                            </div>
+                                                            <h3 className="h5">Address</h3>
+                                                            <p className="text-muted">
+                                                                {query["address1"]}
+                                                                <br />
+                                                                {query["city"] && query["city"]}, {query["state"] && query["state"]}, {query["zip_code"] && query["zip_code"]}
+                                                                <br />
+                                                                {query["phone_number"] && query["phone_number"]}
+                                                            </p>
+                                                        </Col>
+                                                    )}
+                                                </Row>
+                                            </Container>
+                                        </section>
+                                    }
+                                    {search_type === "beaches" && <h4 className="mb-4 mt-2">Nearby restaurants</h4>}
+                                    <Row>
+                                        {loading && search_type === "beaches" &&
+                                            [...Array(2)].map((el, index) => (
+                                                <Col key={index} sm="6" className="mb-5 hover-animate">
+                                                    <Skeleton count={5} />
+                                                </Col>
+                                            ))
+                                        }
+                                    </Row>
+                                    {search_type === "beaches" && Object.keys(details).length !== 0 &&
+                                        <Swiper
+                                            className="swiper-container-mx-negative pt-3 pb-5"
+                                            perView={1}
+                                            spaceBetween={20}
+                                            roundLengths
+                                            md={2}
+                                            lg={3}
+                                            xl={5}
+                                            data={details["yelp-data"]["restaurants"]}
+                                            cards
+                                            onCardEnter={onCardEnter}
+                                            onCardExit={onCardExit}
+                                        />
+                                    }
+                                    {(search_type === "lessons" || search_type === "surfshops") && <h4 className="mb-4 mt-2">Nearby Beaches</h4>}
+                                    {(search_type === "lessons" || search_type === "surfshops") &&
+                                        <Swiper
+                                            className="swiper-container-mx-negative pt-3 pb-5"
+                                            perView={1}
+                                            spaceBetween={20}
+                                            roundLengths
+                                            md={2}
+                                            lg={3}
+                                            xl={5}
+                                            data={nearbyBeaches}
+                                            type="beaches"
+                                            center={[query[lat_dict[search_type]], query[lon_dict[search_type]]]}
+                                            beaches
+                                        />
+                                    }
+                                    <div className="text-block">
+                                        <h3 className="mb-4">Location</h3>
+                                        <div className="map-wrapper-300 mb-3">
+                                            {mapLoaded &&
+                                                <MapSurf
+                                                    className="h-100"
+                                                    center={[query[lat_dict[search_type]], query[lon_dict[search_type]]]}
+                                                    circlePosition={[query[lat_dict[search_type]], query[lon_dict[search_type]]]}
+                                                    circleRadius={500}
+                                                    zoom={14}
+                                                    dragging={dragging}
+                                                    tap={tap}
+                                                    geoJSON={geoJSON}
+                                                    type={search_type}
+                                                    hoverCard={hoverCard}
+                                                />
+                                            }
+                                        </div>
+                                    </div>
+                                </Col>
+                                <Col lg="4">
+                                    <div
+                                        style={{ top: "100px" }}
+                                        className="p-4 shadow ml-lg-4 rounded sticky-top"
+                                    >
+                                        <img
+                                            src={query.thumbnail}
+                                            alt={query[name_dict[search_type]]}
+                                            style={{ width: "100%" }}
+                                            className="my-3"
+                                        />
+                                        <hr className="my-4" />
+                                        {(search_type === "lessons" || search_type === "surfshops") &&
+                                            <Button
+                                                type="submit"
+                                                color="primary"
+                                                block
+                                                onClick={() => {
+                                                    window.location.href = query["yelp_url"]
+                                                }}
+                                            >
+                                                Visit Website
+
+                                            </Button>
+                                        }
+                                        {(search_type === "lessons" || search_type === "surfshops") &&
+                                            <hr className="my-4" />
+                                        }
+                                        <div className="text-center">
+                                            <p>
+                                                {(favoriteAdded && authProfile.isSignedIn) ?
                                                     <button
                                                         onClick={async () => {
                                                             var id = null;
@@ -469,59 +438,93 @@ const SurfPageDetail = (props) => {
                                                             } else if (query.id) {
                                                                 id = query.id
                                                             }
-                                                            var tempFavs = surfProfile.favorites ?? []
-                                                            tempFavs.push(id)
+                                                            var tempFavs = surfProfile.favorites.filter(function (loc) {
+                                                                return loc !== id
+                                                            })
                                                             var tempSurfProfile = { ...surfProfile, favorites: tempFavs }
                                                             dispatch(putSurfAccountDetails(tempSurfProfile));
-                                                            setFavoriteAdded(true);
-                                                            await surfingObject.putFavorites(userId, id);
+                                                            setFavoriteAdded(false);
+                                                            await surfingObject.deleteFavorites(userId, id);
                                                         }}
                                                         style={{ border: 'none', backgroundColor: 'transparent' }}
                                                         disabled={!authProfile.isSignedIn}
                                                     >
-                                                        <a className="text-secondary text-sm text-muted">
+                                                        <a className="text-secondary text-sm">
                                                             {authProfile.isSignedIn ?
                                                                 <div>
                                                                     <i className="fa fa-heart" />
-                                                                    &nbsp;Add Surf Location to Favorites
+                                                                    &nbsp;Surf Location added to Favorites!
                                                                 </div> :
                                                                 <div>
                                                                     &nbsp;Login To Access Favorites
                                                                 </div>}
                                                         </a>
+                                                    </button> :
+                                                    <>
+                                                        <button
+                                                            onClick={async () => {
+                                                                var id = null;
+                                                                if (query.surfline_id) {
+                                                                    id = query.surfline_id
+                                                                } else if (query.shop_id) {
+                                                                    id = query.shop_id
+                                                                } else if (query.id) {
+                                                                    id = query.id
+                                                                }
+                                                                var tempFavs = surfProfile.favorites ?? []
+                                                                tempFavs.push(id)
+                                                                var tempSurfProfile = { ...surfProfile, favorites: tempFavs }
+                                                                dispatch(putSurfAccountDetails(tempSurfProfile));
+                                                                setFavoriteAdded(true);
+                                                                await surfingObject.putFavorites(userId, id);
+                                                            }}
+                                                            style={{ border: 'none', backgroundColor: 'transparent' }}
+                                                            disabled={!authProfile.isSignedIn}
+                                                        >
+                                                            <a className="text-secondary text-sm text-muted">
+                                                                {authProfile.isSignedIn ?
+                                                                    <div>
+                                                                        <i className="fa fa-heart" />
+                                                                        &nbsp;Add Surf Location to Favorites
+                                                                    </div> :
+                                                                    <div>
+                                                                        &nbsp;Login To Access Favorites
+                                                                    </div>}
+                                                            </a>
 
-                                                    </button>
+                                                        </button>
 
-                                                </>
-                                            }
-                                        </p><Button
-                                            color="primary"
-                                            onClick={sendDetailsEmail}
-                                            disabled={!authProfile.isSignedIn}
-                                        >
-                                            Email me details
-                                        </Button>
+                                                    </>
+                                                }
+                                            </p><Button
+                                                color="primary"
+                                                onClick={sendDetailsEmail}
+                                                disabled={!authProfile.isSignedIn}
+                                            >
+                                                Email me details
+                                            </Button>
+                                        </div>
                                     </div>
-                                </div>
-                            </Col>
-                        </Row>
-                        <Modal
-                            isOpen={errorVisible}
-                            toggle={dismissError}
-                            className="text-center"
-                        >
-                            <ModalHeader className="border-0" toggle={dismissError}></ModalHeader>
-                            <ModalBody className="border-0">{error}</ModalBody>
-                            <ModalFooter className="border-0">
-                                <Button color="primary" onClick={dismissError}>
-                                    Ok
-                                </Button>
-                            </ModalFooter>
-                        </Modal>
-                    </Container>
-                </section>
-            </React.Fragment>
-        </div>
+                                </Col>
+                            </Row>
+                            <Modal
+                                isOpen={errorVisible}
+                                toggle={dismissError}
+                                className="text-center"
+                            >
+                                <ModalHeader className="border-0" toggle={dismissError}></ModalHeader>
+                                <ModalBody className="border-0">{error}</ModalBody>
+                                <ModalFooter className="border-0">
+                                    <Button color="primary" onClick={dismissError}>
+                                        Ok
+                                    </Button>
+                                </ModalFooter>
+                            </Modal>
+                        </Container>
+                    </section>
+                </React.Fragment>
+            </div>
+        </ErrorBoundary>
     )
 
 }

@@ -8,7 +8,9 @@ import Index from '../components/Index';
 import profile from './profile'
 import SurfPageDetail from './surf-page-detail';
 import signUp from '../signup';
-import logIn from '../login'
+import logIn from '../login';
+import ErrorPage from '../components/ErrorPage';
+
 const App = () => {
 
   return (
@@ -30,6 +32,7 @@ const App = () => {
             <Route path="/surf-page-detail" exact component={SurfPageDetail}/>
             <Route path="/signup" exact component={signUp} />
             <Route path="/login" exact component={logIn} />
+            <Route component={ErrorPage} />
           </Switch>
       </Router>
   );

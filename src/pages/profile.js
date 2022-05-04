@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import { Container, Row, Col, Card, CardHeader, Badge } from 'reactstrap';
 import SurfingService from '../apis/SurfingService';
-import Skeleton from 'react-loading-skeleton'
+import Skeleton from 'react-loading-skeleton';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 import data from '../data/user-profile.json';
 import sadSurf from '../components/images/sad_surf3.jpeg';
@@ -131,6 +132,7 @@ const Profile = () => {
 
     if (isSignedIn) {
         return (
+            <ErrorBoundary>
             <section className="py-5">
                 <Container className="mt-6 ">
                     <Row>
@@ -361,9 +363,10 @@ const Profile = () => {
                     </Row>
                 </Container>
             </section>
+            </ErrorBoundary>
         )
     } else {
-        return notLoggedIn;
+        return <ErrorBoundary> {notLoggedIn} </ErrorBoundary>;
     }
 }
 

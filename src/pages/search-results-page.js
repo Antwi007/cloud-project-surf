@@ -20,6 +20,7 @@ import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import sadSurf from '../components/images/sad_surf3.jpeg';
 import { putSurfKeyword, putSurfData, putSurfSearchParams } from '../actions';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const surfingObject = new SurfingService();
 
@@ -273,115 +274,117 @@ const SearchResultsPage = () => {
   // console.log("search results page", surfData)
 
   return (
-    <React.Fragment>
-      <Container fluid>
-        <Row className="mt-6">
-          <Col lg="6" className="py-4 p-xl-5">
-            <h2 className="mb-4"> Results Page</h2>
-            <hr className="my-4" />
-            <Form onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <Label for="form_search" className="form-label">
-                  Keyword
-                </Label>
-                <div className="input-label-absolute input-label-absolute-right">
-                  <div className="label-absolute">
-                    <i className="fa fa-search" />
+    <ErrorBoundary>
+      <React.Fragment>
+        <Container fluid>
+          <Row className="mt-6">
+            <Col lg="6" className="py-4 p-xl-5">
+              <h2 className="mb-4"> Results Page</h2>
+              <hr className="my-4" />
+              <Form onSubmit={handleSubmit}>
+                <div className="mb-4">
+                  <Label for="form_search" className="form-label">
+                    Keyword
+                  </Label>
+                  <div className="input-label-absolute input-label-absolute-right">
+                    <div className="label-absolute">
+                      <i className="fa fa-search" />
+                    </div>
+                    <Input
+                      type="search"
+                      name="search"
+                      placeholder="Keywords"
+                      id="form_search"
+                      className="pr-4"
+                      value={searchKey}
+                      onChange={(e) => handleSearchKeyChange(e)}
+                    />
                   </div>
-                  <Input
-                    type="search"
-                    name="search"
-                    placeholder="Keywords"
-                    id="form_search"
-                    className="pr-4"
-                    value={searchKey}
-                    onChange={(e) => handleSearchKeyChange(e)}
-                  />
-                </div>
-              </div>
-              <div className="mb-4">
-                <Label for="form_length" className="form-label">
-                  Search Category
-                </Label>
-                <div className="mb-4">
-                  <Select
-                    name="search-type"
-                    id="form_length"
-                    options={data.options}
-                    value={searchType}
-                    isSearchable
-                    className="form-control dropdown bootstrap-select"
-                    classNamePrefix="selectpicker"
-                    onChange={(e) => handleTypeChange(e)}
-                  />
                 </div>
                 <div className="mb-4">
-                  <Button type="submit" color="primary" onClick={handleSubmit}>
-                    <i className="fas fa-search mr-1" />
-                    Search
-                  </Button>
+                  <Label for="form_length" className="form-label">
+                    Search Category
+                  </Label>
+                  <div className="mb-4">
+                    <Select
+                      name="search-type"
+                      id="form_length"
+                      options={data.options}
+                      value={searchType}
+                      isSearchable
+                      className="form-control dropdown bootstrap-select"
+                      classNamePrefix="selectpicker"
+                      onChange={(e) => handleTypeChange(e)}
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <Button type="submit" color="primary" onClick={handleSubmit}>
+                      <i className="fas fa-search mr-1" />
+                      Search
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </Form>
-            <hr className="my-4" />
-            <Row>
-              {loading &&
-                [...Array(postsPerPage)].map((el, index) => (
-                  <Col key={index} sm="6" className="mb-5 hover-animate">
-                    <Skeleton count={5} />
+              </Form>
+              <hr className="my-4" />
+              <Row>
+                {loading &&
+                  [...Array(postsPerPage)].map((el, index) => (
+                    <Col key={index} sm="6" className="mb-5 hover-animate">
+                      <Skeleton count={5} />
+                    </Col>
+                  ))
+                }
+              </Row>
+              <Row>
+                {surfData.length > 0 && console.log("Yes we got results", surfData[0])}
+                {surfData && status === 200 && surfData.map(loc => {
+                  return <Col
+                    key={loc[id_dict[option_dict[searchOption]]]}
+                    sm="6"
+                    className="mb-5 hover-animate"
+                    onMouseEnter={() => onCardEnter(loc[id_dict[option_dict[searchOption]]])}
+                    onMouseLeave={() => onCardLeave()}
+                  >
+                    <CardSurf data={loc} type={option_dict[searchOption]} />
                   </Col>
-                ))
-              }
-            </Row>
-            <Row>
-              {surfData.length > 0 && console.log("Yes we got results", surfData[0])}
-              {surfData && status === 200 && surfData.map(loc => {
-                return <Col
-                  key={loc[id_dict[option_dict[searchOption]]]}
-                  sm="6"
-                  className="mb-5 hover-animate"
-                  onMouseEnter={() => onCardEnter(loc[id_dict[option_dict[searchOption]]])}
-                  onMouseLeave={() => onCardLeave()}
-                >
-                  <CardSurf data={loc} type={option_dict[searchOption]} />
-                </Col>
-              }
-              )}
-            </Row>
-            {(!loading && surfData.length === 0) &&
-              <div class="card text-center" style={{ border: 'none', flexDirection: 'row' }}>
-                <img
-                  src={sadSurf}
-                  alt=""
-                  style={{ border: 'none', width: '50%', marginRight: '10%' }}
-                />
-                <h2 style={{ alignSelf: 'center', width: '40%', marginLeft: '-15%' }}>
-                  No results for your search, please try a new location
-                </h2>
-              </div>}
-          </Col>
-          <div id="map">
-            <Col
-              lg="6"
-              className="mt-1 map-side-lg pr-lg-0"
-            >
-              {((loading === false) && (status === 200 || status === 204 || surfData.length > 0) && center[0] !== 'undefined' && mapLoaded) ?
-                <MapSurf
-                  className="map-full shadow-left"
-                  center={center}
-                  zoom={14}
-                  dragging={dragging}
-                  tap={tap}
-                  geoJSON={surfData}
-                  hoverCard={hoverCard}
-                  type={option_dict[searchOption]}
-                /> : null
-              }
+                }
+                )}
+              </Row>
+              {(!loading && surfData.length === 0) &&
+                <div class="card text-center" style={{ border: 'none', flexDirection: 'row' }}>
+                  <img
+                    src={sadSurf}
+                    alt=""
+                    style={{ border: 'none', width: '50%', marginRight: '10%' }}
+                  />
+                  <h2 style={{ alignSelf: 'center', width: '40%', marginLeft: '-15%' }}>
+                    No results for your search, please try a new location
+                  </h2>
+                </div>}
             </Col>
-          </div>
-        </Row>
-      </Container>
-    </React.Fragment>
+            <div id="map">
+              <Col
+                lg="6"
+                className="mt-1 map-side-lg pr-lg-0"
+              >
+                {((loading === false) && (status === 200 || status === 204 || surfData.length > 0) && center[0] !== 'undefined' && mapLoaded) ?
+                  <MapSurf
+                    className="map-full shadow-left"
+                    center={center}
+                    zoom={14}
+                    dragging={dragging}
+                    tap={tap}
+                    geoJSON={surfData}
+                    hoverCard={hoverCard}
+                    type={option_dict[searchOption]}
+                  /> : null
+                }
+              </Col>
+            </div>
+          </Row>
+        </Container>
+      </React.Fragment>
+    </ErrorBoundary>
   )
 }
 
