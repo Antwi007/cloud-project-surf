@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardText, CardBody, Col } from 'reactstrap';
 import Icon from './WeatherIcon';
 
-const WeatherCard = (props) => {
+const WindCard = (props) => {
   const data = props.data[0];
 
   const date = new Date(data["time"]);
@@ -37,4 +37,4 @@ const WeatherCard = (props) => {
   );
 };
 
-export default WeatherCard;
+export default WindCard;
