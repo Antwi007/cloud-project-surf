@@ -25,7 +25,14 @@ const authReducer = (state = INTIAL_STATE, action) => {
     case SIGN_IN:
       return { ...state, isSignedIn: true, userId: action.payload };
     case SIGN_OUT:
-      return {...INTIAL_STATE, isSignedIn: false};
+      const la = state.nearby_lat;
+      const lo = state.nearby_lon;
+      return {
+        ...INTIAL_STATE, 
+        isSignedIn: false,
+        nearby_lat: la,
+        nearby_lon: lo
+      };
     case GET_ACCOUNT_DETAILS:
       const firstAndFullName = giveFirstandFullName(action.payload.name)
       const firstName = firstAndFullName[0]

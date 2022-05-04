@@ -5,7 +5,12 @@ import Icon from './WeatherIcon';
 const WindCard = (props) => {
   const data = props.data[0];
 
-  const date = new Date(data["time"]);
+  var date = null;
+  try {
+    date = new Date(data["time"]);
+  } catch {
+    date = new Date();
+  }
 
   var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];

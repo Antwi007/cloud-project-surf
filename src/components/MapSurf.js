@@ -90,6 +90,8 @@ const MapSurf = (props) => {
         setHover(props.hoverCard);
     }, [props.hoverCard]);
 
+    // console.log(props.geoJSON);
+
     if ((props.geoJSON && props.geoJSON.length > 0 && props.geoJSON[0][lat_dict[type]]) || props.circlePosition) {
         return (
             <MapContainer
@@ -202,7 +204,6 @@ const MapSurf = (props) => {
             </MapContainer>
         )
     } else {
-        console.log(props)
         return (
             <MapContainer
                 center={props.center}

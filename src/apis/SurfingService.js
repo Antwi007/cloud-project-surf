@@ -23,7 +23,7 @@ class SurfingService {
         `${this.url}/development/search?${queryParams}`
       );
 
-      console.log("GET SURF DATA URL", `${this.url}/development/search?${queryParams}`)
+      // console.log("GET SURF DATA URL", `${this.url}/development/search?${queryParams}`)
 
       if (resp.status !== 200) {
         return false;
@@ -91,7 +91,7 @@ class SurfingService {
     };
 
     const resp = await axios(config);
-    console.log("surfing account details", resp)
+    // console.log("surfing account details", resp)
     return resp;
   }
 
@@ -113,7 +113,7 @@ class SurfingService {
   }
 
   putSurfingAccount = async (userId, accountDetails) => {
-    console.log("putting surfing account info")
+    // console.log("putting surfing account info")
     var data = '{\n    "user_id":"' + userId;
     data += '",\n    "details": {\n        "location": "' + accountDetails.location;
     data += '",\n        "fullName": "' + accountDetails.fullName;
@@ -158,7 +158,7 @@ class SurfingService {
   putProfilePic = async (userId, image) => {
     let baseURL = "https://usvfzvu80m.execute-api.us-east-1.amazonaws.com/development/profilepic/" + userId;
 
-    console.log(image)
+    // console.log(image)
 
     var config = {
       method: 'put',
@@ -239,8 +239,8 @@ class SurfingService {
 
       var resp = await axios(config);
 
-      console.log("params", surfId, c)
-      console.log("got resp", resp)
+      // console.log("params", surfId, c)
+      // console.log("got resp", resp)
 
       if (resp.data.statusCode === 200) {
         return { ...resp.data.body, id: surfId };

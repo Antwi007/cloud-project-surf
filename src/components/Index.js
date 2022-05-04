@@ -16,6 +16,8 @@ const Index = () => {
   const nearby_lat = useSelector(state => state.auth.nearby_lat)
   const nearby_lon = useSelector(state => state.auth.nearby_lon)
 
+  console.log("lat lon", nearby_lat, nearby_lon)
+
   const data = {
     "searchOptions": [{
       "value": "small",
@@ -31,6 +33,8 @@ const Index = () => {
     }
     ]
   }
+
+  // console.log("lat and lon", nearby_lat, nearby_lon);
 
   return (
     <React.Fragment>
