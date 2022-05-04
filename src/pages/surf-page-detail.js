@@ -227,9 +227,9 @@ const SurfPageDetail = (props) => {
             }
         }
 
-        if (query["surf_score"] < 4) {
+        if (details["surf-score"] < 4) {
             setSurfScoreColor("red")
-        } else if (query["surf_score"] < 7) {
+        } else if (details["surf-score"] < 7) {
             setSurfScoreColor("yellow")
         } else {
             setSurfScoreColor("green")
@@ -268,9 +268,9 @@ const SurfPageDetail = (props) => {
                                                 {option_dict[search_type]}
                                             </div>
                                         }
-                                        {search_type === "beaches" && query["surf_score"] &&
+                                        {search_type === "beaches" && details["surf-score"] &&
                                             <p>
-                                                Surf-Score <i className={`fa fa-star mr-1 text-secondary`} /> <span className={surfScoreColor}>{query["surf_score"].toFixed(2)}</span>
+                                                Surf-Score <i className={`fa fa-star mr-1 text-secondary`} /> <span className={surfScoreColor}>{details["surf-score"].toFixed(2)}</span>
                                             </p>
                                         }
                                         {search_type === "lessons" &&
