@@ -24,13 +24,14 @@ const CardBeach = (props) => {
   const type = props.type
   const center = props.center
   const randomIndex = useState(Math.floor(Math.random() * beachImages.length));
-    
+  
   const query = {
     "beach_name" : data.beach_name,
     "beach_lon": center[1],
     "beach_lat": center[0],
     "thumbnail": beachImages[randomIndex[0]],
-    "id": data["surfline_id"]
+    "id": data["surfline_id"],
+    "surfscore": data["surf_score"]
   }
 
   console.log("this is props", props)
@@ -57,7 +58,14 @@ const CardBeach = (props) => {
               <p className="card-title text-shadow text-sm">
                   Distance: {parseFloat(data.yelp_beach_distance_from_shop).toFixed(2)}
               </p>
+
+              
           </CardSubtitle>
+          <div className="surfscore-cardBeach">
+              <p className="card-title text-shadow text-sm">
+                  SurfScore: {(query["surfscore"]).toFixed(2)}
+              </p>
+              </div>
         </CardBody>
     </Card>
   )
