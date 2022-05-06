@@ -19,10 +19,6 @@ const App = () => {
           <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:ital,wght@0,300;0,400;0,700;1,400&display=swap" />
           <link rel="icon" href="/favicon.png" />
           <link href='https://use.fontawesome.com/releases/v5.8.1/css/all.css' rel="stylesheet" />
-          <link
-            href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/5.3.8/css/swiper.min.css"
-            rel="stylesheet"
-        />
         </Helmet>
           <Header />
           <Switch>
