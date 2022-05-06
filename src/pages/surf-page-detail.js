@@ -353,7 +353,8 @@ const SurfPageDetail = (props) => {
                                         }
                                     </Row>
                                     {search_type === "beaches" && Object.keys(details).length !== 0 &&
-                                    <> 
+                                    <>
+ 
                                         <h4 className="mb-4 mt-2">Nearby Shops</h4>
                                         <RSwiper
                                             data={details["yelp-data"]["surfshop"]}

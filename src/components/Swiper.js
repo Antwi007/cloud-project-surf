@@ -11,12 +11,13 @@ import 'swiper/modules/scrollbar/scrollbar.scss' //scroll module
 const RSwiper = (props) => {
 
   return props.data ? (
-    <Swiper modules={[Navigation, Pagination, Scrollbar, A11y]}
-    spaceBetween={50}
-    slidesPerView={2}
-    navigation
-    scrollbar={{ draggable: true }}
-    >
+    <Swiper 
+      modules={[Navigation, Pagination, Scrollbar, A11y]}
+      spaceBetween={50}
+      slidesPerView={2}
+      navigation
+      scrollbar={{ draggable: true }}
+      >
       {props.data.map((slide, index) =>
         props.simple ? (
           <div
