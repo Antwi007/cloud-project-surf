@@ -20,7 +20,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import '../scss/surfscore.scss';
 
 import MapSurf from '../components/MapSurf'
-import Swiper from '../components/Swiper'
+import RSwiper from '../components/Swiper'
 import SurfingService from '../apis/SurfingService';
 import { putSurfAccountDetails } from '../actions';
 import WeatherCard from '../components/WeatherCard';
@@ -353,45 +353,23 @@ const SurfPageDetail = (props) => {
                                         }
                                     </Row>
                                     {search_type === "beaches" && Object.keys(details).length !== 0 &&
-                                    <>
-                                        
+                                    <> 
                                         <h4 className="mb-4 mt-2">Nearby Shops</h4>
-                                        <Swiper
-                                            className="swiper-container-mx-negative pt-3 pb-5"
-                                            perView={1}
-                                            spaceBetween={20}
-                                            roundLengths
-                                            md={2}
-                                            lg={3}
-                                            xl={5}
+                                        <RSwiper
                                             data={details["yelp-data"]["surfshop"]}
                                             cards
                                             onCardEnter={onCardEnter}
                                             onCardExit={onCardExit}
                                         />
                                         <h4 className="mb-4 mt-2">Nearby Lessons</h4>
-                                        <Swiper
-                                            className="swiper-container-mx-negative pt-3 pb-5"
-                                            perView={1}
-                                            spaceBetween={20}
-                                            roundLengths
-                                            md={2}
-                                            lg={3}
-                                            xl={5}
+                                        <RSwiper
                                             data={details["yelp-data"]["surfschools"]}
                                             cards
                                             onCardEnter={onCardEnter}
                                             onCardExit={onCardExit}
                                         />
                                         <h4 className="mb-4 mt-2">Nearby restaurants</h4>
-                                        <Swiper
-                                            className="swiper-container-mx-negative pt-3 pb-5"
-                                            perView={1}
-                                            spaceBetween={20}
-                                            roundLengths
-                                            md={2}
-                                            lg={3}
-                                            xl={5}
+                                        <RSwiper
                                             data={details["yelp-data"]["restaurants"]}
                                             cards
                                             onCardEnter={onCardEnter}
@@ -401,14 +379,7 @@ const SurfPageDetail = (props) => {
                                     }
                                     {(search_type === "lessons" || search_type === "surfshops") && <h4 className="mb-4 mt-2">Nearby Beaches</h4>}
                                     {(search_type === "lessons" || search_type === "surfshops") &&
-                                        <Swiper
-                                            className="swiper-container-mx-negative pt-3 pb-5"
-                                            perView={1}
-                                            spaceBetween={20}
-                                            roundLengths
-                                            md={2}
-                                            lg={3}
-                                            xl={5}
+                                        <RSwiper
                                             data={nearbyBeaches}
                                             type="beaches"
                                             center={[query[lat_dict[search_type]], query[lon_dict[search_type]]]}

@@ -1,76 +1,22 @@
-//import React from "react";
 import React from "react";
-import ReactIdSwiper from "react-id-swiper";
 import CardRestaurant from "./CardRestaurant";
-import CardBeach from "./CardBeach"
-const Swiper = (props) => {
+import CardBeach from "./CardBeach";
+import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react/swiper-react.js';
+import 'swiper/swiper.scss'; // core Swiper
+import 'swiper/modules/navigation/navigation.scss'; // Navigation module
+import 'swiper/modules/pagination/pagination.scss'; // Paginagtion module
+import 'swiper/modules/scrollbar/scrollbar.scss' //scroll module
 
-  const breakpoints = [];
-  if (props.sm) {
-    breakpoints[565] = {
-      slidesPerView: props.sm,
-    };
-  }
-  if (props.md) {
-    breakpoints[768] = {
-      slidesPerView: props.md,
-    };
-  }
-  if (props.lg) {
-    breakpoints[991] = {
-      slidesPerView: props.lg,
-    };
-  }
-  if (props.xl) {
-    breakpoints[1200] = {
-      slidesPerView: props.xl,
-    };
-  }
-  if (props.xxl) {
-    breakpoints[1400] = {
-      slidesPerView: props.xxl,
-    };
-  }
-  if (props.xxxl) {
-    breakpoints[1600] = {
-      slidesPerView: props.xxxl,
-    };
-  }
-  const params = {
-    containerClass: `swiper-container ${props.className}`,
-    slidesPerView: props.perView,
-    effect: props.effect,
-    allowTouchMove: props.allowTouchMove === false ? false : true,
-    spaceBetween: props.spaceBetween,
-    centeredSlides: props.centeredSlides,
-    roundLengths: props.roundLengths,
-    loop: props.loop,
-    speed: props.speed ? props.speed : 400,
-    parallax: props.parallax,
-    breakpoints: breakpoints,
-    autoplay: props.autoplay
-      ? {
-        delay: props.delay,
-      }
-      : false,
-    pagination:
-      props.pagination !== false
-        ? {
-          el: `.swiper-pagination.${props.paginationClass}`,
-          clickable: true,
-          dynamicBullets: true,
-        }
-        : false,
-    navigation: {
-      nextEl: props.navigation ? ".swiper-button-next" : "",
-      prevEl: props.navigation ? ".swiper-button-prev" : "",
-    },
-    wrapperClass: `swiper-wrapper ${props.wrapperClass ? props.wrapperClass : ""
-      }`,
-  };
+const RSwiper = (props) => {
 
   return props.data ? (
-    <ReactIdSwiper {...params}>
+    <Swiper modules={[Navigation, Pagination, Scrollbar, A11y]}
+    spaceBetween={50}
+    slidesPerView={2}
+    navigation
+    scrollbar={{ draggable: true }}
+    >
       {props.data.map((slide, index) =>
         props.simple ? (
           <div
@@ -87,30 +33,34 @@ const Swiper = (props) => {
         ) : (
           <div key={index} className="h-auto w-50 px-2">
             {props.cards && (
-              <div className="w-100 h-100 hover-animate">
-                <CardRestaurant
-                  data={slide}
-                  onCardEnter={props.onCardEnter}
-                  onCardExit={props.onCardExit}
-                />
-              </div>
+              <SwiperSlide>
+                <div className="w-100 h-100 mb-4 hover-animate">
+                    <CardRestaurant
+                      data={slide}
+                      onCardEnter={props.onCardEnter}
+                      onCardExit={props.onCardExit}
+                    />
+                </div>
+              </SwiperSlide>
             )}
             {props.beaches && (
-              <div className="w-100 h-100 hover-animate">
-                <CardBeach
-                  data={slide}
-                  type={props.type}
-                  center={props.center}
-                />
-              </div>
+               <SwiperSlide>
+                <div className="w-100 h-100 mb-4 hover-animate">
+                  <CardBeach
+                    data={slide}
+                    type={props.type}
+                    center={props.center}
+                  />
+                </div>
+              </SwiperSlide>
             )}
           </div>
         )
       )}
-    </ReactIdSwiper>
+    </Swiper>
   ) : (
     null
   )
 };
 
-export default Swiper;
+export default RSwiper;
