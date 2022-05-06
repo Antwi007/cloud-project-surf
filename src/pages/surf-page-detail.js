@@ -138,7 +138,18 @@ const SurfPageDetail = (props) => {
                     setIsSurfBreak(true)
                 }
                 setDetails(resp.body);
+                console.log('HERE')
+                console.log(resp.body)
+                if (resp.body["surf-score"] < 4) {
+                    setSurfScoreColor("red")
+                } else if (resp.body["surf-score"] < 7) {
+                    setSurfScoreColor("yellow")
+                } else {
+                    setSurfScoreColor("green")
+                }                
             }
+
+                
 
         } catch (error) {
             console.log(error)
@@ -229,16 +240,12 @@ const SurfPageDetail = (props) => {
             }
         }
 
-        if (query["surf_score"] < 4) {
-            setSurfScoreColor("red")
-        } else if (query["surf_score"] < 7) {
-            setSurfScoreColor("yellow")
-        } else {
-            setSurfScoreColor("green")
-        }
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.location.id, query])
 
+
+    console.log()
     const dismissError = () => {
         setError("");
         setErrorVisible(false);
@@ -270,9 +277,9 @@ const SurfPageDetail = (props) => {
                                                 {option_dict[search_type]}
                                             </div>
                                         }
-                                        {search_type === "beaches" && query["surf_score"] &&
+                                        {search_type === "beaches" && details["surf-score"] &&
                                             <p>
-                                                Surf-Score <i className={`fa fa-star mr-1 text-secondary`} /> <span className={surfScoreColor}>{query["surf_score"].toFixed(2)}</span>
+                                                Surf-Score <i className={`fa fa-star mr-1 text-secondary`} /> <span className={surfScoreColor}>{details["surf-score"].toFixed(2)}</span>
                                             </p>
                                         }
                                         {search_type === "lessons" &&
@@ -337,8 +344,7 @@ const SurfPageDetail = (props) => {
                                                 </Row>
                                             </Container>
                                         </section>
-                                    }
-                                    {search_type === "beaches" && <h4 className="mb-4 mt-2">Nearby restaurants</h4>}
+                                    }                                    
                                     <Row>
                                         {loading && search_type === "beaches" &&
                                             [...Array(2)].map((el, index) => (
@@ -348,6 +354,7 @@ const SurfPageDetail = (props) => {
                                             ))
                                         }
                                     </Row>
+                                    {search_type === "beaches" && <h4 className="mb-4 mt-2">Nearby Restaurants</h4>}
                                     {search_type === "beaches" && Object.keys(details).length !== 0 &&
                                         <RSwiper
                                             data={details["yelp-data"]["restaurants"]}
