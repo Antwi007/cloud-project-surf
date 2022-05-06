@@ -46,7 +46,7 @@ const RSwiper = (props) => {
               </SwiperSlide>
             )}
             {props.beaches && (
-              <div className="w-100 h-100 hover-animate">
+              <div className="w-100 h-100 mb-4 hover-animate">
                 <CardBeach
                   data={slide}
                   type={props.type}
