@@ -47,7 +47,7 @@ const logIn = () => {
                                             </Label>
                                         </Col>
                                         <Col xs="auto">
-                                            <a href="/" className="form-text small">
+                                            <a target="_blank" href="/" className="form-text small">
                                                 Forgot password?
                                             </a>
                                         </Col>

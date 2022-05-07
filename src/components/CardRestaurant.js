@@ -35,7 +35,7 @@ const CardRestaurant = (props) => {
                     </p>
                 </div>
             </div>
-            <a href={data.web_url}>
+            <a target="_blank" href={data.web_url}>
               <CardBody>
                   <p className="text-primary">
                       <i className="fa-map-marker-alt fa mr-1" />
