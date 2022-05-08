@@ -425,7 +425,10 @@ const SurfPageDetail = (props) => {
                                                 color="primary"
                                                 block
                                                 onClick={() => {
-                                                    window.location.href = query["yelp_url"]
+                                                    window.open(
+                                                        query["yelp_url"],
+                                                        '_blank'
+                                                    )
                                                 }}
                                             >
                                                 Visit Website
