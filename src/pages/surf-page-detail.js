@@ -57,6 +57,7 @@ const SurfPageDetail = (props) => {
     const [addedRests, setAddedRests] = useState(false);
     const [hoverCard, setHoverCard] = useState(null);
     const [surfScoreColor, setSurfScoreColor] = useState("");
+    const [thumbnail, setThumbnail] = useState(null)
 
     const [loading, setLoading] = useState(true);
     const location = useLocation()
@@ -137,6 +138,7 @@ const SurfPageDetail = (props) => {
                     setIsSurfBreak(true)
                 }
                 setDetails(resp.body);
+                setThumbnail(resp.body.thumbnail)
                 console.log('HERE')
                 console.log(resp.body)
                 if (resp.body["surf-score"] < 4) {
@@ -145,10 +147,10 @@ const SurfPageDetail = (props) => {
                     setSurfScoreColor("yellow")
                 } else {
                     setSurfScoreColor("green")
-                }                
+                }
             }
 
-                
+
 
         } catch (error) {
             console.log(error)
@@ -342,7 +344,7 @@ const SurfPageDetail = (props) => {
                                                 </Row>
                                             </Container>
                                         </section>
-                                    }                                    
+                                    }
                                     <Row>
                                         {loading && search_type === "beaches" &&
                                             [...Array(2)].map((el, index) => (
@@ -353,29 +355,29 @@ const SurfPageDetail = (props) => {
                                         }
                                     </Row>
                                     {search_type === "beaches" && Object.keys(details).length !== 0 &&
-                                    <>
- 
-                                        <h4 className="mb-4 mt-2">Nearby Shops</h4>
-                                        <RSwiper
-                                            data={details["yelp-data"]["surfshop"]}
-                                            cards
-                                            onCardEnter={onCardEnter}
-                                            onCardExit={onCardExit}
-                                        />
-                                        <h4 className="mb-4 mt-2">Nearby Lessons</h4>
-                                        <RSwiper
-                                            data={details["yelp-data"]["surfschools"]}
-                                            cards
-                                            onCardEnter={onCardEnter}
-                                            onCardExit={onCardExit}
-                                        />
-                                        <h4 className="mb-4 mt-2">Nearby restaurants</h4>
-                                        <RSwiper
-                                            data={details["yelp-data"]["restaurants"]}
-                                            cards
-                                            onCardEnter={onCardEnter}
-                                            onCardExit={onCardExit}
-                                        />
+                                        <>
+
+                                            <h4 className="mb-4 mt-2">Nearby Shops</h4>
+                                            <RSwiper
+                                                data={details["yelp-data"]["surfshop"]}
+                                                cards
+                                                onCardEnter={onCardEnter}
+                                                onCardExit={onCardExit}
+                                            />
+                                            <h4 className="mb-4 mt-2">Nearby Lessons</h4>
+                                            <RSwiper
+                                                data={details["yelp-data"]["surfschools"]}
+                                                cards
+                                                onCardEnter={onCardEnter}
+                                                onCardExit={onCardExit}
+                                            />
+                                            <h4 className="mb-4 mt-2">Nearby restaurants</h4>
+                                            <RSwiper
+                                                data={details["yelp-data"]["restaurants"]}
+                                                cards
+                                                onCardEnter={onCardEnter}
+                                                onCardExit={onCardExit}
+                                            />
                                         </>
                                     }
                                     {(search_type === "lessons" || search_type === "surfshops") && <h4 className="mb-4 mt-2">Nearby Beaches</h4>}
@@ -413,7 +415,7 @@ const SurfPageDetail = (props) => {
                                         className="p-4 shadow ml-lg-4 rounded sticky-top"
                                     >
                                         <img
-                                            src={query.thumbnail}
+                                            src={thumbnail ? thumbnail : query["thumbnail"]}
                                             alt={query[name_dict[search_type]]}
                                             style={{ width: "100%" }}
                                             className="my-3"
