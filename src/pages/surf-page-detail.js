@@ -139,11 +139,10 @@ const SurfPageDetail = (props) => {
                 }
                 setDetails(resp.body);
                 setThumbnail(resp.body.thumbnail)
-                console.log('HERE')
-                console.log(resp.body)
-                if (resp.body["surf-score"] < 4) {
+                                
+                if (resp.body["surf-score"] <= 4) {
                     setSurfScoreColor("red")
-                } else if (resp.body["surf-score"] < 7) {
+                } else if (resp.body["surf-score"] <= 7) {
                     setSurfScoreColor("yellow")
                 } else {
                     setSurfScoreColor("green")
