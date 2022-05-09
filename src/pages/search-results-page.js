@@ -30,18 +30,18 @@ const SearchResultsPage = () => {
   const dispatch = useDispatch();
 
   const router = useLocation();
-  const [searchKey, setSearchKey] = useState(surfSearch.keyword);
+  const [searchKey, setSearchKey] = useState(router.query ? "" : surfSearch.keyword);
   const [mapLoaded, setMapLoaded] = useState(false)
-  const [dragging, setDragging] = useState(surfSearchParams.dragging || false)
-  const [tap, setTap] = useState(surfSearchParams.tap || false)
-  const [hoverCard, setHoverCard] = useState(surfSearchParams.hoverCard || null)
-  const [surfData, setSurfData] = useState(surfSearch.surfData);
+  const [dragging, setDragging] = useState(router.query ? false : surfSearchParams.dragging)
+  const [tap, setTap] = useState(router.query ? false : surfSearchParams.tap)
+  const [hoverCard, setHoverCard] = useState(router.query ? null : surfSearchParams.hoverCard)
+  const [surfData, setSurfData] = useState(router.query ? [] : surfSearch.surfData);
   const [loading, setLoading] = useState(
     router.query !== undefined ? true
       : (surfSearch.surfData) ? false
         : null);
-  const [center, setCenter] = useState(surfSearchParams.center || [40.5842, -73.99967]);
-  const [status, setStatus] = useState(surfSearchParams.status || 0);
+  const [center, setCenter] = useState(router.query ? [router.query.nearby_lat, router.query.nearby_lon] : surfSearchParams.center);
+  const [status, setStatus] = useState(router.query ? 0 : surfSearchParams.status);
   const postsPerPage = 10;
   const data = {
     "options": [{
@@ -70,8 +70,8 @@ const SearchResultsPage = () => {
     "lessons": "shop_id",
     "surfshops": "shop_id"
   }
-  const [searchType, setSearchType] = useState(surfSearchParams.searchType || data.options.find((el) => el.label === router.query.option))
-  const [searchOption, setSearchOption] = useState(surfSearchParams.searchOption || router.query.option)
+  const [searchType, setSearchType] = useState(router.query ? data.options.find((el) => el.label === router.query.option) : surfSearchParams.searchType)
+  const [searchOption, setSearchOption] = useState(router.query ? router.query.option : surfSearchParams.searchOption);
 
   const handleSearchKeyChange = (e) => {
     setSearchKey(e.target.value);
@@ -367,7 +367,7 @@ const SearchResultsPage = () => {
                 lg="6"
                 className="mt-1 map-side-lg pr-lg-0"
               >
-                {((loading === false) && (status === 200 || status === 204 || surfData.length > 0) && center[0] !== 'undefined' && mapLoaded) ?
+                {((loading === false) && (status === 200 || status === 204 || surfData.length > 0) && surfData.length > 0 && center[0] !== 'undefined' && mapLoaded) ?
                   <MapSurf
                     className="map-full shadow-left"
                     center={center}

@@ -71,8 +71,6 @@ const SurfPageDetail = (props) => {
     const authProfile = useSelector(state => state.auth);
     const userId = useSelector(state => state.auth.userId)
 
-    console.log("surf page detail", query, search_type)
-
     useEffect(() => {
         setGeoJSON([query])
         var id = null;
