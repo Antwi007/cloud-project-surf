@@ -137,6 +137,7 @@ const SurfPageDetail = (props) => {
                 if ("surfline-data" in resp.body) {
                     setIsSurfBreak(true)
                 }
+                console.log(resp.body)
                 setDetails(resp.body);
                 setThumbnail(resp.body.thumbnail)
                                 
