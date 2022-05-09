@@ -39,7 +39,7 @@ const CardRestaurant = (props) => {
               <CardBody>
                   <p className="text-primary">
                       <i className="fa-map-marker-alt fa mr-1" />
-                      &nbsp;{data.location.address1 && data.location.address1}
+                      &nbsp;{data.display_address[0] && data.display_address[0]}
                   </p>
               </CardBody>
             </a>
