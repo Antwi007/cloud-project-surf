@@ -172,7 +172,7 @@ const SurfPageDetail = (props) => {
             params["user_id"] = userId;
             params["type"] = search_type;
             params["body"] = (isSurfBreak) ? details : query;
-
+            console.log(params)
             const resp = await surfingObject.sendEmail(params)
 
             if (resp === true) {
